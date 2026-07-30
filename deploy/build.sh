@@ -32,7 +32,10 @@ if [[ ! -x "$JAVA_HOME/bin/java" ]]; then
   exit 1
 fi
 
-java_major="$("$JAVA_HOME/bin/java" -version 2>&1 | sed -n '1s/.*"\([0-9]*\).*/\1/p')"
+# `[^"]*` not `.*` before the quote: BRE is greedy, so `.*"` runs to the CLOSING quote of
+# "21.0.11" and the capture that follows matches an empty string. The check then compares "" and
+# rejects a perfectly good JDK with 'JDK  is outside the 21-25 range'.
+java_major="$("$JAVA_HOME/bin/java" -version 2>&1 | sed -n '1s/[^"]*"\([0-9]*\).*/\1/p')"
 if [[ "$java_major" -lt 21 || "$java_major" -gt 25 ]]; then
   echo "error: JDK $java_major is outside the 21-25 range JHipster's enforcer accepts." >&2
   exit 1

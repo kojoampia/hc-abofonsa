@@ -9,10 +9,11 @@ Everything in `prod-server/` is deployed **as-is** — the files in this reposit
 truth, not a starting point to be edited on the server. A change made only on the host is lost at
 the next deploy and invisible to review.
 
-> **Nothing here has been run against the live server.** The artifacts are complete and were
-> verified end to end locally (see [Verification](#verification)). Steps that touch webserver, DNS
-> or Let's Encrypt need shell access and a decision on the domain — confirm immediately before
-> executing, even if this plan has been approved as a whole.
+> **Live at https://abofonsa.com and https://www.abofonsa.com** since 31 July 2026, first deployed
+> at commit `8cc5490`. One Let's Encrypt certificate covers both names and renews automatically.
+>
+> Re-running `--bootstrap` against this install is refused: it will not overwrite the generated
+> `.env`, which is the only copy of the four secrets.
 
 ## What gets deployed
 
@@ -66,9 +67,13 @@ TAG=<previous-sha> ./deploy/deploy.sh --skip-build   # roll back to an already-p
 ./deploy/deploy.sh --recover                    # compose.yml went missing but .env survived
 ```
 
-Every mutating step is announced before it runs and prompts unless `--yes` is passed. The certbot
-step ignores `--yes` on purpose: everything else is repeatable, and that one talks to a rate-limited
-third party about a real domain.
+Every mutating step is announced before it runs and prompts unless `--yes` is passed — certbot
+included. It did originally ignore `--yes`, on the reasoning that it talks to a rate-limited third
+party about a real domain, but a `read` prompt in a non-interactive shell gets EOF and silently
+skips, which turns an explicit `--with-tls` into a no-op. The guard is now a check rather than a
+question: every hostname must resolve to the server's own IP, or the step fails without calling
+certbot. That verifies the precondition the prompt was asking a human to vouch for, and refuses
+rather than spending quota on a name that could not have passed.
 
 ## Secrets
 
@@ -145,6 +150,22 @@ volume at `/var/lib/postgresql`, not `/var/lib/postgresql/data`**, and refuses t
 The dev compose file never hits it because its volume line is commented out, so this would have
 failed on the very first real deploy.
 
+### What the first real deploy then found
+
+Three more, none of which local testing could have surfaced:
+
+- **The server's disk was 100% full** — 85 MB free of 47 GB — so the registry answered `500` to the
+  blob upload. `docker image prune -a` recovered 10 GB (to 78%). At that level Postgres and Mongo
+  across *every* app on the host were at risk of failing writes, not just this deploy. 47 GB with
+  this many services will fill again; a scheduled prune is worth adding.
+- **`build.sh` rejected a valid JDK 21.** `sed 's/.*"\([0-9]*\).*/\1/'` is greedy, so `.*"` ran to
+  the *closing* quote of `"21.0.11"` and captured an empty string.
+- **`--yes` would have silently skipped TLS.** The certbot step used a `read` prompt deliberately
+  made non-skippable; in a non-interactive shell that reads EOF and skips, turning an explicit
+  `--with-tls` into a no-op. It now verifies each hostname resolves to the server's own IP instead —
+  a stronger guard than a prompt, because it checks the precondition rather than asking a human to
+  vouch for it, and it refuses rather than spending Let's Encrypt quota on a name that cannot pass.
+
 ## Host conventions this follows
 
 - **Loopback-only ports.** The app publishes `127.0.0.1:8084`; host nginx with Certbot-managed TLS
@@ -166,11 +187,14 @@ failed on the very first real deploy.
 
 ## Decisions to confirm before going live
 
-- **The domain.** Everything defaults to `launch.abofonsa.com`. The apex `abofonsa.com` is
-  deliberately **not** claimed: a server block here would silently take it over for anything
-  resolving to this host. A countdown site is exactly the kind of thing somebody eventually wants on
-  the apex — but that is a decision to make explicitly, and then both `server_name` and the certbot
-  command need it. `web.` and `fund.` are already taken by the siblings.
+- ~~**The domain.**~~ **Decided: the apex and www.** Before claiming them the deploy confirmed
+  nothing was displaced — `abofonsa.conf` serves only `web.abofonsa.com`, the existing certificates
+  covered only `web.` and `fund.`, and the apex previously answered 404 from nginx's default site.
+  One certificate covers both names; www is served by the same block rather than redirected.
+- **Mail is still not configured.** The site is live and accepting waitlist addresses, but with
+  `SMTP_HOST` empty every confirmation link is written to the container log instead of sent — so
+  nobody outside the server can complete a signup and every row sits at `PENDING`. This is the one
+  thing that makes the live site not yet fit for its purpose.
 - **Search indexing.** Unlike `hc-abofonsa-web`, this app has no indexing switch; it serves whatever
   the Angular build emits. If this preview should stay out of search results until launch, that
   needs adding before publication.

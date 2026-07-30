@@ -1,5 +1,5 @@
 #!/bin/bash
-# Deploys this repo to production (webserver -> https://launch.abofonsa.com) and verifies the result.
+# Deploys this repo to production (webserver -> https://abofonsa.com) and verifies the result.
 # Run it by hand from a clean checkout of the commit you want live:
 #
 #   ./deploy/deploy.sh                 # build+push image, ship config, restart, verify
@@ -36,7 +36,10 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 SSH_HOST="${SSH_HOST:-webserver}"                                        # ~/.ssh/config alias
 REMOTE_DIR="${REMOTE_DIR:-~/webroot/01-healthconnect/abofonsa-preview}"  # expanded remotely, not here
 REGISTRY="${REGISTRY:-docker.jojoaddison.net}"
-PUBLIC_URL="${PUBLIC_URL:-https://launch.abofonsa.com}"
+PUBLIC_URL="${PUBLIC_URL:-https://abofonsa.com}"
+# Extra hostnames served by the same nginx block and covered by the same certificate.
+# Must match `server_name` in prod-server/abofonsa-preview.conf.
+ALT_HOSTS="${ALT_HOSTS:-www.abofonsa.com}"
 APP_PORT="${APP_PORT:-8084}"   # loopback-only port the host nginx proxies to
 # Must match `container_name:` in prod-server/compose.yml. Hyphens, not underscores: an underscore
 # is illegal in a hostname, so a container named abofonsa_preview_app cannot be addressed over the
@@ -268,19 +271,50 @@ fi
 
 if $WITH_TLS; then
   step "TLS via certbot"
-  echo ""
-  warn "certbot rewrites ${NGINX_CONF} in place and requests a real certificate from Let's Encrypt."
-  warn "Rate limits apply per domain, and this is not a step to repeat casually."
-  warn "DNS for ${PUBLIC_HOST} must already point at ${SSH_HOST}."
-  echo ""
-  # Deliberately not skippable with --yes. Everything else here is repeatable; this one talks to a
-  # rate-limited third party about a real domain.
-  read -r -p "    run: certbot --nginx -d ${PUBLIC_HOST} ? [y/N] " reply
-  if [[ "$reply" == "y" || "$reply" == "Y" ]]; then
-    remote "sudo certbot --nginx -d ${PUBLIC_HOST}"
+
+  CERT_HOSTS="$PUBLIC_HOST $ALT_HOSTS"
+  CERT_ARGS=()
+  for h in $CERT_HOSTS; do CERT_ARGS+=(-d "$h"); done
+
+  # DNS is checked programmatically rather than trusted. Let's Encrypt validates by resolving the
+  # name and fetching from it, so a host that does not point here cannot possibly pass — and a
+  # failed validation still consumes rate-limit quota. Better to refuse than to spend it.
+  SERVER_IP="$(remote "curl -sf -m 10 https://api.ipify.org || hostname -I | awk '{print \$1}'")"
+  for h in $CERT_HOSTS; do
+    resolved="$(getent hosts "$h" | awk '{print $1}' | head -1)"
+    if [[ -z "$resolved" ]]; then
+      fail "$h has no DNS record. Point it at $SERVER_IP before requesting a certificate."
+    elif [[ "$resolved" != "$SERVER_IP" ]]; then
+      fail "$h resolves to $resolved, not $SERVER_IP. Certbot would fail and burn rate-limit quota."
+    fi
+    ok "dns       $h -> $resolved"
+  done
+
+  if remote "test -d /etc/letsencrypt/live/$PUBLIC_HOST"; then
+    info "a certificate for $PUBLIC_HOST already exists; certbot will reuse or expand it"
+  fi
+
+  # --yes covers this step. The earlier version always prompted, on the reasoning that certbot talks
+  # to a rate-limited third party about a real domain — but a `read` in a non-interactive shell gets
+  # EOF and silently skips, which turns an explicit --with-tls into a no-op. The DNS checks above are
+  # a stronger guard than a prompt anyway: they verify the precondition the prompt was asking a human
+  # to vouch for.
+  if $ASSUME_YES; then
+    info "requesting a certificate for: $CERT_HOSTS"
+    remote "sudo certbot --nginx ${CERT_ARGS[*]} --non-interactive --agree-tos --keep-until-expiring --redirect"
     ok "certificate issued and nginx rewritten"
   else
-    info "skipped; run it by hand when DNS is ready"
+    echo ""
+    warn "certbot rewrites ${NGINX_CONF} in place and requests a real certificate from Let's Encrypt."
+    warn "Rate limits apply per domain, and this is not a step to repeat casually."
+    echo ""
+    read -r -p "    run: certbot --nginx ${CERT_ARGS[*]} ? [y/N] " reply
+    if [[ "$reply" == "y" || "$reply" == "Y" ]]; then
+      remote "sudo certbot --nginx ${CERT_ARGS[*]} --agree-tos --keep-until-expiring --redirect"
+      ok "certificate issued and nginx rewritten"
+    else
+      info "skipped; run it by hand when DNS is ready"
+    fi
   fi
 fi
 
