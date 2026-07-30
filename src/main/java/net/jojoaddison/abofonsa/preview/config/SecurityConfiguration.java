@@ -61,10 +61,14 @@ public class SecurityConfiguration {
                     .requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/authenticate").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/authenticate").permitAll()
-                    .requestMatchers("/api/register").permitAll()
-                    .requestMatchers("/api/activate").permitAll()
-                    .requestMatchers("/api/account/reset-password/init").permitAll()
-                    .requestMatchers("/api/account/reset-password/finish").permitAll()
+                    // The launch page itself: content, waitlist capture, opt-in confirmation and the
+                    // analytics beacon. Anonymous by definition — see PublicContentResource and
+                    // PublicWaitlistResource for the rate limiting and bot checks that replace auth here.
+                    .requestMatchers("/api/public/**").permitAll()
+                    // JHipster's self-service account endpoints are deliberately NOT permitted. This
+                    // application has exactly one privileged account, seeded by Liquibase and given its
+                    // password by AdminAccountInitializer; there is no public sign-up to open, so leaving
+                    // /api/register reachable would only offer an attacker a way to create one.
                     .requestMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
                     .requestMatchers("/api/**").authenticated()
                     .requestMatchers("/v3/api-docs/**").hasAuthority(AuthoritiesConstants.ADMIN)

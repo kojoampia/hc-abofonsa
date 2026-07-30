@@ -7,9 +7,25 @@ import { errorRoute } from './layouts/error/error.route';
 
 const routes: Routes = [
   {
+    // The launch page replaces JHipster's home. `chrome: false` tells the main layout to stand
+    // aside: the navbar, footer and card container belong to the admin application, and the public
+    // page is a full-bleed design that must not be nested inside them.
     path: '',
-    loadComponent: () => import('./home/home'),
-    title: 'home.title',
+    loadComponent: () => import('./launch/launch.page'),
+    title: 'launch.title',
+    data: { chrome: false },
+  },
+  {
+    path: 'confirmed',
+    loadComponent: () => import('./launch/opt-in-result.page'),
+    title: 'launch.optIn.confirmed.title',
+    data: { chrome: false, kind: 'confirmed' },
+  },
+  {
+    path: 'unsubscribed',
+    loadComponent: () => import('./launch/opt-in-result.page'),
+    title: 'launch.optIn.unsubscribed.title',
+    data: { chrome: false, kind: 'unsubscribed' },
   },
   {
     path: '',

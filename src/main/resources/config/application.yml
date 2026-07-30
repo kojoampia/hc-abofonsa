@@ -228,3 +228,24 @@ jhipster:
 # ===================================================================
 
 # application:
+
+abofonsa:
+  admin:
+    # Applied to the seeded 'admin' account at every boot by AdminAccountInitializer. Left empty
+    # here deliberately — an empty value keeps the development credential and logs a warning, which
+    # is the only behaviour that is both safe to commit and usable without setup.
+    password: ${ABOFONSA_ADMIN_PASSWORD:}
+
+  # Where the opt-in and unsubscribe links point, and where those endpoints redirect back to.
+  # Must be the address the public actually reaches, not the container's own.
+  public-base-url: ${ABOFONSA_PUBLIC_BASE_URL:http://localhost:8083}
+
+  privacy:
+    # Salts the visitor and IP hashes. Without a secret here the IPv4 space can be exhaustively
+    # hashed in minutes, so a leaked capture_event table would be re-identifiable — the hashing
+    # would look like protection while providing none. Set it in every deployed environment.
+    hash-salt: ${ABOFONSA_HASH_SALT:dev-only-unsafe-salt}
+
+  waitlist:
+    # Submissions per client per hour before the endpoint answers 429.
+    max-per-hour-per-client: ${ABOFONSA_WAITLIST_MAX_PER_HOUR:5}

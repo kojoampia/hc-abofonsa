@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        Indexes the admin dashboard depends on. JHipster indexes primary and unique keys only, so
+        every one of these covers a query the dashboard makes on every page load.
+    -->
+
+    <changeSet id="20260730190000-1" author="abofonsa" >
+        <comment>The drill-down group-by: every chart filters by event type over a date range.</comment>
+        <createIndex tableName="capture_event" indexName="idx_capture_event__date_type">
+            <column name="occurred_date"/>
+            <column name="event_type"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20260730190000-2" author="abofonsa">
+        <comment>The HOUR zoom level buckets on the instant rather than the date.</comment>
+        <createIndex tableName="capture_event" indexName="idx_capture_event__occurred_at">
+            <column name="occurred_at"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20260730190000-3" author="abofonsa">
+        <comment>UNIQUE_VISITORS is a count of distinct session hashes within a bucket.</comment>
+        <createIndex tableName="capture_event" indexName="idx_capture_event__session">
+            <column name="session_hash"/>
+            <column name="occurred_date"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20260730190000-4" author="abofonsa">
+        <comment>Waitlist table default sort, and the status facet beside it.</comment>
+        <createIndex tableName="waitlist_signup" indexName="idx_waitlist_signup__captured_at">
+            <column name="captured_at"/>
+        </createIndex>
+        <createIndex tableName="waitlist_signup" indexName="idx_waitlist_signup__status">
+            <column name="status"/>
+            <column name="captured_at"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20260730190000-5" author="abofonsa">
+        <comment>Confirmation and unsubscribe both look a signup up by its token alone.</comment>
+        <createIndex tableName="waitlist_signup" indexName="idx_waitlist_signup__token" unique="true">
+            <column name="confirmation_token"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20260730190000-6" author="abofonsa">
+        <comment>Export audit is only ever read newest-first.</comment>
+        <createIndex tableName="data_export_log" indexName="idx_data_export_log__requested_at">
+            <column name="requested_at"/>
+        </createIndex>
+    </changeSet>
+
+    <!--
+        The rollup identity. Recomputing a bucket must overwrite the previous value rather than
+        append a second row, so this has to be enforced by the database, not by the service.
+
+        NULLS NOT DISTINCT is load-bearing: dimension_name and dimension_value are null on the
+        total row, and under Postgres's default NULL semantics two total rows for the same bucket
+        would both satisfy a plain unique constraint — which is exactly the duplicate this index
+        exists to prevent. Requires Postgres 15+; the dev and prod images are 18.
+    -->
+    <changeSet id="20260730190000-7" author="abofonsa">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select case when current_setting('server_version_num')::int >= 150000 then 1 else 0 end
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            create unique index ux_metric_rollup__identity
+                on metric_rollup (metric_key, bucket_type, bucket_start, dimension_name, dimension_value)
+                nulls not distinct;
+        </sql>
+        <rollback>
+            <sql>drop index if exists ux_metric_rollup__identity;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20260730190000-8" author="abofonsa">
+        <comment>The series endpoint scans one metric at one granularity across a range.</comment>
+        <createIndex tableName="metric_rollup" indexName="idx_metric_rollup__series">
+            <column name="metric_key"/>
+            <column name="bucket_type"/>
+            <column name="bucket_start"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

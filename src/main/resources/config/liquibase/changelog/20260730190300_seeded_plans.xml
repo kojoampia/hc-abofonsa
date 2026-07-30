@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        contextFilter="!test" — the content seeds do not load in the test context.
+
+        JHipster's generated entity ITs assume they own an empty table. CarePlanTeaser.code and
+        PledgeTierTeaser.code are unique enums with exactly three values each, and the seed occupies
+        all of them, so a generated test that hardcodes code=BRONZE could never insert. Tests should
+        not be reading production seed rows in any case; the ones that need content create their own.
+
+        The index changelog deliberately has no filter — schema applies everywhere.
+    -->
+
+    <!--
+        PEAR / PAWPAW / MELON at the prices hc-abofonsa-web quotes (V005SeedPlans). The preview
+        page teases these; the main site remains the place they are actually explained and sold,
+        which is why only the headline feature list is carried over and not the full comparison
+        matrix.
+    -->
+
+    <changeSet id="20260730190300-1" author="abofonsa" contextFilter="!test">
+        <insert tableName="care_plan_teaser">
+            <column name="id" valueNumeric="200"/>
+            <column name="code" value="PEAR"/>
+            <column name="name" value="PEAR Plan"/>
+            <column name="for_who" value="A dependable weekday routine for a relative who is broadly well but should not be alone."/>
+            <column name="price_amount" valueNumeric="3000.00"/>
+            <column name="price_currency" value="GHS"/>
+            <column name="price_period" value="MONTH"/>
+            <column name="price_note" value="Minimum three-month term · 30 days' notice"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="1"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="care_plan_teaser">
+            <column name="id" valueNumeric="201"/>
+            <column name="code" value="PAWPAW"/>
+            <column name="name" value="PAWPAW Plan"/>
+            <column name="for_who" value="Daily clinical oversight for someone managing a long-term condition or recovering at home."/>
+            <column name="price_amount" valueNumeric="5000.00"/>
+            <column name="price_currency" value="GHS"/>
+            <column name="price_period" value="MONTH"/>
+            <column name="price_note" value="Most commonly chosen plan · 30 days' notice"/>
+            <column name="featured" valueBoolean="true"/>
+            <column name="display_order" valueNumeric="2"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="care_plan_teaser">
+            <column name="id" valueNumeric="202"/>
+            <column name="code" value="MELON"/>
+            <column name="name" value="MELON Plan"/>
+            <column name="for_who" value="Continuous cover for complex, palliative or high-dependency care needs."/>
+            <column name="price_amount" valueNumeric="8000.00"/>
+            <column name="price_currency" value="GHS"/>
+            <column name="price_period" value="MONTH"/>
+            <column name="price_note" value="Includes overnight cover · 30 days' notice"/>
+            <column name="featured" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="3"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="20260730190300-2" author="abofonsa" contextFilter="!test">
+        <comment>Feature rows. `included=false` rows are kept, not dropped — the plan table reads by contrast.</comment>
+
+        <!-- PEAR -->
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="210"/><column name="label" value="5 weekly visits"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="true"/>
+            <column name="display_order" valueNumeric="1"/><column name="plan_id" valueNumeric="200"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="211"/><column name="label" value="Nursing support"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="2"/><column name="plan_id" valueNumeric="200"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="212"/><column name="label" value="Cleaning, washing and grocery"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="3"/><column name="plan_id" valueNumeric="200"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="213"/><column name="label" value="Written report after every visit"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="4"/><column name="plan_id" valueNumeric="200"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="214"/><column name="label" value="Vital signs monitoring"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="5"/><column name="plan_id" valueNumeric="200"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="215"/><column name="label" value="Doctor review included"/>
+            <column name="included" valueBoolean="false"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="6"/><column name="plan_id" valueNumeric="200"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="216"/><column name="label" value="24/7 on-call availability"/>
+            <column name="included" valueBoolean="false"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="7"/><column name="plan_id" valueNumeric="200"/>
+        </insert>
+
+        <!-- PAWPAW -->
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="220"/><column name="label" value="7 weekly visits"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="true"/>
+            <column name="display_order" valueNumeric="1"/><column name="plan_id" valueNumeric="201"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="221"/><column name="label" value="Nursing and doctor support"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="true"/>
+            <column name="display_order" valueNumeric="2"/><column name="plan_id" valueNumeric="201"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="222"/><column name="label" value="Cleaning, cooking, grocery, personal care"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="3"/><column name="plan_id" valueNumeric="201"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="223"/><column name="label" value="Written report after every visit"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="4"/><column name="plan_id" valueNumeric="201"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="224"/><column name="label" value="Vital signs monitoring"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="5"/><column name="plan_id" valueNumeric="201"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="225"/><column name="label" value="Priority scheduling and named carer"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="6"/><column name="plan_id" valueNumeric="201"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="226"/><column name="label" value="24/7 on-call availability"/>
+            <column name="included" valueBoolean="false"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="7"/><column name="plan_id" valueNumeric="201"/>
+        </insert>
+
+        <!-- MELON -->
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="230"/><column name="label" value="24/7 availability"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="true"/>
+            <column name="display_order" valueNumeric="1"/><column name="plan_id" valueNumeric="202"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="231"/><column name="label" value="Nursing and doctor support"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="true"/>
+            <column name="display_order" valueNumeric="2"/><column name="plan_id" valueNumeric="202"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="232"/><column name="label" value="All auxiliary services included"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="3"/><column name="plan_id" valueNumeric="202"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="233"/><column name="label" value="Written report after every visit"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="4"/><column name="plan_id" valueNumeric="202"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="234"/><column name="label" value="Vital signs monitoring"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="5"/><column name="plan_id" valueNumeric="202"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="235"/><column name="label" value="Priority scheduling and named carer"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="6"/><column name="plan_id" valueNumeric="202"/>
+        </insert>
+        <insert tableName="plan_feature">
+            <column name="id" valueNumeric="236"/><column name="label" value="Dedicated care manager"/>
+            <column name="included" valueBoolean="true"/><column name="emphasised" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="7"/><column name="plan_id" valueNumeric="202"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

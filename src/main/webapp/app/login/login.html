@@ -10,7 +10,15 @@
       <form class="form" (ngSubmit)="login()" [formGroup]="loginForm">
         <div class="mb-3">
           <label class="username-label" for="username" jhiTranslate="global.form.username.label">Username</label>
+          <!--
+            #username is required, not decorative. login.ts declares
+            `viewChild.required<ElementRef>('username')` and dereferences it in ngAfterViewInit to
+            focus the field; generator-jhipster 9.1.0 emits the component but not the template
+            reference, so every render of this page throws NG0951 ("Child query result is required
+            but no value is available") and the rest of ngAfterViewInit never runs.
+          -->
           <input
+            #username
             type="text"
             class="form-control"
             name="username"
@@ -43,16 +51,14 @@
 
         <button type="submit" class="btn btn-primary" data-cy="submit" jhiTranslate="login.form.button">Sign in</button>
       </form>
-      <div class="mt-3 alert alert-warning">
-        <a class="alert-link" routerLink="/account/reset/request" data-cy="forgetYourPasswordSelector" jhiTranslate="login.password.forgot"
-          >Did you forget your password?</a
-        >
-      </div>
-
-      <div class="alert alert-warning">
-        <span jhiTranslate="global.messages.info.register.noaccount">You don&apos;t have an account yet?</span>
-        <a class="alert-link" routerLink="/account/register" jhiTranslate="global.messages.info.register.link">Register a new account</a>
-      </div>
+      <!--
+        JHipster's "register a new account" and "forgot your password?" links are removed on
+        purpose. SecurityConfiguration does not permit /api/register, /api/activate or the
+        reset-password endpoints — this application has one privileged account, seeded by Liquibase
+        and given its password from ABOFONSA_ADMIN_PASSWORD. Leaving the links would offer an
+        operator two flows that can only end in a 401, and advertise a sign-up that does not exist.
+        The password is rotated by changing that variable and restarting.
+      -->
     </div>
   </div>
 </div>

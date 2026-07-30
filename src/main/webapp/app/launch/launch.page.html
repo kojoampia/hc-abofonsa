@@ -1,0 +1,238 @@
+<!--
+  Structure follows docs/design/abofonsa-countdown.html. Every string that is content rather than
+  chrome comes from the API; every string that is chrome comes from i18n.
+-->
+
+<div class="abf-launch">
+  <div class="bg" aria-hidden="true">
+    <div class="orb a"></div>
+    <div class="orb b"></div>
+    <div class="orb c"></div>
+    <div class="grid-lines"></div>
+  </div>
+
+  @if (loading()) {
+    <p class="wrap state-note" role="status">{{ 'launch.state.loading' | translate }}</p>
+  } @else if (failed() || !content()) {
+    <p class="wrap state-note err" role="alert">{{ 'launch.state.failed' | translate }}</p>
+  } @else {
+    @let data = content()!;
+
+    <header>
+      <div class="wrap nav">
+        <a class="brand" href="#top">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="#04211f" stroke-width="3" stroke-linecap="round" /></svg>
+          </span>
+          <span>
+            <span class="brand-name">Health&nbsp;Connect</span>
+            <span class="brand-sub">{{ data.launch.organisationName }}</span>
+          </span>
+        </a>
+        <a class="nav-cta" [href]="data.launch.fundUrl" target="_blank" rel="noopener" (click)="pledgeClick()">
+          {{ 'launch.pledge.navCta' | translate }}
+          <svg
+            viewBox="0 0 24 24"
+            width="13"
+            height="13"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M7 17 17 7M9 7h8v8" />
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- HERO -->
+      <div class="wrap hero">
+        <span class="pill"><span class="dot"></span> {{ 'launch.hero.pill' | translate }}</span>
+        <!--
+          The tagline is not rendered here. It is the same sentence as the headline
+          ("Decentralizing healthcare in Ghana"), so printing both reads as a stutter; it stays in
+          the payload for the meta description and for whoever wants it elsewhere.
+        -->
+        <h1>
+          {{ 'launch.hero.headlineLead' | translate }} <em>{{ 'launch.hero.headlineAccent' | translate }}</em>
+        </h1>
+        <p class="lede">{{ 'launch.hero.lede' | translate }}</p>
+
+        <jhi-countdown [target]="data.launch.launchAt" />
+
+        <p class="launch-date">
+          {{ 'launch.hero.goLive' | translate }}
+          <strong>{{ 'launch.hero.launchDate' | translate }}</strong> · 00:00 {{ data.launch.launchTimezone }}
+        </p>
+
+        <jhi-waitlist-form />
+      </div>
+
+      <!-- SERVICES -->
+      <section class="wrap reveal" #reveal>
+        <p class="eyebrow">{{ 'launch.services.eyebrow' | translate }}</p>
+        <h2>{{ 'launch.services.heading' | translate }}</h2>
+        <p class="sec-lede">{{ 'launch.services.lede' | translate }}</p>
+
+        <div class="cards">
+          @for (service of data.services; track service.slug) {
+            <div class="card">
+              <h3>{{ service.name }}</h3>
+              <p>{{ service.blurb }}</p>
+              <ul class="ticks">
+                @for (highlight of service.highlights; track highlight) {
+                  <li>{{ highlight }}</li>
+                }
+              </ul>
+              @if (service.availableOn) {
+                <p class="avail">{{ 'launch.services.availableOn' | translate }} {{ service.availableOn }}</p>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- PLANS -->
+      <section class="wrap reveal" #reveal>
+        <p class="eyebrow">{{ 'launch.plans.eyebrow' | translate }}</p>
+        <h2>{{ 'launch.plans.heading' | translate }}</h2>
+        <p class="sec-lede">{{ 'launch.plans.lede' | translate }}</p>
+
+        <div class="plans">
+          @for (plan of data.plans; track plan.code) {
+            <div class="plan" [class.featured]="plan.featured">
+              @if (plan.featured) {
+                <span class="badge">{{ 'launch.plans.mostChosen' | translate }}</span>
+              }
+              <h3>{{ plan.name }}</h3>
+              <p class="for-who">{{ plan.forWho }}</p>
+              <p class="price">
+                <span class="amount">{{ plan.priceCurrency }} {{ plan.priceAmount | number: '1.0-0' }}</span>
+                <span class="period">{{ 'launch.plans.perMonth' | translate }}</span>
+              </p>
+              <ul class="features">
+                @for (feature of plan.features; track feature.label) {
+                  <li [class.excluded]="!feature.included" [class.emphasised]="feature.emphasised">
+                    <span class="mark" aria-hidden="true">{{ feature.included ? '✓' : '—' }}</span>
+                    {{ feature.label }}
+                  </li>
+                }
+              </ul>
+              @if (plan.priceNote) {
+                <p class="note">{{ plan.priceNote }}</p>
+              }
+            </div>
+          }
+        </div>
+        <p class="sec-foot">{{ 'launch.plans.footnote' | translate }}</p>
+      </section>
+
+      <!--
+        PLEDGE — display and hand-off only. Nothing here takes a payment; fund.abofonsa.com owns
+        identity, payment, vouchers and certificates end to end. The click is counted on the way out.
+      -->
+      <section class="wrap reveal" #reveal>
+        <div class="fund">
+          <div>
+            <p class="eyebrow">{{ 'launch.pledge.eyebrow' | translate }}</p>
+            <h2>{{ 'launch.pledge.heading' | translate }}</h2>
+            <p>{{ 'launch.pledge.body' | translate }}</p>
+          </div>
+          <a class="btn-lg" [href]="data.launch.fundUrl" target="_blank" rel="noopener" (click)="pledgeClick()">
+            {{ 'launch.pledge.cta' | translate }}
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
+          </a>
+        </div>
+
+        <div class="tiers">
+          @for (tier of data.pledgeTiers; track tier.code) {
+            <a class="tier" [href]="tier.handoffUrl" target="_blank" rel="noopener" (click)="pledgeClick(tier.code)">
+              <h3>{{ tier.name }}</h3>
+              <p class="tier-amount">{{ tier.currency }} {{ tier.amount | number: '1.0-0' }}</p>
+              @if (tier.voucherValue) {
+                <p class="tier-voucher">
+                  {{ 'launch.pledge.voucherWorth' | translate }} {{ tier.currency }} {{ tier.voucherValue | number: '1.0-0' }}
+                </p>
+              }
+              @if (tier.blurb) {
+                <p class="tier-blurb">{{ tier.blurb }}</p>
+              }
+              <ul class="ticks">
+                @for (perk of tier.perks; track perk) {
+                  <li>{{ perk }}</li>
+                }
+              </ul>
+              <span class="tier-go">{{ 'launch.pledge.tierCta' | translate }} →</span>
+            </a>
+          }
+        </div>
+      </section>
+
+      <!-- ROADMAP -->
+      <section class="wrap reveal" #reveal>
+        <p class="eyebrow">{{ 'launch.roadmap.eyebrow' | translate }}</p>
+        <h2>{{ 'launch.roadmap.heading' | translate }}</h2>
+        <div class="timeline">
+          @for (milestone of data.milestones; track milestone.title) {
+            <div class="step" [class.now]="milestone.current">
+              <span>{{ milestone.phaseLabel }}</span>
+              <h4>{{ milestone.title }}</h4>
+              @if (milestone.body) {
+                <p>{{ milestone.body }}</p>
+              }
+            </div>
+          }
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div class="foot">
+          <a class="brand" href="#top">
+            <span class="mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="#04211f" stroke-width="3" stroke-linecap="round" /></svg>
+            </span>
+            <span>
+              <span class="brand-name">Health&nbsp;Connect</span>
+              <span class="brand-sub">{{ data.launch.organisationName }}</span>
+            </span>
+          </a>
+
+          <div class="foot-links">
+            <a [href]="data.launch.fundUrl" target="_blank" rel="noopener" (click)="pledgeClick()">{{
+              'launch.footer.fund' | translate
+            }}</a>
+            <a [href]="'mailto:' + data.launch.contactEmail" (click)="contactClick('EMAIL')">{{ data.launch.contactEmail }}</a>
+            @if (data.launch.contactPhone) {
+              <a [href]="'tel:' + data.launch.contactPhone" (click)="contactClick('PHONE')">{{ data.launch.contactPhone }}</a>
+            }
+            <a href="#top">{{ 'launch.footer.waitlist' | translate }}</a>
+          </div>
+
+          @if (data.socialLinks.length) {
+            <div class="socials">
+              @for (link of data.socialLinks; track link.platform) {
+                <a [href]="link.url" [attr.aria-label]="link.label" target="_blank" rel="noopener" (click)="socialClick(link.platform)">
+                  {{ link.label }}
+                </a>
+              }
+            </div>
+          }
+
+          <p class="copyright">
+            © {{ currentYear }} {{ data.launch.organisationName }}.
+            {{ 'launch.footer.rights' | translate }}
+            @if (data.launch.officeAddress) {
+              <span class="addr">{{ data.launch.officeAddress }}</span>
+            }
+          </p>
+        </div>
+      </div>
+    </footer>
+  }
+</div>

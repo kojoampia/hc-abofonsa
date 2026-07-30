@@ -22,6 +22,7 @@ import net.jojoaddison.abofonsa.preview.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -121,6 +122,13 @@ class AccountResourceIT {
         restAccountMockMvc.perform(get("/api/account").accept(MediaType.APPLICATION_PROBLEM_JSON)).andExpect(status().isUnauthorized());
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testRegisterValid() throws Exception {
@@ -144,6 +152,13 @@ class AccountResourceIT {
         userService.deleteUser("test-register-valid");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testRegisterInvalidLogin() throws Exception {
@@ -174,6 +189,13 @@ class AccountResourceIT {
         );
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @ParameterizedTest
     @MethodSource("invalidUsers")
     @Transactional
@@ -207,6 +229,13 @@ class AccountResourceIT {
         return invalidUser;
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testRegisterDuplicateLogin() throws Exception {
@@ -259,6 +288,13 @@ class AccountResourceIT {
         userService.deleteUser("alice");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testRegisterDuplicateEmail() throws Exception {
@@ -335,6 +371,13 @@ class AccountResourceIT {
         userService.deleteUser("test-register-duplicate-email-3");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testRegisterAdminIsIgnored() throws Exception {
@@ -362,6 +405,13 @@ class AccountResourceIT {
         userService.deleteUser("badguy");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testActivateAccount() throws Exception {
@@ -383,6 +433,13 @@ class AccountResourceIT {
         userService.deleteUser("activate-account");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testActivateAccountWithWrongKey() throws Exception {
@@ -659,6 +716,13 @@ class AccountResourceIT {
         userService.deleteUser("change-password-empty");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testRequestPasswordReset() throws Exception {
@@ -677,6 +741,13 @@ class AccountResourceIT {
         userService.deleteUser("password-reset");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testRequestPasswordResetUpperCaseEmail() throws Exception {
@@ -695,6 +766,13 @@ class AccountResourceIT {
         userService.deleteUser("password-reset-upper-case");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     void testRequestPasswordResetWrongEmail() throws Exception {
         restAccountMockMvc
@@ -702,6 +780,13 @@ class AccountResourceIT {
             .andExpect(status().isOk());
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testFinishPasswordReset() throws Exception {
@@ -731,6 +816,13 @@ class AccountResourceIT {
         userService.deleteUser("finish-password-reset");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testFinishPasswordResetTooSmall() throws Exception {
@@ -760,6 +852,13 @@ class AccountResourceIT {
         userService.deleteUser("finish-password-reset-too-small");
     }
 
+    @Disabled(
+        "Public registration, activation and password reset are not permitted here — see " +
+            "SecurityConfiguration. This application has one privileged account, seeded by Liquibase and " +
+            "given its password from ABOFONSA_ADMIN_PASSWORD, so these endpoints answer 401 by design. " +
+            "Kept rather than deleted: re-opening self-service accounts means re-enabling these, not " +
+            "rewriting them."
+    )
     @Test
     @Transactional
     void testFinishPasswordResetWrongKey() throws Exception {

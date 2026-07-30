@@ -1,0 +1,148 @@
+<div class="waitlist-dashboard">
+  <h2>Waitlist dashboard</h2>
+  <p class="lead-note">Captured emails and the metrics derived from them. All times UTC.</p>
+
+  @if (error(); as message) {
+    <div class="alert alert-danger" role="alert">{{ message }}</div>
+  }
+
+  <!-- KPI tiles: the headline numbers, no plot -->
+  @if (summary(); as data) {
+    <div class="tiles">
+      <div class="tile">
+        <span class="tile-label">Total signups</span>
+        <span class="tile-value">{{ data.totalSignups }}</span>
+      </div>
+      <div class="tile">
+        <span class="tile-label">Confirmed</span>
+        <span class="tile-value">{{ data.confirmedSignups }}</span>
+      </div>
+      <div class="tile">
+        <span class="tile-label">Unsubscribed</span>
+        <span class="tile-value">{{ data.unsubscribed }}</span>
+      </div>
+
+      @for (tile of data.tiles; track tile.key) {
+        <div class="tile">
+          <span class="tile-label">{{ tile.key.replace('WAITLIST_', '').replace('_', ' ') | titlecase }} · 7d</span>
+          <span class="tile-value">{{ tile.current }}</span>
+          <!--
+            No percentage when the previous window was empty. "+100%" against zero is not growth,
+            it is a division that should not have been attempted.
+          -->
+          @if (tile.changePercent !== null) {
+            <span class="tile-delta" [class.up]="tile.changePercent >= 0" [class.down]="tile.changePercent < 0">
+              {{ tile.changePercent >= 0 ? '▲' : '▼' }} {{ tile.changePercent | number: '1.0-0' }}%
+              <span class="tile-prev">vs {{ tile.previous }}</span>
+            </span>
+          } @else {
+            <span class="tile-delta none">no prior period</span>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Filters in one row above the chart -->
+  <div class="controls">
+    <label>
+      Metric
+      <select class="form-select form-select-sm" [(ngModel)]="metric" (ngModelChange)="onChartControlsChanged()">
+        @for (option of metrics; track option.key) {
+          <option [value]="option.key">{{ option.label }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Zoom
+      <select class="form-select form-select-sm" [(ngModel)]="bucket" (ngModelChange)="onChartControlsChanged()">
+        @for (option of buckets; track option) {
+          <option [value]="option">{{ option | titlecase }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="check">
+      <input type="checkbox" [(ngModel)]="splitByCampaign" (ngModelChange)="onChartControlsChanged()" />
+      Split by campaign source
+    </label>
+
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="exportChart()">Export chart CSV</button>
+  </div>
+
+  @if (series(); as data) {
+    <jhi-line-chart [data]="data" [title]="chartTitle()" />
+  }
+
+  <!-- The captured emails. Also the chart's table view, which the palette's contrast WARN obliges. -->
+  <div class="table-head">
+    <h3>
+      Captured emails <span class="count">{{ totalRows() }}</span>
+    </h3>
+    <div class="table-controls">
+      <label>
+        Status
+        <select class="form-select form-select-sm" [(ngModel)]="statusFilter" (ngModelChange)="onFilterChanged()">
+          @for (option of statuses; track option) {
+            <option [value]="option">{{ option === '' ? 'All' : option }}</option>
+          }
+        </select>
+      </label>
+      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="exportEmails()">Export emails CSV</button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-striped align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Email</th>
+          <th scope="col">Name</th>
+          <th scope="col">Organisation</th>
+          <th scope="col">Audience</th>
+          <th scope="col">Plan</th>
+          <th scope="col">Status</th>
+          <th scope="col">Source</th>
+          <th scope="col">Captured (UTC)</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr>
+            <td>{{ row.email }}</td>
+            <td>{{ row.fullName ?? '—' }}</td>
+            <td>{{ row.organisation ?? '—' }}</td>
+            <td>{{ row.audience ?? '—' }}</td>
+            <td>{{ row.planOfInterest ?? '—' }}</td>
+            <td>
+              <span class="status" [class]="'status-' + row.status.toLowerCase()">{{ row.status }}</span>
+            </td>
+            <td>{{ row.utmSource ?? '—' }}</td>
+            <td>{{ row.capturedAt | date: 'd MMM yyyy HH:mm' : 'UTC' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="empty">
+              @if (loading()) {
+                Loading…
+              } @else {
+                No captured emails match this filter.
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (totalPages() > 1) {
+    <nav class="pager" aria-label="Captured emails pages">
+      <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="page === 0" (click)="goToPage(page - 1)">Previous</button>
+      <span>Page {{ page + 1 }} of {{ totalPages() }}</span>
+      <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="page >= totalPages() - 1" (click)="goToPage(page + 1)">
+        Next
+      </button>
+    </nav>
+  }
+</div>

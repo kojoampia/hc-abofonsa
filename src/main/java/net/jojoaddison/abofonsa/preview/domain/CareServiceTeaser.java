@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * A care service teaser card. Seeded from hc-abofonsa-web's six services.
@@ -38,7 +40,15 @@ public class CareServiceTeaser implements Serializable {
     @Column(name = "name", length = 120, nullable = false)
     private String name;
 
+    /*
+     * @JdbcTypeCode(LONGVARCHAR) is required next to @Lob on PostgreSQL and is not optional styling.
+     * Hibernate maps a bare @Lob String to a large-object `oid` and reads it with getLong(), while
+     * Liquibase created this column as `text` — so without it every read fails at runtime with
+     * "Bad value for type long". JHipster does not add it; re-generating this entity will drop it
+     * again.
+     */
     @Lob
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     @Column(name = "blurb", nullable = false)
     private String blurb;
 

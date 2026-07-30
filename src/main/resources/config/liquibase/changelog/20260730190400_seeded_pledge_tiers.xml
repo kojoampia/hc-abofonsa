@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        contextFilter="!test" — the content seeds do not load in the test context.
+
+        JHipster's generated entity ITs assume they own an empty table. CarePlanTeaser.code and
+        PledgeTierTeaser.code are unique enums with exactly three values each, and the seed occupies
+        all of them, so a generated test that hardcodes code=BRONZE could never insert. Tests should
+        not be reading production seed rows in any case; the ones that need content create their own.
+
+        The index changelog deliberately has no filter — schema applies everywhere.
+    -->
+
+    <!--
+        The three backer tiers, mirroring hc-crowdfund-app's pledge_tier at its current state
+        (V2 seed as amended by V5, V7 and V8 — note V7 removed the SAFE-note language from Gold
+        and V8 moved the voucher value onto its own column, so the original V2 text is stale).
+
+        Amounts are in major units here, unlike the crowdfunding platform's *_minor columns: this
+        table is display-only. Nothing in this application computes a payment from these numbers,
+        so storing them the way they are rendered is safe, and the minor-unit convention would
+        just be a trap for whoever writes the template.
+
+        This is the hand-off boundary. The pledge itself — identity, payment, voucher, certificate
+        — belongs entirely to fund.abofonsa.com. `handoff_url` is the deep link, and the outbound
+        click is recorded as a PLEDGE_CTA_CLICK CaptureEvent so the funnel stays measurable on
+        this side of the redirect.
+    -->
+
+    <changeSet id="20260730190400-1" author="abofonsa" contextFilter="!test">
+        <insert tableName="pledge_tier_teaser">
+            <column name="id" valueNumeric="300"/>
+            <column name="code" value="BRONZE"/>
+            <column name="name" value="Bronze Angel"/>
+            <column name="blurb" value="Back the pilot and get early access when the network opens."/>
+            <column name="amount" valueNumeric="1000.00"/>
+            <column name="currency" value="GHS"/>
+            <column name="voucher_value" valueNumeric="5000.00"/>
+            <column name="handoff_url" value="https://fund.abofonsa.com/pledge?tier=BRONZE"/>
+            <column name="display_order" valueNumeric="1"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="pledge_tier_teaser">
+            <column name="id" valueNumeric="301"/>
+            <column name="code" value="SILVER"/>
+            <column name="name" value="Silver Angel"/>
+            <column name="blurb" value="Fund a cohort of care visits and put a dependent on the PAWPAW plan."/>
+            <column name="amount" valueNumeric="5000.00"/>
+            <column name="currency" value="GHS"/>
+            <column name="voucher_value" valueNumeric="15000.00"/>
+            <column name="handoff_url" value="https://fund.abofonsa.com/pledge?tier=SILVER"/>
+            <column name="display_order" valueNumeric="2"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="pledge_tier_teaser">
+            <column name="id" valueNumeric="302"/>
+            <column name="code" value="GOLD"/>
+            <column name="name" value="Gold Angel"/>
+            <column name="blurb" value="Underwrite a full year of continuous care for a family that could not otherwise reach it."/>
+            <column name="amount" valueNumeric="50000.00"/>
+            <column name="currency" value="GHS"/>
+            <column name="voucher_value" valueNumeric="150000.00"/>
+            <column name="handoff_url" value="https://fund.abofonsa.com/pledge?tier=GOLD"/>
+            <column name="display_order" valueNumeric="3"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="20260730190400-2" author="abofonsa" contextFilter="!test">
+        <comment>Perks exactly as V8 left them.</comment>
+
+        <insert tableName="pledge_tier_perk">
+            <column name="id" valueNumeric="310"/><column name="label" value="3-Month PEAR Plan"/>
+            <column name="display_order" valueNumeric="1"/><column name="tier_id" valueNumeric="300"/>
+        </insert>
+        <insert tableName="pledge_tier_perk">
+            <column name="id" valueNumeric="311"/><column name="label" value="Branded HC Merchandise"/>
+            <column name="display_order" valueNumeric="2"/><column name="tier_id" valueNumeric="300"/>
+        </insert>
+        <insert tableName="pledge_tier_perk">
+            <column name="id" valueNumeric="312"/><column name="label" value="Name on Supporter Wall"/>
+            <column name="display_order" valueNumeric="3"/><column name="tier_id" valueNumeric="300"/>
+        </insert>
+
+        <insert tableName="pledge_tier_perk">
+            <column name="id" valueNumeric="313"/><column name="label" value="3-Month PAWPAW Plan"/>
+            <column name="display_order" valueNumeric="1"/><column name="tier_id" valueNumeric="301"/>
+        </insert>
+        <insert tableName="pledge_tier_perk">
+            <column name="id" valueNumeric="314"/><column name="label" value="All Bronze Perks"/>
+            <column name="display_order" valueNumeric="2"/><column name="tier_id" valueNumeric="301"/>
+        </insert>
+
+        <insert tableName="pledge_tier_perk">
+            <column name="id" valueNumeric="315"/><column name="label" value="12-Months MELON Plan"/>
+            <column name="display_order" valueNumeric="1"/><column name="tier_id" valueNumeric="302"/>
+        </insert>
+        <insert tableName="pledge_tier_perk">
+            <column name="id" valueNumeric="316"/><column name="label" value="All Silver Perks"/>
+            <column name="display_order" valueNumeric="2"/><column name="tier_id" valueNumeric="302"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

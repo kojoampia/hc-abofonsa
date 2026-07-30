@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * A step on the 'Road to launch' timeline.
@@ -36,7 +38,15 @@ public class LaunchMilestone implements Serializable {
     @Column(name = "title", length = 120, nullable = false)
     private String title;
 
+    /*
+     * @JdbcTypeCode(LONGVARCHAR) is required next to @Lob on PostgreSQL and is not optional styling.
+     * Hibernate maps a bare @Lob String to a large-object `oid` and reads it with getLong(), while
+     * Liquibase created this column as `text` — so without it every read fails at runtime with
+     * "Bad value for type long". JHipster does not add it; re-generating this entity will drop it
+     * again.
+     */
     @Lob
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     @Column(name = "body")
     private String body;
 

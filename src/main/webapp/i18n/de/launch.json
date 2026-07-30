@@ -1,0 +1,90 @@
+{
+  "launch": {
+    "title": "Health Connect — Start am 1. Februar 2027",
+    "state": {
+      "loading": "Wird geladen…",
+      "failed": "Diese Seite konnte nicht geladen werden. Bitte laden Sie sie gleich neu."
+    },
+    "countdown": {
+      "aria": "Verbleibende Zeit bis zum Start",
+      "days": "Tage",
+      "hours": "Stunden",
+      "minutes": "Minuten",
+      "seconds": "Sekunden",
+      "live": "Wir sind live."
+    },
+    "hero": {
+      "pill": "Start am 1. Februar 2027",
+      "headlineLead": "Gesundheitsversorgung dezentralisieren in",
+      "headlineAccent": "Ghana.",
+      "lede": "Häusliche Pflege durch examinierte Pflegekräfte und geschulte Betreuer, mit einem schriftlichen Bericht nach jedem Besuch — und einer gemeinsamen Akte an jedem Behandlungsort.",
+      "goLive": "Inbetriebnahme",
+      "launchDate": "1. Februar 2027"
+    },
+    "waitlist": {
+      "emailLabel": "E-Mail-Adresse",
+      "placeholder": "sie@klinik.org",
+      "submit": "Auf die Warteliste",
+      "submitting": "Wird gesendet…",
+      "added": "Hinzugefügt ✓",
+      "hint": "Früher Zugang für Kliniken, Apotheken und Partner. Kein Spam — nur Neuigkeiten zum Start.",
+      "invalid": "Diese Adresse sieht nicht richtig aus — möchten Sie sie prüfen?",
+      "success": "Fast geschafft — öffnen Sie zur Bestätigung den soeben gesendeten Link.",
+      "alreadyOn": "Sie stehen bereits auf der Liste. Es ist nichts weiter zu tun.",
+      "failed": "Wir konnten Sie gerade nicht hinzufügen. Bitte versuchen Sie es gleich erneut.",
+      "throttled": "Das sind viele Anmeldungen von diesem Gerät. Bitte versuchen Sie es in Kürze erneut."
+    },
+    "services": {
+      "eyebrow": "Was wir tun",
+      "heading": "Versorgung, die nach Hause kommt.",
+      "lede": "Geplante Besuche von examinierten Pflegekräften und geschulten Betreuern, mit fester Ansprechperson und einem schriftlichen Bericht zu jedem Besuch.",
+      "availableOn": "Verfügbar bei:"
+    },
+    "plans": {
+      "eyebrow": "Tarife",
+      "heading": "Drei Versorgungsstufen.",
+      "lede": "Von einem verlässlichen Wochentagsablauf bis zur kontinuierlichen Intensivbetreuung. Jeder Tarif enthält einen schriftlichen Bericht nach jedem Besuch.",
+      "mostChosen": "Am häufigsten gewählt",
+      "perMonth": "/ Monat",
+      "footnote": "Die Preise sind monatliche Grundabonnements in ghanaischen Cedi und schließen verschriebene Medikamente, Verbrauchsmaterial und die Miete von Spezialgeräten aus."
+    },
+    "pledge": {
+      "eyebrow": "Unterstützen Sie den Aufbau",
+      "heading": "Helfen Sie uns bis zum 1. Februar.",
+      "body": "Jede Zusage fließt direkt in das Pilotprojekt: Geräte für Partnerkliniken, die Offline-Synchronisation und die Einarbeitung des ersten Pflegeteams.",
+      "cta": "Auf fund.abofonsa.com unterstützen",
+      "navCta": "Unterstützen",
+      "tierCta": "Diese Stufe wählen",
+      "voucherWorth": "Pflegegutschein im Wert von"
+    },
+    "roadmap": {
+      "eyebrow": "Weg zum Start",
+      "heading": "Wo wir stehen."
+    },
+    "footer": {
+      "fund": "Finanzierung",
+      "waitlist": "Warteliste",
+      "rights": "Alle Rechte vorbehalten."
+    },
+    "optIn": {
+      "back": "← Zurück zur Startseite",
+      "confirmed": {
+        "title": "Sie stehen auf der Liste",
+        "pill": "Bestätigt",
+        "heading": "Sie stehen auf der Liste.",
+        "body": "Danke für die Bestätigung. Wir melden uns vor dem 1. Februar 2027 — und nicht eher, als wir etwas Berichtenswertes haben."
+      },
+      "unsubscribed": {
+        "title": "Sie wurden ausgetragen",
+        "pill": "Abgemeldet",
+        "heading": "Sie wurden ausgetragen.",
+        "body": "Wir schreiben Ihnen nicht mehr zum Start. War das ein Versehen, können Sie sich jederzeit wieder eintragen."
+      },
+      "invalid": {
+        "pill": "Link nicht erkannt",
+        "heading": "Dieser Link hat nicht funktioniert.",
+        "body": "Er wurde möglicherweise bereits verwendet oder unterwegs verändert. Tragen Sie sich erneut ein, erhalten Sie einen neuen Link."
+      }
+    }
+  }
+}

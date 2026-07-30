@@ -1,0 +1,90 @@
+{
+  "launch": {
+    "title": "Health Connect — launching 1 February 2027",
+    "state": {
+      "loading": "Loading…",
+      "failed": "We could not load this page just now. Please refresh in a moment."
+    },
+    "countdown": {
+      "aria": "Time remaining until launch",
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "live": "We are live."
+    },
+    "hero": {
+      "pill": "Launching 1 February 2027",
+      "headlineLead": "Decentralizing healthcare in",
+      "headlineAccent": "Ghana.",
+      "lede": "Home care delivered by registered nurses and trained carers, with a written record after every visit — and one shared record across every point of care.",
+      "goLive": "Go-live",
+      "launchDate": "1 February 2027"
+    },
+    "waitlist": {
+      "emailLabel": "Email address",
+      "placeholder": "you@clinic.org",
+      "submit": "Join the waitlist",
+      "submitting": "Sending…",
+      "added": "Added ✓",
+      "hint": "Early access for clinics, pharmacies and partners. No spam — launch news only.",
+      "invalid": "That email doesn't look right — mind checking it?",
+      "success": "Almost there — open the link we just emailed you to confirm.",
+      "alreadyOn": "You are already on the list. Nothing more to do.",
+      "failed": "We could not add you just now. Please try again in a moment.",
+      "throttled": "That is a lot of sign-ups from this device. Please try again shortly."
+    },
+    "services": {
+      "eyebrow": "What we do",
+      "heading": "Care that comes to the home.",
+      "lede": "Scheduled visits from registered nurses and trained carers, with named supervision and a written record of every visit.",
+      "availableOn": "Available on:"
+    },
+    "plans": {
+      "eyebrow": "Plans",
+      "heading": "Three levels of cover.",
+      "lede": "From a dependable weekday routine to continuous, high-dependency care. Every plan includes a written report after each visit.",
+      "mostChosen": "Most chosen",
+      "perMonth": "/ month",
+      "footnote": "Prices are base monthly subscriptions in Ghana Cedis and exclude prescribed medication, consumables and specialist equipment hire."
+    },
+    "pledge": {
+      "eyebrow": "Back the build",
+      "heading": "Help us get to 1 February.",
+      "body": "Every pledge goes directly into the pilot: device kits for partner clinics, the offline sync layer, and onboarding the first cohort of care teams.",
+      "cta": "Pledge at fund.abofonsa.com",
+      "navCta": "Pledge support",
+      "tierCta": "Pledge this tier",
+      "voucherWorth": "Care voucher worth"
+    },
+    "roadmap": {
+      "eyebrow": "Road to launch",
+      "heading": "Where we are."
+    },
+    "footer": {
+      "fund": "Fund",
+      "waitlist": "Waitlist",
+      "rights": "All rights reserved."
+    },
+    "optIn": {
+      "back": "← Back to the launch page",
+      "confirmed": {
+        "title": "You're on the list",
+        "pill": "Confirmed",
+        "heading": "You're on the list.",
+        "body": "Thank you for confirming. We'll be in touch before 1 February 2027 — and not before we have something worth saying."
+      },
+      "unsubscribed": {
+        "title": "You've been removed",
+        "pill": "Unsubscribed",
+        "heading": "You've been removed.",
+        "body": "We won't email you about the launch again. If this was a mistake, you can join the waitlist again at any time."
+      },
+      "invalid": {
+        "pill": "Link not recognised",
+        "heading": "That link didn't work.",
+        "body": "It may have already been used, or been altered in transit. Joining the waitlist again will send you a fresh link."
+      }
+    }
+  }
+}

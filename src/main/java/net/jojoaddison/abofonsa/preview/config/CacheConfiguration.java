@@ -57,6 +57,9 @@ public class CacheConfiguration {
             createCache(cm, net.jojoaddison.abofonsa.preview.domain.SocialLink.class.getName());
             createCache(cm, net.jojoaddison.abofonsa.preview.domain.LaunchSetting.class.getName());
             // jhipster-needle-caffeine-add-entry
+            // The assembled launch-page payload. Not a Hibernate region like the entries above but an
+            // application cache, evicted explicitly by PublicContentService.evictContent().
+            createCache(cm, net.jojoaddison.abofonsa.preview.service.PublicContentService.CONTENT_CACHE);
         };
     }
 

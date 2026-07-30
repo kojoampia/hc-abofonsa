@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        contextFilter="!test" — the content seeds do not load in the test context.
+
+        JHipster's generated entity ITs assume they own an empty table. CarePlanTeaser.code and
+        PledgeTierTeaser.code are unique enums with exactly three values each, and the seed occupies
+        all of them, so a generated test that hardcodes code=BRONZE could never insert. Tests should
+        not be reading production seed rows in any case; the ones that need content create their own.
+
+        The index changelog deliberately has no filter — schema applies everywhere.
+    -->
+
+    <!--
+        The six care services, copied from hc-abofonsa-web's V004SeedServices so the preview site
+        and the main site describe the same offering in the same words. English only: the preview
+        page localises its own chrome, but service copy has one source of truth and it is over
+        there. Slugs match, so the two can be reconciled later without a mapping table.
+    -->
+
+    <changeSet id="20260730190200-1" author="abofonsa" contextFilter="!test">
+        <insert tableName="care_service_teaser">
+            <column name="id" valueNumeric="100"/>
+            <column name="slug" value="elderly-companion-care"/>
+            <column name="name" value="Elderly &amp; companion care"/>
+            <column name="blurb" value="Day-to-day support that helps an older relative stay in their own home safely and with company."/>
+            <column name="icon_key" value="heart"/>
+            <column name="available_on" value="All plans"/>
+            <column name="display_order" valueNumeric="1"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="care_service_teaser">
+            <column name="id" valueNumeric="101"/>
+            <column name="slug" value="skilled-nursing-visits"/>
+            <column name="name" value="Skilled nursing visits"/>
+            <column name="blurb" value="Clinical care delivered at home by registered nurses, with physician review where the plan requires it."/>
+            <column name="icon_key" value="stethoscope"/>
+            <column name="available_on" value="All plans · doctor review on PAWPAW and MELON"/>
+            <column name="display_order" valueNumeric="2"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="care_service_teaser">
+            <column name="id" valueNumeric="102"/>
+            <column name="slug" value="hospital-to-home-recovery"/>
+            <column name="name" value="Hospital-to-home recovery"/>
+            <column name="blurb" value="Supervised recovery in the weeks after discharge, when the risk of readmission is highest."/>
+            <column name="icon_key" value="activity"/>
+            <column name="available_on" value="PAWPAW and MELON"/>
+            <column name="display_order" valueNumeric="3"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="care_service_teaser">
+            <column name="id" valueNumeric="103"/>
+            <column name="slug" value="mental-health-wellbeing"/>
+            <column name="name" value="Mental health &amp; wellbeing"/>
+            <column name="blurb" value="Consistent, respectful support from carers trained in mental health, with clinical escalation available."/>
+            <column name="icon_key" value="brain"/>
+            <column name="available_on" value="PAWPAW and MELON"/>
+            <column name="display_order" valueNumeric="4"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="care_service_teaser">
+            <column name="id" valueNumeric="104"/>
+            <column name="slug" value="mobility-physical-support"/>
+            <column name="name" value="Mobility &amp; physical support"/>
+            <column name="blurb" value="Practical assistance for adults living with physical disability or reduced mobility."/>
+            <column name="icon_key" value="accessibility"/>
+            <column name="available_on" value="All plans"/>
+            <column name="display_order" valueNumeric="5"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="care_service_teaser">
+            <column name="id" valueNumeric="105"/>
+            <column name="slug" value="daily-living-auxiliary-services"/>
+            <column name="name" value="Daily living &amp; auxiliary services"/>
+            <column name="blurb" value="The domestic work that keeps a household running when illness or age makes it difficult."/>
+            <column name="icon_key" value="home"/>
+            <column name="available_on" value="Cleaning, washing and grocery on PEAR · all inclusive on MELON"/>
+            <column name="display_order" valueNumeric="6"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="20260730190200-2" author="abofonsa" contextFilter="!test">
+        <comment>Four highlights per service, in the order the main site lists them.</comment>
+
+        <!-- elderly-companion-care -->
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="110"/><column name="label" value="Washing, dressing and personal care"/>
+            <column name="display_order" valueNumeric="1"/><column name="service_id" valueNumeric="100"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="111"/><column name="label" value="Medication prompting and reconciliation"/>
+            <column name="display_order" valueNumeric="2"/><column name="service_id" valueNumeric="100"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="112"/><column name="label" value="Mobility assistance and falls prevention"/>
+            <column name="display_order" valueNumeric="3"/><column name="service_id" valueNumeric="100"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="113"/><column name="label" value="Companionship and conversation"/>
+            <column name="display_order" valueNumeric="4"/><column name="service_id" valueNumeric="100"/>
+        </insert>
+
+        <!-- skilled-nursing-visits -->
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="114"/><column name="label" value="Vital signs, wound care and dressings"/>
+            <column name="display_order" valueNumeric="1"/><column name="service_id" valueNumeric="101"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="115"/><column name="label" value="Injections, catheter and stoma care"/>
+            <column name="display_order" valueNumeric="2"/><column name="service_id" valueNumeric="101"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="116"/><column name="label" value="Chronic condition management"/>
+            <column name="display_order" valueNumeric="3"/><column name="service_id" valueNumeric="101"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="117"/><column name="label" value="Physician review and prescription follow-up"/>
+            <column name="display_order" valueNumeric="4"/><column name="service_id" valueNumeric="101"/>
+        </insert>
+
+        <!-- hospital-to-home-recovery -->
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="118"/><column name="label" value="Discharge plan reviewed and implemented"/>
+            <column name="display_order" valueNumeric="1"/><column name="service_id" valueNumeric="102"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="119"/><column name="label" value="Wound monitoring and infection watch"/>
+            <column name="display_order" valueNumeric="2"/><column name="service_id" valueNumeric="102"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="120"/><column name="label" value="Rehabilitation exercises and mobility work"/>
+            <column name="display_order" valueNumeric="3"/><column name="service_id" valueNumeric="102"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="121"/><column name="label" value="Coordination with the discharging hospital"/>
+            <column name="display_order" valueNumeric="4"/><column name="service_id" valueNumeric="102"/>
+        </insert>
+
+        <!-- mental-health-wellbeing -->
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="122"/><column name="label" value="Structured daily routine and key working"/>
+            <column name="display_order" valueNumeric="1"/><column name="service_id" valueNumeric="103"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="123"/><column name="label" value="Medication adherence support"/>
+            <column name="display_order" valueNumeric="2"/><column name="service_id" valueNumeric="103"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="124"/><column name="label" value="Recovery and relapse-prevention work"/>
+            <column name="display_order" valueNumeric="3"/><column name="service_id" valueNumeric="103"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="125"/><column name="label" value="Family liaison and education"/>
+            <column name="display_order" valueNumeric="4"/><column name="service_id" valueNumeric="103"/>
+        </insert>
+
+        <!-- mobility-physical-support -->
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="126"/><column name="label" value="Safe transfers and repositioning"/>
+            <column name="display_order" valueNumeric="1"/><column name="service_id" valueNumeric="104"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="127"/><column name="label" value="Equipment set-up and training"/>
+            <column name="display_order" valueNumeric="2"/><column name="service_id" valueNumeric="104"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="128"/><column name="label" value="Escort to appointments and outings"/>
+            <column name="display_order" valueNumeric="3"/><column name="service_id" valueNumeric="104"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="129"/><column name="label" value="Home safety assessment"/>
+            <column name="display_order" valueNumeric="4"/><column name="service_id" valueNumeric="104"/>
+        </insert>
+
+        <!-- daily-living-auxiliary-services -->
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="130"/><column name="label" value="Cleaning, laundry and washing"/>
+            <column name="display_order" valueNumeric="1"/><column name="service_id" valueNumeric="105"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="131"/><column name="label" value="Meal planning and cooking"/>
+            <column name="display_order" valueNumeric="2"/><column name="service_id" valueNumeric="105"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="132"/><column name="label" value="Grocery shopping and errands"/>
+            <column name="display_order" valueNumeric="3"/><column name="service_id" valueNumeric="105"/>
+        </insert>
+        <insert tableName="service_highlight">
+            <column name="id" valueNumeric="133"/><column name="label" value="Bill payments and household admin"/>
+            <column name="display_order" valueNumeric="4"/><column name="service_id" valueNumeric="105"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

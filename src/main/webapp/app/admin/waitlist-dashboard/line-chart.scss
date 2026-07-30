@@ -1,0 +1,167 @@
+/*
+ * Chart anatomy. Grid and axes are recessive; the marks carry the ink.
+ * Dark mode is chosen, not flipped — its own steps against a dark surface.
+ */
+
+.chart {
+  position: relative;
+  background: #fcfcfb; // the surface the palette was validated against
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+  padding: 16px 18px 10px;
+}
+
+.chart-title {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: #16202c;
+}
+
+.chart-note {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  color: #8a5a00;
+  background: #fff6e0;
+  border-radius: 6px;
+  padding: 5px 9px;
+}
+
+.chart-svg {
+  display: block;
+  width: 100%;
+  /* `auto`, so the SVG keeps its own aspect ratio and fills the width. A fixed height instead
+   * letterboxes it — `meet` pads the sides rather than stretching, leaving the plot marooned in
+   * the middle of a mostly empty box. The proportion is set by the viewBox (4:1) instead, which
+   * is what stops it rendering ~500px tall on a wide screen. */
+  height: auto;
+  overflow: visible;
+}
+
+.grid {
+  stroke: #eef0f3;
+  stroke-width: 1;
+}
+
+.axis-label {
+  fill: #6b7480;
+  font-size: 11px;
+
+  &.y {
+    text-anchor: end;
+  }
+
+  &.x {
+    text-anchor: middle;
+  }
+}
+
+.crosshair {
+  stroke: #c3c6cf;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+/* 2px lines — thin marks, per the mark spec. */
+.series-line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Markers get a surface ring so two series crossing stay separable. */
+.marker {
+  stroke: #fcfcfb;
+  stroke-width: 2;
+}
+
+.series-label {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tooltip {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  min-width: 150px;
+  background: #fff;
+  border: 1px solid #e2e5ea;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow:
+    0 2px 4px rgb(16 32 54 / 5%),
+    0 8px 20px rgb(16 32 54 / 7%);
+  pointer-events: none;
+}
+
+.tooltip-bucket {
+  margin: 0 0 5px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: #4a5462;
+}
+
+.tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 0.78rem;
+  /* Text wears text tokens, never the series colour — the swatch carries identity. */
+  color: #4a5462;
+}
+
+.tooltip-label {
+  flex: 1;
+}
+
+.tooltip-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  color: #16202c;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.78rem;
+  color: #4a5462;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.legend-total {
+  font-variant-numeric: tabular-nums;
+  color: #6b7480;
+}
+
+/*
+ * No `prefers-color-scheme: dark` block.
+ *
+ * The admin shell is JHipster's stock Bootstrap, which is light-only and has no dark theme to
+ * coordinate with. Reacting to the OS preference here produced exactly the mismatch you would
+ * expect — a dark chart sitting inside a white page — because the chart was the only element in the
+ * application that knew about the setting.
+ *
+ * Dark mode is a choice the whole application makes, not one a component makes for itself. When the
+ * shell gains a theme, the dark steps for these same slots are in the design system's palette
+ * (`#3987e5`, `#d95926`, `#199e70`, `#c98500`, `#d55181`) against surface `#1a1a19`, and they are
+ * selected against that surface rather than derived by inverting these.
+ */

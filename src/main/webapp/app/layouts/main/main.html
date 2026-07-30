@@ -1,13 +1,22 @@
-<jhi-page-ribbon />
+<!--
+  The admin application's chrome. The public launch page opts out of all of it via
+  `data: { chrome: false }` on its route — it is a full-bleed design, and rendering it inside a
+  Bootstrap card with a navbar above would be neither the design nor a sensible page.
+-->
+@if (showChrome()) {
+  <jhi-page-ribbon />
 
-<div>
-  <router-outlet name="navbar" />
-</div>
-
-<div class="container-fluid">
-  <div class="card jh-card">
-    <router-outlet />
+  <div>
+    <router-outlet name="navbar" />
   </div>
 
-  <jhi-footer />
-</div>
+  <div class="container-fluid">
+    <div class="card jh-card">
+      <router-outlet />
+    </div>
+
+    <jhi-footer />
+  </div>
+} @else {
+  <router-outlet />
+}

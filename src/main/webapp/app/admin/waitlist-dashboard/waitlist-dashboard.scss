@@ -1,0 +1,178 @@
+.waitlist-dashboard {
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0d3058; // brand navy
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 650;
+    margin: 0;
+  }
+}
+
+.lead-note {
+  color: #6b7480;
+  font-size: 0.86rem;
+  margin-bottom: 18px;
+}
+
+/* ---------- KPI tiles ---------- */
+.tiles {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-bottom: 20px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+}
+
+.tile-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7480;
+  font-weight: 650;
+}
+
+.tile-value {
+  font-size: 1.7rem;
+  font-weight: 750;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: #16202c;
+}
+
+.tile-delta {
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+
+  /*
+   * Status colours, and never a series colour. The arrow glyph carries the direction as well as
+   * the hue, so the meaning survives a colourblind reader and a black-and-white print.
+   */
+  &.up {
+    color: #0ca30c;
+  }
+
+  &.down {
+    color: #d03b3b;
+  }
+
+  &.none {
+    color: #8f98a3;
+  }
+}
+
+.tile-prev {
+  color: #8f98a3;
+}
+
+/* ---------- controls ---------- */
+.controls,
+.table-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 14px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.74rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b7480;
+  }
+
+  select {
+    min-width: 160px;
+  }
+
+  label.check {
+    flex-direction: row;
+    align-items: center;
+    gap: 7px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: #4a5462;
+  }
+}
+
+/* ---------- table ---------- */
+.table-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 26px 0 10px;
+
+  .table-controls {
+    margin-bottom: 0;
+  }
+}
+
+.count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #e8edf4;
+  color: #0d3058;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  font-size: 0.72rem;
+  font-weight: 650;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef0f3;
+  color: #4a5462;
+
+  &.status-confirmed {
+    background: #e2f4e2;
+    color: #14691a;
+  }
+
+  &.status-pending {
+    background: #fff2d6;
+    color: #7a5300;
+  }
+
+  &.status-unsubscribed,
+  &.status-bounced {
+    background: #fbe4e4;
+    color: #94191c;
+  }
+}
+
+.empty {
+  text-align: center;
+  color: #8f98a3;
+  padding: 22px 0;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.84rem;
+  color: #4a5462;
+}

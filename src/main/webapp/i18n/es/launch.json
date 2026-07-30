@@ -1,0 +1,90 @@
+{
+  "launch": {
+    "title": "Health Connect — lanzamiento el 1 de febrero de 2027",
+    "state": {
+      "loading": "Cargando…",
+      "failed": "No pudimos cargar esta página. Actualice en un momento."
+    },
+    "countdown": {
+      "aria": "Tiempo restante hasta el lanzamiento",
+      "days": "Días",
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos",
+      "live": "Estamos en línea."
+    },
+    "hero": {
+      "pill": "Lanzamiento el 1 de febrero de 2027",
+      "headlineLead": "Descentralizando la salud en",
+      "headlineAccent": "Ghana.",
+      "lede": "Atención domiciliaria prestada por enfermeras tituladas y cuidadores capacitados, con un informe escrito después de cada visita — y un historial compartido en cada punto de atención.",
+      "goLive": "Puesta en marcha",
+      "launchDate": "1 de febrero de 2027"
+    },
+    "waitlist": {
+      "emailLabel": "Correo electrónico",
+      "placeholder": "usted@clinica.org",
+      "submit": "Unirse a la lista",
+      "submitting": "Enviando…",
+      "added": "Añadido ✓",
+      "hint": "Acceso anticipado para clínicas, farmacias y socios. Sin spam — solo noticias del lanzamiento.",
+      "invalid": "Ese correo no parece correcto — ¿puede revisarlo?",
+      "success": "Casi listo — abra el enlace que le acabamos de enviar para confirmar.",
+      "alreadyOn": "Ya está en la lista. No hay nada más que hacer.",
+      "failed": "No pudimos añadirle ahora mismo. Inténtelo de nuevo en un momento.",
+      "throttled": "Son muchas inscripciones desde este dispositivo. Inténtelo de nuevo en breve."
+    },
+    "services": {
+      "eyebrow": "Lo que hacemos",
+      "heading": "Atención que llega al hogar.",
+      "lede": "Visitas programadas de enfermeras tituladas y cuidadores capacitados, con supervisión asignada y un registro escrito de cada visita.",
+      "availableOn": "Disponible en:"
+    },
+    "plans": {
+      "eyebrow": "Planes",
+      "heading": "Tres niveles de cobertura.",
+      "lede": "Desde una rutina confiable de lunes a viernes hasta cuidados continuos de alta dependencia. Todos los planes incluyen un informe escrito después de cada visita.",
+      "mostChosen": "Más elegido",
+      "perMonth": "/ mes",
+      "footnote": "Los precios son suscripciones mensuales base en cedis ghaneses y excluyen medicamentos recetados, consumibles y alquiler de equipos especializados."
+    },
+    "pledge": {
+      "eyebrow": "Apoye el proyecto",
+      "heading": "Ayúdenos a llegar al 1 de febrero.",
+      "body": "Cada aportación va directamente al piloto: equipos para las clínicas asociadas, la capa de sincronización sin conexión y la incorporación del primer grupo de equipos de atención.",
+      "cta": "Aportar en fund.abofonsa.com",
+      "navCta": "Apoyar",
+      "tierCta": "Elegir este nivel",
+      "voucherWorth": "Bono de atención por valor de"
+    },
+    "roadmap": {
+      "eyebrow": "Camino al lanzamiento",
+      "heading": "Dónde estamos."
+    },
+    "footer": {
+      "fund": "Financiación",
+      "waitlist": "Lista de espera",
+      "rights": "Todos los derechos reservados."
+    },
+    "optIn": {
+      "back": "← Volver a la página de lanzamiento",
+      "confirmed": {
+        "title": "Está en la lista",
+        "pill": "Confirmado",
+        "heading": "Está en la lista.",
+        "body": "Gracias por confirmar. Nos pondremos en contacto antes del 1 de febrero de 2027 — y no antes de tener algo que valga la pena contar."
+      },
+      "unsubscribed": {
+        "title": "Se le ha dado de baja",
+        "pill": "Dado de baja",
+        "heading": "Se le ha dado de baja.",
+        "body": "No volveremos a escribirle sobre el lanzamiento. Si fue un error, puede unirse a la lista cuando quiera."
+      },
+      "invalid": {
+        "pill": "Enlace no reconocido",
+        "heading": "Ese enlace no funcionó.",
+        "body": "Puede que ya se haya usado o que se haya alterado. Al unirse de nuevo a la lista recibirá un enlace nuevo."
+      }
+    }
+  }
+}

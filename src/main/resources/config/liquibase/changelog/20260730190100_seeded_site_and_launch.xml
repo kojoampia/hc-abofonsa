@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        contextFilter="!test" — the content seeds do not load in the test context.
+
+        JHipster's generated entity ITs assume they own an empty table. CarePlanTeaser.code and
+        PledgeTierTeaser.code are unique enums with exactly three values each, and the seed occupies
+        all of them, so a generated test that hardcodes code=BRONZE could never insert. Tests should
+        not be reading production seed rows in any case; the ones that need content create their own.
+
+        The index changelog deliberately has no filter — schema applies everywhere.
+    -->
+
+    <!--
+        Seed ids are assigned by hand below 1050, which is where sequence_generator starts
+        (00000000000000_initial_schema.xml). Anything the application inserts at runtime therefore
+        cannot collide with a seed row.
+    -->
+
+    <changeSet id="20260730190100-1" author="abofonsa" contextFilter="!test">
+        <comment>The single settings row. settingKey is pinned to DEFAULT so a second cannot appear.</comment>
+        <insert tableName="launch_setting">
+            <column name="id" valueNumeric="1"/>
+            <column name="setting_key" value="DEFAULT"/>
+            <column name="organisation_name" value="Abofonsa BridgeCare"/>
+            <column name="tagline" value="Decentralizing healthcare in Ghana."/>
+            <!-- 1 February 2027, 00:00 GMT — the instant the countdown on the design targets. -->
+            <column name="launch_at" valueDate="2027-02-01T00:00:00"/>
+            <column name="launch_timezone" value="GMT"/>
+            <column name="fund_url" value="https://fund.abofonsa.com"/>
+            <column name="contact_email" value="hello@abofonsa.com"/>
+            <column name="contact_phone" value=""/>
+            <column name="office_address" value="Greater Accra, Ghana"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="20260730190100-2" author="abofonsa" contextFilter="!test">
+        <comment>Road to launch — the four steps on the design's timeline.</comment>
+        <insert tableName="launch_milestone">
+            <column name="id" valueNumeric="10"/>
+            <column name="phase_label" value="Now"/>
+            <column name="title" value="Closed pilot"/>
+            <column name="body" value="Core record and consent layer live with founding partner clinics."/>
+            <column name="current" valueBoolean="true"/>
+            <column name="display_order" valueNumeric="1"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="launch_milestone">
+            <column name="id" valueNumeric="11"/>
+            <column name="phase_label" value="Q4 2026"/>
+            <column name="title" value="Partner onboarding"/>
+            <column name="body" value="Pharmacy and lab integrations, plus the referral network opens to waitlist facilities."/>
+            <column name="milestone_date" valueDate="2026-10-01"/>
+            <column name="current" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="2"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="launch_milestone">
+            <column name="id" valueNumeric="12"/>
+            <column name="phase_label" value="Jan 2027"/>
+            <column name="title" value="Open beta"/>
+            <column name="body" value="Waitlist clinics get keys, data migration tooling and hands-on training."/>
+            <column name="milestone_date" valueDate="2027-01-01"/>
+            <column name="current" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="3"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+        <insert tableName="launch_milestone">
+            <column name="id" valueNumeric="13"/>
+            <column name="phase_label" value="1 Feb 2027"/>
+            <column name="title" value="Public launch"/>
+            <column name="body" value="Health Connect goes live at abofonsa.com."/>
+            <column name="milestone_date" valueDate="2027-02-01"/>
+            <column name="current" valueBoolean="false"/>
+            <column name="display_order" valueNumeric="4"/>
+            <column name="published" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <!--
+        Contact channels are seeded active because the addresses are real. The three social
+        networks are seeded INACTIVE on purpose: the design carries href="#" placeholders, and a
+        social icon that goes nowhere is worse than no icon. Set the url and flip active to true
+        once the real handles exist.
+    -->
+    <changeSet id="20260730190100-3" author="abofonsa" contextFilter="!test">
+        <comment>Footer contact channels — live, because these addresses are real.</comment>
+        <insert tableName="social_link">
+            <column name="id" valueNumeric="20"/>
+            <column name="platform" value="EMAIL"/>
+            <column name="label" value="hello@abofonsa.com"/>
+            <column name="url" value="mailto:hello@abofonsa.com"/>
+            <column name="icon_key" value="mail"/>
+            <column name="display_order" valueNumeric="1"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="social_link">
+            <column name="id" valueNumeric="21"/>
+            <column name="platform" value="WEBSITE"/>
+            <column name="label" value="fund.abofonsa.com"/>
+            <column name="url" value="https://fund.abofonsa.com"/>
+            <column name="icon_key" value="link"/>
+            <column name="display_order" valueNumeric="2"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="20260730190100-4" author="abofonsa" contextFilter="!test">
+        <comment>Social handles — inactive until real URLs replace the design's placeholders.</comment>
+        <insert tableName="social_link">
+            <column name="id" valueNumeric="22"/>
+            <column name="platform" value="X"/>
+            <column name="label" value="Abofonsa on X"/>
+            <column name="url" value="https://x.com/"/>
+            <column name="icon_key" value="x"/>
+            <column name="display_order" valueNumeric="3"/>
+            <column name="active" valueBoolean="false"/>
+        </insert>
+        <insert tableName="social_link">
+            <column name="id" valueNumeric="23"/>
+            <column name="platform" value="LINKEDIN"/>
+            <column name="label" value="Abofonsa on LinkedIn"/>
+            <column name="url" value="https://www.linkedin.com/"/>
+            <column name="icon_key" value="linkedin"/>
+            <column name="display_order" valueNumeric="4"/>
+            <column name="active" valueBoolean="false"/>
+        </insert>
+        <insert tableName="social_link">
+            <column name="id" valueNumeric="24"/>
+            <column name="platform" value="INSTAGRAM"/>
+            <column name="label" value="Abofonsa on Instagram"/>
+            <column name="url" value="https://www.instagram.com/"/>
+            <column name="icon_key" value="instagram"/>
+            <column name="display_order" valueNumeric="5"/>
+            <column name="active" valueBoolean="false"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

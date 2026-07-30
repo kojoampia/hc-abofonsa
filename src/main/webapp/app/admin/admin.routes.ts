@@ -3,6 +3,13 @@ import { Routes } from '@angular/router';
 
 const routes: Routes = [
   {
+    // First, because it is the reason an operator opens the admin area at all — the JHipster
+    // built-ins below are infrastructure tooling, not the job.
+    path: 'waitlist-dashboard',
+    loadComponent: () => import('./waitlist-dashboard/waitlist-dashboard'),
+    title: 'waitlistDashboard.title',
+  },
+  {
     path: 'docs',
     loadComponent: () => import('./docs/docs'),
     title: 'global.menu.admin.apidocs',

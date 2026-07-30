@@ -1,0 +1,90 @@
+{
+  "launch": {
+    "title": "Health Connect — lancement le 1er février 2027",
+    "state": {
+      "loading": "Chargement…",
+      "failed": "Nous n'avons pas pu charger cette page. Veuillez actualiser dans un instant."
+    },
+    "countdown": {
+      "aria": "Temps restant avant le lancement",
+      "days": "Jours",
+      "hours": "Heures",
+      "minutes": "Minutes",
+      "seconds": "Secondes",
+      "live": "Nous sommes en ligne."
+    },
+    "hero": {
+      "pill": "Lancement le 1er février 2027",
+      "headlineLead": "Décentraliser la santé au",
+      "headlineAccent": "Ghana.",
+      "lede": "Des soins à domicile dispensés par des infirmiers diplômés et des aides-soignants formés, avec un rapport écrit après chaque visite — et un dossier partagé à chaque point de soins.",
+      "goLive": "Mise en service",
+      "launchDate": "1er février 2027"
+    },
+    "waitlist": {
+      "emailLabel": "Adresse e-mail",
+      "placeholder": "vous@clinique.org",
+      "submit": "Rejoindre la liste",
+      "submitting": "Envoi…",
+      "added": "Ajouté ✓",
+      "hint": "Accès anticipé pour les cliniques, pharmacies et partenaires. Pas de spam — uniquement les actualités du lancement.",
+      "invalid": "Cette adresse semble incorrecte — pouvez-vous la vérifier ?",
+      "success": "Presque terminé — ouvrez le lien que nous venons de vous envoyer pour confirmer.",
+      "alreadyOn": "Vous figurez déjà sur la liste. Rien d'autre à faire.",
+      "failed": "Nous n'avons pas pu vous ajouter. Veuillez réessayer dans un instant.",
+      "throttled": "Beaucoup d'inscriptions depuis cet appareil. Veuillez réessayer sous peu."
+    },
+    "services": {
+      "eyebrow": "Ce que nous faisons",
+      "heading": "Des soins qui viennent à domicile.",
+      "lede": "Des visites programmées par des infirmiers diplômés et des aides-soignants formés, avec un encadrement nommé et un rapport écrit de chaque visite.",
+      "availableOn": "Disponible sur :"
+    },
+    "plans": {
+      "eyebrow": "Forfaits",
+      "heading": "Trois niveaux de couverture.",
+      "lede": "D'une routine fiable en semaine à des soins continus et intensifs. Chaque forfait comprend un rapport écrit après chaque visite.",
+      "mostChosen": "Le plus choisi",
+      "perMonth": "/ mois",
+      "footnote": "Les prix sont des abonnements mensuels de base en cédis ghanéens et excluent les médicaments prescrits, les consommables et la location d'équipements spécialisés."
+    },
+    "pledge": {
+      "eyebrow": "Soutenez le projet",
+      "heading": "Aidez-nous à atteindre le 1er février.",
+      "body": "Chaque promesse de don finance directement le projet pilote : kits d'équipement pour les cliniques partenaires, la couche de synchronisation hors ligne et l'intégration de la première cohorte d'équipes soignantes.",
+      "cta": "Faire un don sur fund.abofonsa.com",
+      "navCta": "Soutenir",
+      "tierCta": "Choisir ce niveau",
+      "voucherWorth": "Bon de soins d'une valeur de"
+    },
+    "roadmap": {
+      "eyebrow": "Vers le lancement",
+      "heading": "Où nous en sommes."
+    },
+    "footer": {
+      "fund": "Financement",
+      "waitlist": "Liste d'attente",
+      "rights": "Tous droits réservés."
+    },
+    "optIn": {
+      "back": "← Retour à la page de lancement",
+      "confirmed": {
+        "title": "Vous êtes sur la liste",
+        "pill": "Confirmé",
+        "heading": "Vous êtes sur la liste.",
+        "body": "Merci d'avoir confirmé. Nous vous contacterons avant le 1er février 2027 — et pas avant d'avoir quelque chose à dire."
+      },
+      "unsubscribed": {
+        "title": "Vous avez été retiré",
+        "pill": "Désabonné",
+        "heading": "Vous avez été retiré.",
+        "body": "Nous ne vous écrirons plus au sujet du lancement. Si c'était une erreur, vous pouvez rejoindre la liste à tout moment."
+      },
+      "invalid": {
+        "pill": "Lien non reconnu",
+        "heading": "Ce lien n'a pas fonctionné.",
+        "body": "Il a peut-être déjà été utilisé ou modifié en chemin. Rejoindre la liste d'attente vous enverra un nouveau lien."
+      }
+    }
+  }
+}

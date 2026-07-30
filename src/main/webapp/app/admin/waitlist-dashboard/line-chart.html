@@ -1,0 +1,85 @@
+<div class="chart">
+  @if (title()) {
+    <h3 class="chart-title">{{ title() }}</h3>
+  }
+
+  @if (data().truncated) {
+    <!-- Never silently: the API clamped the window, so the chart is not the range that was asked for. -->
+    <p class="chart-note" role="status">
+      Range too wide for this zoom — showing the most recent {{ buckets().length }} buckets from {{ data().from | date: 'd MMM yyyy' }}.
+    </p>
+  }
+
+  <svg
+    #svg
+    class="chart-svg"
+    [attr.viewBox]="'0 0 ' + width + ' ' + height"
+    preserveAspectRatio="xMidYMid meet"
+    role="img"
+    [attr.aria-label]="title() + ' — line chart. The table below carries the same figures.'"
+    (mousemove)="onMove($event, svg)"
+    (mouseleave)="onLeave()"
+  >
+    <!-- gridlines: recessive, behind everything -->
+    @for (tick of yTicks(); track tick.value) {
+      <line class="grid" [attr.x1]="padding.left" [attr.x2]="width - padding.right" [attr.y1]="tick.y" [attr.y2]="tick.y" />
+      <text class="axis-label y" [attr.x]="padding.left - 10" [attr.y]="tick.y + 4">{{ tick.value | number: '1.0-0' }}</text>
+    }
+
+    @for (tick of xTicks(); track tick.index) {
+      <text class="axis-label x" [attr.x]="tick.x" [attr.y]="height - padding.bottom + 20">
+        {{ tick.bucketStart | date: tickFormat() : 'UTC' }}
+      </text>
+    }
+
+    <!-- hover crosshair, drawn under the marks so it never obscures them -->
+    @if (hovered(); as hover) {
+      <line class="crosshair" [attr.x1]="hover.x" [attr.x2]="hover.x" [attr.y1]="padding.top" [attr.y2]="height - padding.bottom" />
+    }
+
+    @for (series of plotted(); track series.label) {
+      <path class="series-line" [attr.d]="series.path" [attr.stroke]="series.color" />
+
+      @if (showDirectLabels()) {
+        <text class="series-label" [attr.x]="series.labelX" [attr.y]="series.labelY + 4" [attr.fill]="series.color">
+          {{ series.label }}
+        </text>
+      }
+
+      @if (hovered(); as hover) {
+        <!-- 2px surface ring so overlapping markers stay separable -->
+        <circle
+          class="marker"
+          [attr.cx]="series.markers[hoverIndex()!].x"
+          [attr.cy]="series.markers[hoverIndex()!].y"
+          r="5"
+          [attr.fill]="series.color"
+        />
+      }
+    }
+  </svg>
+
+  @if (hovered(); as hover) {
+    <div class="tooltip" role="status">
+      <p class="tooltip-bucket">{{ hover.bucketStart | date: tickFormat() : 'UTC' }} UTC</p>
+      @for (row of hover.rows; track row.label) {
+        <p class="tooltip-row">
+          <span class="swatch" [style.background]="row.color" aria-hidden="true"></span>
+          <span class="tooltip-label">{{ row.label }}</span>
+          <span class="tooltip-value">{{ row.value | number }}</span>
+        </p>
+      }
+    </div>
+  }
+
+  @if (showLegend()) {
+    <ul class="legend">
+      @for (series of plotted(); track series.label) {
+        <li>
+          <span class="swatch" [style.background]="series.color" aria-hidden="true"></span>
+          {{ series.label }} <span class="legend-total">{{ series.total | number }}</span>
+        </li>
+      }
+    </ul>
+  }
+</div>

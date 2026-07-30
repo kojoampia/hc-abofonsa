@@ -32,7 +32,7 @@ application {
     languages [en, fr, es, de]
     testFrameworks [cypress]
     withAdminUi true
-    serverPort 8080
+    serverPort 8083
     reactive false
   }
   entities *

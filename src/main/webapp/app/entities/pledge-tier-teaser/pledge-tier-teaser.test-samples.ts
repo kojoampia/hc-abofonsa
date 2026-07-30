@@ -36,8 +36,13 @@ export const sampleWithFullData: IPledgeTierTeaser = {
   published: true,
 };
 
+// `code` is filled in by hand. generator-jhipster could not produce a value for it — the field is a
+// required *unique* enum with only three members, so its unique-value faker has nothing left to
+// generate and emits `undefined`, which then fails the form-service round-trip assertion. The exact
+// value is arbitrary: this sample feeds a unit test that never reaches a database, so the unique
+// constraint it was blocked by does not apply here.
 export const sampleWithNewData: NewPledgeTierTeaser = {
-  code: undefined,
+  code: 'BRONZE',
   name: 'pillow',
   amount: 20942.06,
   currency: 'tha',

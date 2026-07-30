@@ -3,11 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>abofonsaPreview</title>
-    <meta name="description" content="Description for abofonsaPreview" />
+    <title>Health Connect | Abofonsa BridgeCare — Launching 1 February 2027</title>
+    <meta name="description" content="Health Connect is decentralizing healthcare in Ghana. Launching 1 February 2027." />
     <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="theme-color" content="#000000" />
+    <!-- The launch page's own background, so a hard refresh does not flash white before Angular boots. -->
+    <meta name="theme-color" content="#04211f" />
+
+    <!--
+      Static Open Graph tags. The launch page is client-rendered, so a crawler that does not execute
+      JavaScript sees only this document — putting the share card here rather than setting it from
+      the component is what makes the link preview work at all. It is duplicated from the seeded
+      LaunchSetting rather than derived from it; if the launch date moves, this file moves too.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Abofonsa BridgeCare" />
+    <meta property="og:title" content="Health Connect | Abofonsa BridgeCare" />
+    <meta property="og:description" content="Decentralizing healthcare in Ghana. Launching 1 February 2027." />
+    <meta property="og:url" content="https://www.abofonsa.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Health Connect | Abofonsa BridgeCare" />
+    <meta name="twitter:description" content="Decentralizing healthcare in Ghana. Launching 1 February 2027." />
     <base href="/" />
     <link rel="icon" href="favicon.ico" />
     <link rel="manifest" href="manifest.webapp" />
