@@ -94,6 +94,38 @@ Also, writing a JDL: **do not put double quotes or `\` escapes in JDL comments o
 regexes.** JHipster copies both verbatim into the generated i18n JSON, and either one makes the
 translation files unparseable — generation aborts with a JSON syntax error naming no file.
 
+## Brand
+
+`brand.png` at the repository root is the source asset — a navy-and-gold circular badge, **`#0d3058`
+and `#c59437`**, the same two values `hc-abofonsa-web` generates its Material theme from. Everything
+derives from it: `content/images/abofonsa-brand.png` (corners cleared so it does not sit in a white
+box on the dark page), the four PWA icons, `favicon.ico`, and the launch page's whole palette.
+
+The launch page follows `docs/design/abofonsa-countdown.html` for _structure_ only — ambient orbs,
+glass countdown cards, gradient headline. Its colour is the brand's, not the mock's teal. If you
+regenerate any of the derived images, regenerate all of them from `brand.png` rather than editing
+one by hand.
+
+Two traps if you touch `content/scss/launch.scss`:
+
+- `--gold` and `--gold-lt` are two stops of one gradient. Collapsing them to a single token turns
+  every gold button and badge into a flat fill, which is easy to miss in a screenshot.
+- `.brand-mark` is the logo; `.mark` is the ✓/— glyph in the plan feature list. They were the same
+  class once and only rendered correctly by specificity accident.
+
+## Ownership
+
+Health Connect · Abofonsa BridgeCare is a product of **Jojo Addison Consultancy**
+(jojoaddison.net). It is stated at the top and bottom of the launch page and in the admin footer,
+and the consultancy — not the brand — holds the copyright.
+
+The name and URL are `LaunchSetting.parentCompanyName` / `parentCompanyUrl`, so changing them is a
+row edit. They are `NOT NULL`; anything creating a `LaunchSetting` must populate them.
+
+Note that JHipster's `global.json` keeps `footer` as a **top-level** key, not a member of `global`.
+Putting it under `global` compiles, builds and passes every test, then renders
+`translation-not-found[...]` on screen.
+
 ## Conventions
 
 - Domain services are named apart from JHipster's generated CRUD services, which own the obvious

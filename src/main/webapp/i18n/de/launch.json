@@ -85,6 +85,10 @@
         "heading": "Dieser Link hat nicht funktioniert.",
         "body": "Er wurde möglicherweise bereits verwendet oder unterwegs verändert. Tragen Sie sich erneut ein, erhalten Sie einen neuen Link."
       }
+    },
+    "owner": {
+      "prefix": "Ein Produkt von",
+      "statement": "{{product}} · {{org}} ist ein Produkt von {{company}}."
     }
   }
 }

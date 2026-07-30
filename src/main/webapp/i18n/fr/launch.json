@@ -85,6 +85,10 @@
         "heading": "Ce lien n'a pas fonctionné.",
         "body": "Il a peut-être déjà été utilisé ou modifié en chemin. Rejoindre la liste d'attente vous enverra un nouveau lien."
       }
+    },
+    "owner": {
+      "prefix": "Un produit de",
+      "statement": "{{product}} · {{org}} est un produit de {{company}}."
     }
   }
 }

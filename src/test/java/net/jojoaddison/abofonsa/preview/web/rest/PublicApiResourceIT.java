@@ -109,6 +109,8 @@ class PublicApiResourceIT {
         setting.setLaunchTimezone("GMT");
         setting.setFundUrl("https://fund.abofonsa.com");
         setting.setContactEmail("hello@abofonsa.com");
+        setting.setParentCompanyName("Jojo Addison Consultancy");
+        setting.setParentCompanyUrl("https://jojoaddison.net");
         setting.setActive(true);
         launchSettingRepository.saveAndFlush(setting);
 
@@ -188,6 +190,9 @@ class PublicApiResourceIT {
             .andExpect(jsonPath("$.launch.organisationName").value("Abofonsa BridgeCare"))
             .andExpect(jsonPath("$.launch.launchAt").value("2027-02-01T00:00:00Z"))
             .andExpect(jsonPath("$.launch.fundUrl").value("https://fund.abofonsa.com"))
+            // The consultancy that owns the product, surfaced top and bottom of the page.
+            .andExpect(jsonPath("$.launch.parentCompanyName").value("Jojo Addison Consultancy"))
+            .andExpect(jsonPath("$.launch.parentCompanyUrl").value("https://jojoaddison.net"))
             .andExpect(jsonPath("$.plans[0].code").value("PAWPAW"))
             .andExpect(jsonPath("$.pledgeTiers[0].handoffUrl").value("https://fund.abofonsa.com/pledge?tier=GOLD"))
             .andExpect(jsonPath("$.milestones[0].title").value("Closed pilot"));

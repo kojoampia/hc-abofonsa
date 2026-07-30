@@ -85,6 +85,10 @@
         "heading": "That link didn't work.",
         "body": "It may have already been used, or been altered in transit. Joining the waitlist again will send you a fresh link."
       }
+    },
+    "owner": {
+      "prefix": "A product of",
+      "statement": "{{product}} · {{org}} is a product of {{company}}."
     }
   }
 }

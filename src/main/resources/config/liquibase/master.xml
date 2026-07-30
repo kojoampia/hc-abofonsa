@@ -31,6 +31,7 @@
     <include file="config/liquibase/changelog/20260730190200_seeded_services.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260730190300_seeded_plans.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260730190400_seeded_pledge_tiers.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260730220000_added_parent_company.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260730174915_added_entity_constraints_ServiceHighlight.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260730175115_added_entity_constraints_PlanFeature.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260730175315_added_entity_constraints_PledgeTierPerk.xml" relativeToChangelogFile="false"/>

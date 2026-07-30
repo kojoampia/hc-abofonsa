@@ -18,12 +18,32 @@
   } @else {
     @let data = content()!;
 
+    <!--
+      Ownership, stated before anything else on the page. Above the header rather than inside it so
+      it reads as a statement about the whole site, not as another navigation item competing with
+      the pledge CTA.
+    -->
+    <div class="owner-strip">
+      <div class="wrap">
+        <span class="owner-text">
+          {{ 'launch.owner.prefix' | translate }}
+          <a [href]="data.launch.parentCompanyUrl" target="_blank" rel="noopener" (click)="contactClick('PARENT_COMPANY')">{{
+            data.launch.parentCompanyName
+          }}</a>
+          <span class="owner-domain">{{ hostOf(data.launch.parentCompanyUrl) }}</span>
+        </span>
+      </div>
+    </div>
+
     <header>
       <div class="wrap nav">
         <a class="brand" href="#top">
-          <span class="mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="#04211f" stroke-width="3" stroke-linecap="round" /></svg>
-          </span>
+          <!--
+            The real badge, not a generated glyph. `alt` is empty and the image is aria-hidden
+            because the wordmark beside it already carries the name — a screen reader announcing
+            "Abofonsa BridgeCare logo, Health Connect, Abofonsa BridgeCare" is worse than silence.
+          -->
+          <img class="brand-mark" src="content/images/abofonsa-brand.png" alt="" aria-hidden="true" width="44" height="44" />
           <span>
             <span class="brand-name">Health&nbsp;Connect</span>
             <span class="brand-sub">{{ data.launch.organisationName }}</span>
@@ -194,9 +214,7 @@
       <div class="wrap">
         <div class="foot">
           <a class="brand" href="#top">
-            <span class="mark" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="#04211f" stroke-width="3" stroke-linecap="round" /></svg>
-            </span>
+            <img class="brand-mark" src="content/images/abofonsa-brand.png" alt="" aria-hidden="true" width="44" height="44" />
             <span>
               <span class="brand-name">Health&nbsp;Connect</span>
               <span class="brand-sub">{{ data.launch.organisationName }}</span>
@@ -224,8 +242,24 @@
             </div>
           }
 
+          <!--
+            The full ownership statement, spelled out rather than abbreviated as at the top. The
+            footer is where somebody goes to find out who is actually behind a site, so this is the
+            one place it is worth the whole sentence.
+          -->
+          <p class="owner-statement">
+            {{
+              'launch.owner.statement'
+                | translate: { product: 'Health Connect', org: data.launch.organisationName, company: data.launch.parentCompanyName }
+            }}
+            <a [href]="data.launch.parentCompanyUrl" target="_blank" rel="noopener" (click)="contactClick('PARENT_COMPANY')">{{
+              hostOf(data.launch.parentCompanyUrl)
+            }}</a>
+          </p>
+
           <p class="copyright">
-            © {{ currentYear }} {{ data.launch.organisationName }}.
+            <!-- The consultancy holds the copyright, not the brand the product is sold under. -->
+            © {{ currentYear }} {{ data.launch.parentCompanyName }}.
             {{ 'launch.footer.rights' | translate }}
             @if (data.launch.officeAddress) {
               <span class="addr">{{ data.launch.officeAddress }}</span>

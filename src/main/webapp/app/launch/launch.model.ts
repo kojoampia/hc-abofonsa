@@ -13,6 +13,9 @@ export interface LaunchSettings {
   contactEmail: string;
   contactPhone: string | null;
   officeAddress: string | null;
+  /** The consultancy that owns the product. Shown at the top and bottom of the page. */
+  parentCompanyName: string;
+  parentCompanyUrl: string;
 }
 
 export interface Milestone {

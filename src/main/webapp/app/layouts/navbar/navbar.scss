@@ -31,6 +31,8 @@ Logo styles
   width: 45px;
   display: inline-block;
   vertical-align: middle;
-  background: url('/content/images/logo-jhipster.png') no-repeat center center;
+  // The brand badge, not JHipster's mascot. The admin shell is still an operator-facing part
+  // of this product, and it is the screen somebody is looking at when they check the numbers.
+  background: url('/content/images/abofonsa-brand.png') no-repeat center center;
   background-size: contain;
 }

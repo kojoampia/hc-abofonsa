@@ -83,6 +83,19 @@ export default class LaunchPage implements OnInit {
   }
 
   /**
+   * The bare host of a URL, for showing "jojoaddison.net" rather than the full
+   * "https://jojoaddison.net/". Falls back to the input when it will not parse, so a mistyped value
+   * in the settings row renders as itself instead of disappearing from the page entirely.
+   */
+  hostOf(url: string): string {
+    try {
+      return new URL(url).host.replace(/^www\./, '');
+    } catch {
+      return url;
+    }
+  }
+
+  /**
    * Reveal-on-scroll, matching the design.
    *
    * <p>Skipped entirely when the visitor has asked for reduced motion, and skipped when

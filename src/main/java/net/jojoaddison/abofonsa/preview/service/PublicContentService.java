@@ -72,7 +72,9 @@ public class PublicContentService {
                 setting.getFundUrl(),
                 setting.getContactEmail(),
                 blankToNull(setting.getContactPhone()),
-                setting.getOfficeAddress()
+                setting.getOfficeAddress(),
+                setting.getParentCompanyName(),
+                setting.getParentCompanyUrl()
             ),
             milestones(),
             services(),

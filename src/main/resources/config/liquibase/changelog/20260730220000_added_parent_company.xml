@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        Records the consultancy that owns the product: Health Connect / Abofonsa BridgeCare is a
+        product of Jojo Addison Consultancy.
+
+        A NEW changelog, not an edit to 20260730190100. Liquibase checksums applied changesets, so
+        changing one in place fails validation on the next boot and takes the application down — and
+        it would not update anything anyway, because an applied changeset never re-runs.
+
+        The columns are added nullable, backfilled, and only then made NOT NULL. Adding a NOT NULL
+        column outright fails on any database that already has the settings row in it, which is
+        every environment except a brand-new one.
+    -->
+
+    <changeSet id="20260730220000-1" author="abofonsa">
+        <comment>Add the parent company columns, nullable for now.</comment>
+        <addColumn tableName="launch_setting">
+            <column name="parent_company_name" type="varchar(120)"/>
+            <column name="parent_company_url" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20260730220000-2" author="abofonsa">
+        <comment>Backfill every existing row before the NOT NULL constraint lands.</comment>
+        <update tableName="launch_setting">
+            <column name="parent_company_name" value="Jojo Addison Consultancy"/>
+            <column name="parent_company_url" value="https://jojoaddison.net"/>
+            <where>parent_company_name is null</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="20260730220000-3" author="abofonsa">
+        <comment>Now that no row is null, require the values.</comment>
+        <addNotNullConstraint tableName="launch_setting" columnName="parent_company_name" columnDataType="varchar(120)"/>
+        <addNotNullConstraint tableName="launch_setting" columnName="parent_company_url" columnDataType="varchar(255)"/>
+    </changeSet>
+
+    <!--
+        No contextFilter here, unlike the seed changelogs. This is a schema change plus a backfill of
+        rows that already exist, so it has to apply in the test context too — the generated
+        LaunchSettingResourceIT builds entities with every NOT NULL column populated, and would fail
+        against a table whose columns were never created.
+    -->
+
+</databaseChangeLog>

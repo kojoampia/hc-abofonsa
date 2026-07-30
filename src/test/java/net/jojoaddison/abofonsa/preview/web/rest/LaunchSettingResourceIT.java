@@ -63,6 +63,12 @@ class LaunchSettingResourceIT {
     private static final String DEFAULT_OFFICE_ADDRESS = "AAAAAAAAAA";
     private static final String UPDATED_OFFICE_ADDRESS = "BBBBBBBBBB";
 
+    private static final String DEFAULT_PARENT_COMPANY_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_PARENT_COMPANY_NAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PARENT_COMPANY_URL = "AAAAAAAAAA";
+    private static final String UPDATED_PARENT_COMPANY_URL = "BBBBBBBBBB";
+
     private static final Boolean DEFAULT_ACTIVE = false;
     private static final Boolean UPDATED_ACTIVE = true;
 
@@ -108,6 +114,8 @@ class LaunchSettingResourceIT {
             .contactEmail(DEFAULT_CONTACT_EMAIL)
             .contactPhone(DEFAULT_CONTACT_PHONE)
             .officeAddress(DEFAULT_OFFICE_ADDRESS)
+            .parentCompanyName(DEFAULT_PARENT_COMPANY_NAME)
+            .parentCompanyUrl(DEFAULT_PARENT_COMPANY_URL)
             .active(DEFAULT_ACTIVE);
     }
 
@@ -128,6 +136,8 @@ class LaunchSettingResourceIT {
             .contactEmail(UPDATED_CONTACT_EMAIL)
             .contactPhone(UPDATED_CONTACT_PHONE)
             .officeAddress(UPDATED_OFFICE_ADDRESS)
+            .parentCompanyName(UPDATED_PARENT_COMPANY_NAME)
+            .parentCompanyUrl(UPDATED_PARENT_COMPANY_URL)
             .active(UPDATED_ACTIVE);
     }
 
@@ -382,6 +392,8 @@ class LaunchSettingResourceIT {
             .contactEmail(UPDATED_CONTACT_EMAIL)
             .contactPhone(UPDATED_CONTACT_PHONE)
             .officeAddress(UPDATED_OFFICE_ADDRESS)
+            .parentCompanyName(UPDATED_PARENT_COMPANY_NAME)
+            .parentCompanyUrl(UPDATED_PARENT_COMPANY_URL)
             .active(UPDATED_ACTIVE);
         LaunchSettingDTO launchSettingDTO = launchSettingMapper.toDto(updatedLaunchSetting);
 
@@ -513,6 +525,8 @@ class LaunchSettingResourceIT {
             .contactEmail(UPDATED_CONTACT_EMAIL)
             .contactPhone(UPDATED_CONTACT_PHONE)
             .officeAddress(UPDATED_OFFICE_ADDRESS)
+            .parentCompanyName(UPDATED_PARENT_COMPANY_NAME)
+            .parentCompanyUrl(UPDATED_PARENT_COMPANY_URL)
             .active(UPDATED_ACTIVE);
 
         restLaunchSettingMockMvc

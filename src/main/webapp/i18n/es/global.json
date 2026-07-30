@@ -1,6 +1,6 @@
 {
   "global": {
-    "title": "AbofonsaPreview",
+    "title": "Health Connect",
     "browsehappy": "Está usando un navegador <strong>no actualizado</strong>. Por favor, <a href=\"https://browsehappy.com/?locale=es\">actualice su navegador</a> para mejorar su experiencia.",
     "menu": {
       "home": "Inicio",
@@ -158,5 +158,7 @@
       "not.image": "Se esperaba que el fichero fuera una imagen pero se encontro \"{{ fileType }}\""
     }
   },
-  "footer": "Pie de página"
+  "footer": {
+    "productOf": "Health Connect · Abofonsa BridgeCare es un producto de Jojo Addison Consultancy."
+  }
 }

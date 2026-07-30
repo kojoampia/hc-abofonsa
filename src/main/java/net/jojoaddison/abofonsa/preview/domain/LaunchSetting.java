@@ -69,6 +69,20 @@ public class LaunchSetting implements Serializable {
     @Column(name = "office_address", length = 255)
     private String officeAddress;
 
+    /**
+     * The consultancy that owns this product. Held here rather than hard-coded in the template for
+     * the same reason the launch date is: it is content, and content on this page comes from a row.
+     */
+    @NotNull
+    @Size(max = 120)
+    @Column(name = "parent_company_name", length = 120, nullable = false)
+    private String parentCompanyName;
+
+    @NotNull
+    @Size(max = 255)
+    @Column(name = "parent_company_url", length = 255, nullable = false)
+    private String parentCompanyUrl;
+
     @NotNull
     @Column(name = "active", nullable = false)
     private Boolean active;
@@ -205,6 +219,32 @@ public class LaunchSetting implements Serializable {
         this.officeAddress = officeAddress;
     }
 
+    public String getParentCompanyName() {
+        return this.parentCompanyName;
+    }
+
+    public LaunchSetting parentCompanyName(String parentCompanyName) {
+        this.setParentCompanyName(parentCompanyName);
+        return this;
+    }
+
+    public void setParentCompanyName(String parentCompanyName) {
+        this.parentCompanyName = parentCompanyName;
+    }
+
+    public String getParentCompanyUrl() {
+        return this.parentCompanyUrl;
+    }
+
+    public LaunchSetting parentCompanyUrl(String parentCompanyUrl) {
+        this.setParentCompanyUrl(parentCompanyUrl);
+        return this;
+    }
+
+    public void setParentCompanyUrl(String parentCompanyUrl) {
+        this.parentCompanyUrl = parentCompanyUrl;
+    }
+
     public Boolean getActive() {
         return this.active;
     }
@@ -251,6 +291,8 @@ public class LaunchSetting implements Serializable {
             ", contactEmail='" + getContactEmail() + "'" +
             ", contactPhone='" + getContactPhone() + "'" +
             ", officeAddress='" + getOfficeAddress() + "'" +
+            ", parentCompanyName='" + getParentCompanyName() + "'" +
+            ", parentCompanyUrl='" + getParentCompanyUrl() + "'" +
             ", active='" + getActive() + "'" +
             "}";
     }

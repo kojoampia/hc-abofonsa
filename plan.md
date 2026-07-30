@@ -340,3 +340,69 @@ once the styles are global.
   `https://fund.abofonsa.com/pledge?tier=<CODE>`; to be confirmed against the live routes.
 - **Social handles.** The demo HTML has `href="#"` placeholders; real X / LinkedIn / Instagram URLs
   are seeded as blanks and toggled off until supplied.
+
+---
+
+## Phase 8 — Brand ✅
+
+Triggered by `brand.png` arriving: a navy-and-gold circular badge, sampled at **`#0d3058`** and
+**`#c59437`** — exactly the two values `hc-abofonsa-web` already generates its Material theme from.
+
+- [x] 8.1 The badge replaces the generated `+` glyph in the launch page header and footer, the
+      JHipster mascot in the admin navbar, `favicon.ico`, and the four PWA icons
+- [x] 8.2 Re-themed the launch page from the mock's teal to the brand's navy, keeping the mock's
+      structure. Every teal token, literal and `rgb()` channel triple was replaced
+- [x] 8.3 `og:image` / `twitter:image` added (absolute — a crawler resolves them against nothing)
+- [x] 8.4 Manifest name, `theme_color` and `background_color` aligned to the brand
+- [x] 8.5 `global.title` is "Health Connect", not "AbofonsaPreview"
+- [x] 8.6 Deleted `app/home/` — unreachable since Phase 4 pointed `''` at the launch page, and it
+      rendered a JHipster mascot — plus the now-orphaned mascot assets
+
+Verified in the browser: header, services, plans, pledge, roadmap and footer all render in navy/gold
+with no leftover teal and no console errors; every brand asset returns 200. Lint, 141 frontend test
+files, the production build and `./mvnw compile` are all green.
+
+### Two things the retheme quietly broke, and one it exposed
+
+- **The gold gradients went flat.** `--gold-dp` folded into `--gold`, so
+  `linear-gradient(140deg, var(--gold), var(--gold-dp))` became a two-stop gradient between one
+  colour and itself. Restored with a lighter `--gold-lt`.
+- **`.mark` was doing two unrelated jobs** — the logo tile _and_ the ✓/— glyph in the plan feature
+  list. It only rendered correctly because a more specific selector happened to win. The logo is now
+  `.brand-mark`.
+- **The pre-boot loading screen was JHipster's**: a pacman eating JHipster logos, and — after four
+  seconds — a troubleshooting panel telling the visitor to run `npm install`. That panel would have
+  been shown to real visitors, on a page whose stated audience is largely mid-range Android over a
+  slow connection, where four seconds is an ordinary load rather than a fault. Both replaced: a
+  pulsing badge on the launch page's navy, and a message that is true for a visitor.
+
+---
+
+## Phase 9 — Ownership ✅
+
+Health Connect · Abofonsa BridgeCare is a product of **Jojo Addison Consultancy**
+(jojoaddison.net), and the page now says so.
+
+- [x] 9.1 `LaunchSetting.parentCompanyName` / `parentCompanyUrl` — content, so it lives in a row
+      like the launch date and the fund URL, not hard-coded in a template
+- [x] 9.2 A **new** changelog (`20260730220000`), not an edit to the applied seed: add nullable →
+      backfill → `NOT NULL`, because adding a NOT NULL column outright fails on any database that
+      already holds the settings row
+- [x] 9.3 Threaded through `PublicContentDTO.Launch`, `PublicContentService` and `launch.model.ts`
+- [x] 9.4 **Top** — a full-width strip above the header: "A product of Jojo Addison Consultancy ·
+      jojoaddison.net". Above the header rather than in it, so it reads as a statement about the
+      site rather than another nav item competing with the pledge CTA
+- [x] 9.5 **Bottom** — the full sentence in the footer, plus the link
+- [x] 9.6 Copyright is now **© Jojo Addison Consultancy**, not Abofonsa BridgeCare — the consultancy
+      holds it, not the brand the product is sold under
+- [x] 9.7 The admin shell's footer carries the same statement, replacing generator placeholder text
+      that read "This is your footer"
+- [x] 9.8 `owner.prefix` / `owner.statement` in en / fr / es / de; fixtures updated for the two new
+      NOT NULL columns
+
+`567` backend tests, `141` frontend test files, lint and the production build all green; the
+migration was verified applying to the existing dev database rather than only to a fresh one.
+
+**One trap worth remembering:** in JHipster's `global.json`, `footer` is a **top-level** key, not a
+member of `global`. Adding it under `global` compiles, builds and passes every test — and renders
+`translation-not-found[footer.productOf]` on screen. Only looking at the page catches it.

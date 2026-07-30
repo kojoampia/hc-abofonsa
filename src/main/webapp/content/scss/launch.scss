@@ -1,41 +1,51 @@
 /*
- * Ported from docs/design/abofonsa-countdown.html.
+ * Ported from docs/design/abofonsa-countdown.html, re-themed to the brand.
  *
  * Scoped under .abf-launch rather than applied to body: this page lives inside a JHipster shell
  * whose Bootstrap styles are still loaded for the admin dashboard, and a global dark background
  * would follow the operator into the admin screens.
  *
- * The gold is the main site's brand gold (#c59437 — hc-abofonsa-web/web/src/styles/theme.scss)
- * rather than the design mock's #f0b429, so the preview and the real site read as one brand. The
- * teals are the mock's own, which is the treatment we were asked to follow.
+ * NAVY, NOT TEAL. The design mock was dark teal (#0d6e66) with a warmer gold (#f0b429), and
+ * neither is the brand. brand.png is navy #0d3058 and gold #c59437 — the same two values
+ * hc-abofonsa-web generates its Material theme from — so the palette below is built from those and
+ * the mock's *structure* is what survives: ambient orbs, glass countdown cards, the gradient
+ * headline. A launch page whose colours disagree with the logo sitting at the top of it reads as
+ * two different companies.
+ *
+ * The light accent (--sky) is not in the logo, because the logo does not need one: it is a badge on
+ * white. A dark page does, for anything that must stay legible against the navy ground, so it is
+ * taken from the same primary ramp the main site already ships (_theme-colors.scss, primary-80).
  */
 
 @keyframes abf-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgb(224 170 62 / 70%);
+    box-shadow: 0 0 0 0 rgb(197 148 55 / 70%);
   }
 
   70% {
-    box-shadow: 0 0 0 9px rgb(224 170 62 / 0%);
+    box-shadow: 0 0 0 9px rgb(197 148 55 / 0%);
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgb(224 170 62 / 0%);
+    box-shadow: 0 0 0 0 rgb(197 148 55 / 0%);
   }
 }
 
 .abf-launch {
   & {
-    --ink: #04211f;
-    --deep: #052e2b;
-    --teal: #0d6e66;
-    --teal-lt: #19a094;
-    --mint: #7fe3d4;
-    --gold: #e0aa3e;
-    --gold-dp: #c59437;
-    --paper: #f5f9f7;
-    --line: rgb(127 227 212 / 16%);
-    --muted: #9fc4bd;
+    // Brand navy darkened until body text on it clears AA; the logo's own #0d3058 is --navy below.
+    --ink: #06172b;
+    --deep: #0a2340;
+    --navy: #0d3058;
+    --navy-lt: #1c4a80;
+    // primary-80 from hc-abofonsa-web's generated Material palette — the light end of the same
+    // navy ramp, so it belongs to the brand even though the badge never uses it.
+    --sky: #abc8f8;
+    --gold: #c59437;
+    --gold-lt: #dcae4e;
+    --paper: #f4f7fb;
+    --line: rgb(171 200 248 / 18%);
+    --muted: #9fb3cd;
     --radius: 18px;
     --maxw: 1120px;
 
@@ -109,7 +119,7 @@
       height: 60vw;
       left: -18vw;
       top: -22vw;
-      background: radial-gradient(circle, #0d6e66, transparent 68%);
+      background: radial-gradient(circle, #0d3058, transparent 68%);
     }
 
     &.b {
@@ -126,7 +136,7 @@
       height: 66vw;
       left: 12vw;
       bottom: -34vw;
-      background: radial-gradient(circle, #19a094, transparent 70%);
+      background: radial-gradient(circle, #1c4a80, transparent 70%);
       opacity: 0.3;
     }
   }
@@ -157,6 +167,69 @@
     }
   }
 
+  /* ---------- ownership strip ---------- */
+  .owner-strip {
+    position: relative;
+    z-index: 3;
+    padding: 11px 0;
+    // Slightly lighter than the page ground and separated by a hairline, so it reads as a band
+    // rather than as floating text that happens to be above the logo.
+    background: rgb(13 48 88 / 55%);
+    border-bottom: 1px solid var(--line);
+    font-size: 0.84rem;
+    letter-spacing: 0.02em;
+    text-align: center;
+    // Not --muted. This band was asked to be prominent, and muted grey on navy reads as small print
+    // — which is the opposite of stating who owns the product.
+    color: #c6d6ec;
+
+    a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 650;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .owner-text {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .owner-domain {
+    color: var(--sky);
+    opacity: 0.8;
+
+    &::before {
+      content: '·';
+      margin-right: 6px;
+      opacity: 0.6;
+    }
+  }
+
+  .owner-statement {
+    width: 100%;
+    margin-top: 22px;
+    font-size: 0.86rem;
+    color: #c6d6ec;
+
+    a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 650;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
   /* ---------- nav ---------- */
   header {
     position: relative;
@@ -179,20 +252,22 @@
     color: inherit;
   }
 
-  .mark {
-    width: 38px;
-    height: 38px;
-    border-radius: 11px;
-    display: grid;
-    place-items: center;
+  /*
+   * The brand badge. Renamed from `.mark`, which this page also uses for the ✓/— glyph in the plan
+   * feature list — one class doing two unrelated jobs, and the plan table only rendered correctly
+   * because a more specific selector happened to override it.
+   *
+   * No tile, no gradient, no shadow behind it: brand.png is already a finished badge with its own
+   * gold ring, and framing a badge inside another shape is how a logo stops looking like one.
+   */
+  .brand-mark {
+    width: 44px;
+    height: 44px;
     flex: none;
-    background: linear-gradient(145deg, var(--teal-lt), var(--teal));
-    box-shadow: 0 6px 20px rgb(13 110 102 / 45%);
-
-    svg {
-      width: 20px;
-      height: 20px;
-    }
+    display: block;
+    // The source is 383px square and rendered at 44 — let the browser downsample smoothly rather
+    // than showing the ring's aliasing.
+    image-rendering: auto;
   }
 
   .brand-name {
@@ -206,7 +281,7 @@
     font-size: 0.66rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--mint);
+    color: var(--sky);
     font-weight: 600;
     margin-top: -2px;
   }
@@ -217,7 +292,7 @@
     gap: 7px;
     padding: 9px 17px;
     border-radius: 999px;
-    border: 1px solid rgb(224 170 62 / 42%);
+    border: 1px solid rgb(197 148 55 / 42%);
     color: var(--gold);
     text-decoration: none;
     font-weight: 600;
@@ -228,7 +303,7 @@
       transform 0.2s;
 
     &:hover {
-      background: rgb(224 170 62 / 12%);
+      background: rgb(197 148 55 / 12%);
       border-color: var(--gold);
       transform: translateY(-1px);
     }
@@ -246,13 +321,13 @@
     gap: 9px;
     padding: 7px 16px;
     border-radius: 999px;
-    background: rgb(127 227 212 / 9%);
+    background: rgb(171 200 248 / 9%);
     border: 1px solid var(--line);
     font-size: 0.79rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     font-weight: 600;
-    color: var(--mint);
+    color: var(--sky);
   }
 
   .dot {
@@ -273,7 +348,7 @@
 
     em {
       font-style: normal;
-      background: linear-gradient(100deg, var(--mint), var(--gold));
+      background: linear-gradient(100deg, var(--sky), var(--gold));
       background-clip: text;
       color: transparent;
     }
@@ -283,7 +358,7 @@
     margin: 22px auto 0;
     max-width: 56ch;
     font-size: clamp(1rem, 2.1vw, 1.16rem);
-    color: #c9e5e0;
+    color: #d7e3f4;
   }
 
   /* ---------- countdown ---------- */
@@ -368,8 +443,8 @@
       box-shadow 0.2s;
 
     &:focus-within {
-      border-color: rgb(127 227 212 / 50%);
-      box-shadow: 0 0 0 4px rgb(25 160 148 / 14%);
+      border-color: rgb(171 200 248 / 50%);
+      box-shadow: 0 0 0 4px rgb(28 74 128 / 14%);
     }
 
     input {
@@ -384,7 +459,7 @@
       padding: 12px 18px;
 
       &::placeholder {
-        color: #7ba5a0;
+        color: #8ba0bd;
       }
     }
   }
@@ -412,9 +487,9 @@
     font-size: 0.93rem;
     padding: 13px 24px;
     border-radius: 999px;
-    color: #14251a;
-    background: linear-gradient(140deg, var(--gold), var(--gold-dp));
-    box-shadow: 0 8px 22px rgb(224 170 62 / 30%);
+    color: #10233d;
+    background: linear-gradient(140deg, var(--gold-lt), var(--gold));
+    box-shadow: 0 8px 22px rgb(197 148 55 / 30%);
     transition:
       transform 0.18s,
       box-shadow 0.18s,
@@ -422,7 +497,7 @@
 
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgb(224 170 62 / 42%);
+      box-shadow: 0 12px 30px rgb(197 148 55 / 42%);
     }
 
     &:disabled {
@@ -438,7 +513,7 @@
     min-height: 1.2em;
 
     &.ok {
-      color: var(--mint);
+      color: var(--sky);
     }
 
     &.err {
@@ -470,7 +545,7 @@
   .sec-lede {
     margin-top: 14px;
     max-width: 60ch;
-    color: #bcd9d4;
+    color: #c6d6ec;
   }
 
   .sec-foot {
@@ -497,7 +572,7 @@
 
     &:hover {
       transform: translateY(-4px);
-      border-color: rgb(127 227 212 / 34%);
+      border-color: rgb(171 200 248 / 34%);
     }
 
     h3 {
@@ -509,7 +584,7 @@
     p {
       margin-top: 9px;
       font-size: 0.93rem;
-      color: #a9cbc6;
+      color: #aabfd9;
     }
   }
 
@@ -523,13 +598,13 @@
       padding-left: 22px;
       margin-top: 7px;
       font-size: 0.88rem;
-      color: #bcd9d4;
+      color: #c6d6ec;
 
       &::before {
         content: '✓';
         position: absolute;
         left: 0;
-        color: var(--mint);
+        color: var(--sky);
         font-weight: 700;
       }
     }
@@ -558,8 +633,8 @@
     border: 1px solid var(--line);
 
     &.featured {
-      border-color: rgb(224 170 62 / 45%);
-      background: linear-gradient(165deg, rgb(224 170 62 / 12%), rgb(255 255 255 / 2%));
+      border-color: rgb(197 148 55 / 45%);
+      background: linear-gradient(165deg, rgb(197 148 55 / 12%), rgb(255 255 255 / 2%));
     }
 
     h3 {
@@ -577,14 +652,14 @@
       font-weight: 700;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #14251a;
-      background: linear-gradient(140deg, var(--gold), var(--gold-dp));
+      color: #10233d;
+      background: linear-gradient(140deg, var(--gold-lt), var(--gold));
     }
 
     .for-who {
       margin-top: 8px;
       font-size: 0.9rem;
-      color: #a9cbc6;
+      color: #aabfd9;
     }
 
     .price {
@@ -622,14 +697,14 @@
       gap: 9px;
       margin-top: 8px;
       font-size: 0.88rem;
-      color: #bcd9d4;
+      color: #c6d6ec;
 
       .mark {
         width: auto;
         height: auto;
         background: none;
         box-shadow: none;
-        color: var(--mint);
+        color: var(--sky);
         font-weight: 700;
         border-radius: 0;
       }
@@ -656,8 +731,8 @@
     overflow: hidden;
     padding: clamp(34px, 5vw, 54px);
     border-radius: 26px;
-    background: linear-gradient(125deg, rgb(13 110 102 / 55%), rgb(224 170 62 / 15%));
-    border: 1px solid rgb(224 170 62 / 28%);
+    background: linear-gradient(125deg, rgb(13 48 88 / 55%), rgb(197 148 55 / 15%));
+    border: 1px solid rgb(197 148 55 / 28%);
     display: flex;
     gap: 30px;
     align-items: center;
@@ -672,7 +747,7 @@
       right: -90px;
       top: -120px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgb(224 170 62 / 35%), transparent 66%);
+      background: radial-gradient(circle, rgb(197 148 55 / 35%), transparent 66%);
     }
 
     > * {
@@ -687,7 +762,7 @@
     p {
       margin-top: 12px;
       max-width: 46ch;
-      color: #e2f2ee;
+      color: #e4ecf8;
     }
   }
 
@@ -700,9 +775,9 @@
     text-decoration: none;
     font-weight: 700;
     font-size: 1rem;
-    color: #14251a;
-    background: linear-gradient(140deg, var(--gold), var(--gold-dp));
-    box-shadow: 0 12px 30px rgb(224 170 62 / 34%);
+    color: #10233d;
+    background: linear-gradient(140deg, var(--gold-lt), var(--gold));
+    box-shadow: 0 12px 30px rgb(197 148 55 / 34%);
     transition:
       transform 0.18s,
       box-shadow 0.18s;
@@ -710,7 +785,7 @@
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 16px 40px rgb(224 170 62 / 46%);
+      box-shadow: 0 16px 40px rgb(197 148 55 / 46%);
     }
 
     svg {
@@ -745,7 +820,7 @@
 
     &:hover {
       transform: translateY(-4px);
-      border-color: rgb(224 170 62 / 45%);
+      border-color: rgb(197 148 55 / 45%);
     }
 
     h3 {
@@ -764,13 +839,13 @@
     .tier-voucher {
       margin-top: 4px;
       font-size: 0.78rem;
-      color: var(--mint);
+      color: var(--sky);
     }
 
     .tier-blurb {
       margin-top: 10px;
       font-size: 0.88rem;
-      color: #a9cbc6;
+      color: #aabfd9;
     }
 
     .tier-go {
@@ -812,13 +887,13 @@
       width: 11px;
       height: 11px;
       border-radius: 50%;
-      background: var(--teal-lt);
-      box-shadow: 0 0 0 4px rgb(25 160 148 / 18%);
+      background: var(--navy-lt);
+      box-shadow: 0 0 0 4px rgb(28 74 128 / 18%);
     }
 
     &.now::after {
       background: var(--gold);
-      box-shadow: 0 0 0 4px rgb(224 170 62 / 22%);
+      box-shadow: 0 0 0 4px rgb(197 148 55 / 22%);
     }
 
     h4 {
@@ -839,7 +914,7 @@
     p {
       margin-top: 6px;
       font-size: 0.88rem;
-      color: #a9cbc6;
+      color: #aabfd9;
     }
   }
 
@@ -871,7 +946,7 @@
       place-items: center;
       font-size: 0.8rem;
       text-decoration: none;
-      color: var(--mint);
+      color: var(--sky);
       border: 1px solid var(--line);
       background: rgb(255 255 255 / 4.5%);
       transition:
@@ -880,8 +955,8 @@
         transform 0.2s;
 
       &:hover {
-        background: rgb(25 160 148 / 18%);
-        border-color: rgb(127 227 212 / 40%);
+        background: rgb(28 74 128 / 18%);
+        border-color: rgb(171 200 248 / 40%);
         transform: translateY(-2px);
       }
     }
@@ -894,21 +969,21 @@
     font-size: 0.88rem;
 
     a {
-      color: #a9cbc6;
+      color: #aabfd9;
       text-decoration: none;
       transition: color 0.2s;
 
       &:hover {
-        color: var(--mint);
+        color: var(--sky);
       }
     }
   }
 
   .copyright {
     width: 100%;
-    margin-top: 26px;
+    margin-top: 10px;
     font-size: 0.8rem;
-    color: #6f9a95;
+    color: #7e93b0;
 
     .addr {
       margin-left: 8px;

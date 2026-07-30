@@ -35,7 +35,10 @@ public record PublicContentDTO(
         String fundUrl,
         String contactEmail,
         String contactPhone,
-        String officeAddress
+        String officeAddress,
+        /** The consultancy that owns the product; shown at the top and bottom of the page. */
+        String parentCompanyName,
+        String parentCompanyUrl
     ) implements Serializable {}
 
     public record Milestone(

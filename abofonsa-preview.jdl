@@ -289,6 +289,9 @@ entity LaunchSetting {
   contactEmail String required maxlength(254)
   contactPhone String maxlength(40)
   officeAddress String maxlength(255)
+  /** The consultancy that owns the product — surfaced at the top and bottom of the launch page. */
+  parentCompanyName String required maxlength(120)
+  parentCompanyUrl String required maxlength(255)
   active Boolean required
 }
 

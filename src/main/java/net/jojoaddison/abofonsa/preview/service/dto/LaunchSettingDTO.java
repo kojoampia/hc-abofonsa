@@ -50,6 +50,14 @@ public class LaunchSettingDTO implements Serializable {
     private String officeAddress;
 
     @NotNull
+    @Size(max = 120)
+    private String parentCompanyName;
+
+    @NotNull
+    @Size(max = 255)
+    private String parentCompanyUrl;
+
+    @NotNull
     private Boolean active;
 
     public Long getId() {
@@ -132,6 +140,22 @@ public class LaunchSettingDTO implements Serializable {
         this.officeAddress = officeAddress;
     }
 
+    public String getParentCompanyName() {
+        return parentCompanyName;
+    }
+
+    public void setParentCompanyName(String parentCompanyName) {
+        this.parentCompanyName = parentCompanyName;
+    }
+
+    public String getParentCompanyUrl() {
+        return parentCompanyUrl;
+    }
+
+    public void setParentCompanyUrl(String parentCompanyUrl) {
+        this.parentCompanyUrl = parentCompanyUrl;
+    }
+
     public Boolean getActive() {
         return active;
     }
@@ -175,6 +199,8 @@ public class LaunchSettingDTO implements Serializable {
             ", contactEmail='" + getContactEmail() + "'" +
             ", contactPhone='" + getContactPhone() + "'" +
             ", officeAddress='" + getOfficeAddress() + "'" +
+            ", parentCompanyName='" + getParentCompanyName() + "'" +
+            ", parentCompanyUrl='" + getParentCompanyUrl() + "'" +
             ", active='" + getActive() + "'" +
             "}";
     }
