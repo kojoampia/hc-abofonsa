@@ -1,0 +1,72 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (launchSetting(); as launchSettingRef) {
+      <div>
+        <h2 data-cy="launchSettingDetailsHeading">
+          <span jhiTranslate="abofonsaPreviewApp.launchSetting.detail.title">Launch Setting</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.settingKey">Setting Key</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.settingKey }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.organisationName">Organisation Name</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.organisationName }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.tagline">Tagline</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.tagline }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.launchAt">Launch At</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.launchAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.launchTimezone">Launch Timezone</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.launchTimezone }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.fundUrl">Fund Url</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.fundUrl }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.contactEmail">Contact Email</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.contactEmail }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.contactPhone">Contact Phone</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.contactPhone }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.officeAddress">Office Address</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.officeAddress }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchSetting.active">Active</span></dt>
+          <dd>
+            <span>{{ launchSettingRef.active }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/launch-setting', launchSettingRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

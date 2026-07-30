@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (launchMilestone(); as launchMilestoneRef) {
+      <div>
+        <h2 data-cy="launchMilestoneDetailsHeading">
+          <span jhiTranslate="abofonsaPreviewApp.launchMilestone.detail.title">Launch Milestone</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ launchMilestoneRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchMilestone.phaseLabel">Phase Label</span></dt>
+          <dd>
+            <span>{{ launchMilestoneRef.phaseLabel }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchMilestone.title">Title</span></dt>
+          <dd>
+            <span>{{ launchMilestoneRef.title }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchMilestone.body">Body</span></dt>
+          <dd>
+            <span>{{ launchMilestoneRef.body }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchMilestone.milestoneDate">Milestone Date</span></dt>
+          <dd>
+            <span>{{ launchMilestoneRef.milestoneDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchMilestone.current">Current</span></dt>
+          <dd>
+            <span>{{ launchMilestoneRef.current }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchMilestone.displayOrder">Display Order</span></dt>
+          <dd>
+            <span>{{ launchMilestoneRef.displayOrder }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.launchMilestone.published">Published</span></dt>
+          <dd>
+            <span>{{ launchMilestoneRef.published }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/launch-milestone', launchMilestoneRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

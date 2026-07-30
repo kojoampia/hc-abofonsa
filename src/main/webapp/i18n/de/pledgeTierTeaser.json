@@ -1,0 +1,33 @@
+{
+  "abofonsaPreviewApp": {
+    "pledgeTierTeaser": {
+      "home": {
+        "title": "Pledge Tier Teasers",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Pledge Tier Teaser erstellen",
+        "createOrEditLabel": "Pledge Tier Teaser erstellen oder bearbeiten",
+        "notFound": "Keine Pledge Tier Teasers gefunden"
+      },
+      "created": "Pledge Tier Teaser erstellt mit ID {{ param }}",
+      "updated": "Pledge Tier Teaser aktualisiert mit ID {{ param }}",
+      "deleted": "Pledge Tier Teaser gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Pledge Tier Teaser {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Pledge Tier Teaser"
+      },
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "blurb": "Blurb",
+      "amount": "Amount",
+      "currency": "Currency",
+      "voucherValue": "Voucher Value",
+      "handoffUrl": "Handoff Url",
+      "displayOrder": "Display Order",
+      "published": "Published",
+      "perk": "Perk"
+    }
+  }
+}

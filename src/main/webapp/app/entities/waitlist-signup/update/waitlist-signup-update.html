@@ -1,0 +1,436 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-waitlist-signup-heading"
+        data-cy="WaitlistSignupCreateUpdateHeading"
+        jhiTranslate="abofonsaPreviewApp.waitlistSignup.home.createOrEditLabel"
+      >
+        Create or edit a Waitlist Signup
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let emailRef = editForm.get('email')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_email" jhiTranslate="abofonsaPreviewApp.waitlistSignup.email">Email</label>
+          <input type="text" class="form-control" name="email" id="field_email" data-cy="email" formControlName="email" />
+          @if (emailRef.invalid && (emailRef.dirty || emailRef.touched)) {
+            <div>
+              @if (editForm.get('email')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('email')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '254' }"
+                  >This field cannot be longer than 254 characters.</small
+                >
+              }
+              @if (editForm.get('email')?.errors?.pattern) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.pattern" [translateValues]="{ pattern: 'Email' }"
+                  >This field should follow pattern for Email.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let emailNormalizedRef = editForm.get('emailNormalized')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_emailNormalized" jhiTranslate="abofonsaPreviewApp.waitlistSignup.emailNormalized"
+            >Email Normalized</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="emailNormalized"
+            id="field_emailNormalized"
+            data-cy="emailNormalized"
+            formControlName="emailNormalized"
+          />
+          @if (emailNormalizedRef.invalid && (emailNormalizedRef.dirty || emailNormalizedRef.touched)) {
+            <div>
+              @if (editForm.get('emailNormalized')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('emailNormalized')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '254' }"
+                  >This field cannot be longer than 254 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let fullNameRef = editForm.get('fullName')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_fullName" jhiTranslate="abofonsaPreviewApp.waitlistSignup.fullName">Full Name</label>
+          <input type="text" class="form-control" name="fullName" id="field_fullName" data-cy="fullName" formControlName="fullName" />
+          @if (fullNameRef.invalid && (fullNameRef.dirty || fullNameRef.touched)) {
+            <div>
+              @if (editForm.get('fullName')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '120' }"
+                  >This field cannot be longer than 120 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let organisationRef = editForm.get('organisation')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_organisation" jhiTranslate="abofonsaPreviewApp.waitlistSignup.organisation"
+            >Organisation</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="organisation"
+            id="field_organisation"
+            data-cy="organisation"
+            formControlName="organisation"
+          />
+          @if (organisationRef.invalid && (organisationRef.dirty || organisationRef.touched)) {
+            <div>
+              @if (editForm.get('organisation')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '160' }"
+                  >This field cannot be longer than 160 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_audience" jhiTranslate="abofonsaPreviewApp.waitlistSignup.audience">Audience</label>
+          <select class="form-control" name="audience" formControlName="audience" id="field_audience" data-cy="audience">
+            <option [ngValue]="null">{{ 'abofonsaPreviewApp.AudienceType.null' | translate }}</option>
+            @for (audienceType of audienceTypeValues; track $index) {
+              <option [value]="audienceType">{{ 'abofonsaPreviewApp.AudienceType.' + audienceType | translate }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_planOfInterest" jhiTranslate="abofonsaPreviewApp.waitlistSignup.planOfInterest"
+            >Plan Of Interest</label
+          >
+          <select
+            class="form-control"
+            name="planOfInterest"
+            formControlName="planOfInterest"
+            id="field_planOfInterest"
+            data-cy="planOfInterest"
+          >
+            <option [ngValue]="null">{{ 'abofonsaPreviewApp.PlanCode.null' | translate }}</option>
+            @for (planCode of planCodeValues; track $index) {
+              <option [value]="planCode">{{ 'abofonsaPreviewApp.PlanCode.' + planCode | translate }}</option>
+            }
+          </select>
+        </div>
+
+        @let statusRef = editForm.get('status')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_status" jhiTranslate="abofonsaPreviewApp.waitlistSignup.status">Status</label>
+          <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
+            <option [ngValue]="null">{{ 'abofonsaPreviewApp.SignupStatus.null' | translate }}</option>
+            @for (signupStatus of signupStatusValues; track $index) {
+              <option [value]="signupStatus">{{ 'abofonsaPreviewApp.SignupStatus.' + signupStatus | translate }}</option>
+            }
+          </select>
+          @if (statusRef.invalid && (statusRef.dirty || statusRef.touched)) {
+            <div>
+              @if (editForm.get('status')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let localeRef = editForm.get('locale')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_locale" jhiTranslate="abofonsaPreviewApp.waitlistSignup.locale">Locale</label>
+          <input type="text" class="form-control" name="locale" id="field_locale" data-cy="locale" formControlName="locale" />
+          @if (localeRef.invalid && (localeRef.dirty || localeRef.touched)) {
+            <div>
+              @if (editForm.get('locale')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '10' }"
+                  >This field cannot be longer than 10 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let sourcePageRef = editForm.get('sourcePage')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_sourcePage" jhiTranslate="abofonsaPreviewApp.waitlistSignup.sourcePage">Source Page</label>
+          <input
+            type="text"
+            class="form-control"
+            name="sourcePage"
+            id="field_sourcePage"
+            data-cy="sourcePage"
+            formControlName="sourcePage"
+          />
+          @if (sourcePageRef.invalid && (sourcePageRef.dirty || sourcePageRef.touched)) {
+            <div>
+              @if (editForm.get('sourcePage')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >This field cannot be longer than 255 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let utmSourceRef = editForm.get('utmSource')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_utmSource" jhiTranslate="abofonsaPreviewApp.waitlistSignup.utmSource">Utm Source</label>
+          <input type="text" class="form-control" name="utmSource" id="field_utmSource" data-cy="utmSource" formControlName="utmSource" />
+          @if (utmSourceRef.invalid && (utmSourceRef.dirty || utmSourceRef.touched)) {
+            <div>
+              @if (editForm.get('utmSource')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '120' }"
+                  >This field cannot be longer than 120 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let utmMediumRef = editForm.get('utmMedium')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_utmMedium" jhiTranslate="abofonsaPreviewApp.waitlistSignup.utmMedium">Utm Medium</label>
+          <input type="text" class="form-control" name="utmMedium" id="field_utmMedium" data-cy="utmMedium" formControlName="utmMedium" />
+          @if (utmMediumRef.invalid && (utmMediumRef.dirty || utmMediumRef.touched)) {
+            <div>
+              @if (editForm.get('utmMedium')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '120' }"
+                  >This field cannot be longer than 120 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let utmCampaignRef = editForm.get('utmCampaign')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_utmCampaign" jhiTranslate="abofonsaPreviewApp.waitlistSignup.utmCampaign"
+            >Utm Campaign</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="utmCampaign"
+            id="field_utmCampaign"
+            data-cy="utmCampaign"
+            formControlName="utmCampaign"
+          />
+          @if (utmCampaignRef.invalid && (utmCampaignRef.dirty || utmCampaignRef.touched)) {
+            <div>
+              @if (editForm.get('utmCampaign')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '120' }"
+                  >This field cannot be longer than 120 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let referrerRef = editForm.get('referrer')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_referrer" jhiTranslate="abofonsaPreviewApp.waitlistSignup.referrer">Referrer</label>
+          <input type="text" class="form-control" name="referrer" id="field_referrer" data-cy="referrer" formControlName="referrer" />
+          @if (referrerRef.invalid && (referrerRef.dirty || referrerRef.touched)) {
+            <div>
+              @if (editForm.get('referrer')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '512' }"
+                  >This field cannot be longer than 512 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_deviceType" jhiTranslate="abofonsaPreviewApp.waitlistSignup.deviceType">Device Type</label>
+          <select class="form-control" name="deviceType" formControlName="deviceType" id="field_deviceType" data-cy="deviceType">
+            <option [ngValue]="null">{{ 'abofonsaPreviewApp.DeviceType.null' | translate }}</option>
+            @for (deviceType of deviceTypeValues; track $index) {
+              <option [value]="deviceType">{{ 'abofonsaPreviewApp.DeviceType.' + deviceType | translate }}</option>
+            }
+          </select>
+        </div>
+
+        @let consentGivenRef = editForm.get('consentGiven')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_consentGiven" jhiTranslate="abofonsaPreviewApp.waitlistSignup.consentGiven"
+            >Consent Given</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="consentGiven"
+            id="field_consentGiven"
+            data-cy="consentGiven"
+            formControlName="consentGiven"
+          />
+          @if (consentGivenRef.invalid && (consentGivenRef.dirty || consentGivenRef.touched)) {
+            <div>
+              @if (editForm.get('consentGiven')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let confirmationTokenRef = editForm.get('confirmationToken')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_confirmationToken" jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmationToken"
+            >Confirmation Token</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="confirmationToken"
+            id="field_confirmationToken"
+            data-cy="confirmationToken"
+            formControlName="confirmationToken"
+          />
+          @if (confirmationTokenRef.invalid && (confirmationTokenRef.dirty || confirmationTokenRef.touched)) {
+            <div>
+              @if (editForm.get('confirmationToken')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '64' }"
+                  >This field cannot be longer than 64 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_confirmedAt" jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmedAt"
+            >Confirmed At</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_confirmedAt"
+              data-cy="confirmedAt"
+              type="datetime-local"
+              class="form-control"
+              name="confirmedAt"
+              formControlName="confirmedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_unsubscribedAt" jhiTranslate="abofonsaPreviewApp.waitlistSignup.unsubscribedAt"
+            >Unsubscribed At</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_unsubscribedAt"
+              data-cy="unsubscribedAt"
+              type="datetime-local"
+              class="form-control"
+              name="unsubscribedAt"
+              formControlName="unsubscribedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        @let capturedAtRef = editForm.get('capturedAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_capturedAt" jhiTranslate="abofonsaPreviewApp.waitlistSignup.capturedAt">Captured At</label>
+          <div class="d-flex">
+            <input
+              id="field_capturedAt"
+              data-cy="capturedAt"
+              type="datetime-local"
+              class="form-control"
+              name="capturedAt"
+              formControlName="capturedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (capturedAtRef.invalid && (capturedAtRef.dirty || capturedAtRef.touched)) {
+            <div>
+              @if (editForm.get('capturedAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('capturedAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >This field should be a date and time.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let ipHashRef = editForm.get('ipHash')!;
+        <div class="mb-3">
+          <label
+            class="form-label"
+            for="field_ipHash"
+            [ngbTooltip]="'abofonsaPreviewApp.waitlistSignup.help.ipHash' | translate"
+            jhiTranslate="abofonsaPreviewApp.waitlistSignup.ipHash"
+            >Ip Hash</label
+          >
+          <input type="text" class="form-control" name="ipHash" id="field_ipHash" data-cy="ipHash" formControlName="ipHash" />
+          @if (ipHashRef.invalid && (ipHashRef.dirty || ipHashRef.touched)) {
+            <div>
+              @if (editForm.get('ipHash')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '64' }"
+                  >This field cannot be longer than 64 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let userAgentRef = editForm.get('userAgent')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_userAgent" jhiTranslate="abofonsaPreviewApp.waitlistSignup.userAgent">User Agent</label>
+          <input type="text" class="form-control" name="userAgent" id="field_userAgent" data-cy="userAgent" formControlName="userAgent" />
+          @if (userAgentRef.invalid && (userAgentRef.dirty || userAgentRef.touched)) {
+            <div>
+              @if (editForm.get('userAgent')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '512' }"
+                  >This field cannot be longer than 512 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

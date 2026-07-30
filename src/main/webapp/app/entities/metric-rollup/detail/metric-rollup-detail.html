@@ -1,0 +1,78 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (metricRollup(); as metricRollupRef) {
+      <div>
+        <h2 data-cy="metricRollupDetailsHeading"><span jhiTranslate="abofonsaPreviewApp.metricRollup.detail.title">Metric Rollup</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ metricRollupRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.metricRollup.metricKey">Metric Key</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.MetricKey.' + (metricRollupRef.metricKey ?? 'null')">{{
+              {
+                null: '',
+                WAITLIST_SIGNUPS: 'WAITLIST_SIGNUPS',
+                WAITLIST_CONFIRMED: 'WAITLIST_CONFIRMED',
+                WAITLIST_UNSUBSCRIBED: 'WAITLIST_UNSUBSCRIBED',
+                PLEDGE_CLICKS: 'PLEDGE_CLICKS',
+                PAGE_VIEWS: 'PAGE_VIEWS',
+                UNIQUE_VISITORS: 'UNIQUE_VISITORS',
+              }[metricRollupRef.metricKey ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.metricRollup.bucketType">Bucket Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.BucketType.' + (metricRollupRef.bucketType ?? 'null')">{{
+              { null: '', HOUR: 'HOUR', DAY: 'DAY', WEEK: 'WEEK', MONTH: 'MONTH', QUARTER: 'QUARTER', YEAR: 'YEAR' }[
+                metricRollupRef.bucketType ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.metricRollup.bucketStart">Bucket Start</span></dt>
+          <dd>
+            <span>{{ metricRollupRef.bucketStart | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.metricRollup.bucketEnd">Bucket End</span></dt>
+          <dd>
+            <span>{{ metricRollupRef.bucketEnd | formatMediumDatetime }}</span>
+          </dd>
+          <dt>
+            <span
+              [ngbTooltip]="'abofonsaPreviewApp.metricRollup.help.dimensionName' | translate"
+              jhiTranslate="abofonsaPreviewApp.metricRollup.dimensionName"
+              >Dimension Name</span
+            >
+          </dt>
+          <dd>
+            <span>{{ metricRollupRef.dimensionName }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.metricRollup.dimensionValue">Dimension Value</span></dt>
+          <dd>
+            <span>{{ metricRollupRef.dimensionValue }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.metricRollup.value">Value</span></dt>
+          <dd>
+            <span>{{ metricRollupRef.value }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.metricRollup.computedAt">Computed At</span></dt>
+          <dd>
+            <span>{{ metricRollupRef.computedAt | formatMediumDatetime }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,26 @@
+{
+  "abofonsaPreviewApp": {
+    "metricRollup": {
+      "home": {
+        "title": "Metric Rollups",
+        "refreshListLabel": "Refrescar lista",
+        "notFound": "Ningún Metric Rollups encontrado"
+      },
+      "detail": {
+        "title": "Metric Rollup"
+      },
+      "id": "ID",
+      "metricKey": "Metric Key",
+      "bucketType": "Bucket Type",
+      "bucketStart": "Bucket Start",
+      "bucketEnd": "Bucket End",
+      "dimensionName": "Dimension Name",
+      "dimensionValue": "Dimension Value",
+      "value": "Value",
+      "computedAt": "Computed At",
+      "help": {
+        "dimensionName": "null on the total row; otherwise the facet being split by, e.g. 'utmSource'."
+      }
+    }
+  }
+}

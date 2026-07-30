@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity PledgeTierPerk.
+    -->
+    <changeSet id="20260730175315-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="tier_id"
+                                 baseTableName="pledge_tier_perk"
+                                 constraintName="fk_pledge_tier_perk__tier_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="pledge_tier_teaser"
+                                 />
+    </changeSet>
+</databaseChangeLog>

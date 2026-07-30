@@ -1,0 +1,49 @@
+{
+  "annotations": {
+    "changelogDate": "20260730175515"
+  },
+  "applications": ["abofonsaPreview"],
+  "documentation": "Footer social icons and contact channels — one row per link, ordered and toggleable.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "platform",
+      "fieldType": "SocialPlatform",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "X,LINKEDIN,INSTAGRAM,FACEBOOK,YOUTUBE,WHATSAPP,EMAIL,PHONE,WEBSITE"
+    },
+    {
+      "fieldName": "label",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "80"
+    },
+    {
+      "fieldName": "url",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "512"
+    },
+    {
+      "fieldName": "iconKey",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "60"
+    },
+    {
+      "fieldName": "displayOrder",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "active",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "SocialLink",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity WaitlistSignup.
+    -->
+    <changeSet id="20260730174415-1" author="jhipster">
+        <createTable tableName="waitlist_signup" remarks="One captured email. `emailNormalized` (lower-cased, trimmed) carries the unique constraint\nrather than `email`, so &apos;Ama@Clinic.org&apos; and &apos;ama@clinic.org&apos; cannot both get on the list\nwhile the address is still displayed back exactly as it was typed.">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="varchar(254)">
+                <constraints nullable="false" />
+            </column>
+            <column name="email_normalized" type="varchar(254)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_waitlist_signup__email_normalized" />
+            </column>
+            <column name="full_name" type="varchar(120)">
+                <constraints nullable="true" />
+            </column>
+            <column name="organisation" type="varchar(160)">
+                <constraints nullable="true" />
+            </column>
+            <column name="audience" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="plan_of_interest" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="locale" type="varchar(10)">
+                <constraints nullable="true" />
+            </column>
+            <column name="source_page" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="utm_source" type="varchar(120)">
+                <constraints nullable="true" />
+            </column>
+            <column name="utm_medium" type="varchar(120)">
+                <constraints nullable="true" />
+            </column>
+            <column name="utm_campaign" type="varchar(120)">
+                <constraints nullable="true" />
+            </column>
+            <column name="referrer" type="varchar(512)">
+                <constraints nullable="true" />
+            </column>
+            <column name="device_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="consent_given" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <column name="confirmation_token" type="varchar(64)">
+                <constraints nullable="true" />
+            </column>
+            <column name="confirmed_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="unsubscribed_at" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="captured_at" type="${datetimeType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="ip_hash" type="varchar(64)" remarks="Salted hash, never the address itself — enough to rate-limit, not enough to re-identify.">
+                <constraints nullable="true" />
+            </column>
+            <column name="user_agent" type="varchar(512)">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="waitlist_signup" columnName="confirmed_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="waitlist_signup" columnName="unsubscribed_at" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="waitlist_signup" columnName="captured_at" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+</databaseChangeLog>

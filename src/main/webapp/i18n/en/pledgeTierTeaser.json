@@ -1,0 +1,33 @@
+{
+  "abofonsaPreviewApp": {
+    "pledgeTierTeaser": {
+      "home": {
+        "title": "Pledge Tier Teasers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Pledge Tier Teaser",
+        "createOrEditLabel": "Create or edit a Pledge Tier Teaser",
+        "notFound": "No Pledge Tier Teasers found"
+      },
+      "created": "A new Pledge Tier Teaser is created with identifier {{ param }}",
+      "updated": "A Pledge Tier Teaser is updated with identifier {{ param }}",
+      "deleted": "A Pledge Tier Teaser is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Pledge Tier Teaser {{ id }}?"
+      },
+      "detail": {
+        "title": "Pledge Tier Teaser"
+      },
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "blurb": "Blurb",
+      "amount": "Amount",
+      "currency": "Currency",
+      "voucherValue": "Voucher Value",
+      "handoffUrl": "Handoff Url",
+      "displayOrder": "Display Order",
+      "published": "Published",
+      "perk": "Perk"
+    }
+  }
+}

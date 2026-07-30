@@ -1,0 +1,139 @@
+<div>
+  <h2 id="page-heading" data-cy="SocialLinkHeading">
+    <span jhiTranslate="abofonsaPreviewApp.socialLink.home.title">Social Links</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="abofonsaPreviewApp.socialLink.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-social-link"
+        [routerLink]="['/social-link/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="abofonsaPreviewApp.socialLink.home.createLabel">Create a new Social Link</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (socialLinks().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="abofonsaPreviewApp.socialLink.home.notFound">No Social Links found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="platform">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.socialLink.platform">Platform</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="label">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.socialLink.label">Label</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="url">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.socialLink.url">Url</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="iconKey">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.socialLink.iconKey">Icon Key</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="displayOrder">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.socialLink.displayOrder">Display Order</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="active">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.socialLink.active">Active</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (socialLink of socialLinks(); track trackId(socialLink)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/social-link', socialLink.id, 'view']">{{ socialLink.id }}</a>
+              </td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.SocialPlatform.' + (socialLink.platform ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    X: 'X',
+                    LINKEDIN: 'LINKEDIN',
+                    INSTAGRAM: 'INSTAGRAM',
+                    FACEBOOK: 'FACEBOOK',
+                    YOUTUBE: 'YOUTUBE',
+                    WHATSAPP: 'WHATSAPP',
+                    EMAIL: 'EMAIL',
+                    PHONE: 'PHONE',
+                    WEBSITE: 'WEBSITE',
+                  }[socialLink.platform ?? 'null']
+                }}
+              </td>
+              <td>{{ socialLink.label }}</td>
+              <td>{{ socialLink.url }}</td>
+              <td>{{ socialLink.iconKey }}</td>
+              <td>{{ socialLink.displayOrder }}</td>
+              <td>{{ socialLink.active }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/social-link', socialLink.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/social-link', socialLink.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(socialLink)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

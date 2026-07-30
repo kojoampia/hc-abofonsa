@@ -1,0 +1,16 @@
+{
+  "abofonsaPreviewApp": {
+    "CaptureEventType": {
+      "null": "",
+      "PAGE_VIEW": "PAGE_VIEW",
+      "WAITLIST_SUBMIT": "WAITLIST_SUBMIT",
+      "WAITLIST_CONFIRM": "WAITLIST_CONFIRM",
+      "WAITLIST_DUPLICATE": "WAITLIST_DUPLICATE",
+      "PLEDGE_CTA_CLICK": "PLEDGE_CTA_CLICK",
+      "SERVICE_VIEW": "SERVICE_VIEW",
+      "PLAN_VIEW": "PLAN_VIEW",
+      "CONTACT_CLICK": "CONTACT_CLICK",
+      "SOCIAL_CLICK": "SOCIAL_CLICK"
+    }
+  }
+}

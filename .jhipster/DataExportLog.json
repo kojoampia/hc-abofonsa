@@ -1,0 +1,70 @@
+{
+  "annotations": {
+    "changelogDate": "20260730174715"
+  },
+  "applications": ["abofonsaPreview"],
+  "documentation": "Audit trail for every drill-down export — who pulled which emails, when, and how many.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "exportKind",
+      "fieldType": "ExportKind",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "WAITLIST_EMAILS,CAPTURE_EVENTS,METRIC_ROLLUPS"
+    },
+    {
+      "fieldName": "format",
+      "fieldType": "ExportFormat",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "CSV,JSON,XLSX"
+    },
+    {
+      "fieldName": "rangeFrom",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "rangeTo",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "bucketType",
+      "fieldType": "BucketType",
+      "fieldTypeDocumentation": "Granularity of a rollup bucket — the zoom levels the dashboard offers.",
+      "fieldValues": "HOUR,DAY,WEEK,MONTH,QUARTER,YEAR"
+    },
+    {
+      "fieldName": "filterSummary",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "512"
+    },
+    {
+      "fieldName": "rowCount",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "requestedBy",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "requestedAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "durationMs",
+      "fieldType": "Long"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "DataExportLog",
+  "pagination": "pagination",
+  "readOnly": true,
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

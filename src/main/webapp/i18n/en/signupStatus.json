@@ -1,0 +1,11 @@
+{
+  "abofonsaPreviewApp": {
+    "SignupStatus": {
+      "null": "",
+      "PENDING": "PENDING",
+      "CONFIRMED": "CONFIRMED",
+      "UNSUBSCRIBED": "UNSUBSCRIBED",
+      "BOUNCED": "BOUNCED"
+    }
+  }
+}

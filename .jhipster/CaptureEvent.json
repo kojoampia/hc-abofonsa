@@ -1,0 +1,95 @@
+{
+  "annotations": {
+    "changelogDate": "20260730174515"
+  },
+  "applications": ["abofonsaPreview"],
+  "documentation": "The raw event log the metrics are derived from. Append-only: rollups are recomputed from\\nhere, so this table is the single source of truth for every chart.\\n\\n`occurredDate` is redundant with `occurredAt` on purpose — it is the index the day/week/month\\ndrill-downs group on, and grouping on a derived date_trunc cannot use an index on the Instant.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "eventType",
+      "fieldType": "CaptureEventType",
+      "fieldTypeDocumentation": "Every countable thing the public page does. PLEDGE_CTA_CLICK is how a hand-off to\\nfund.abofonsa.com stays measurable on this side of the redirect.",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PAGE_VIEW,WAITLIST_SUBMIT,WAITLIST_CONFIRM,WAITLIST_DUPLICATE,PLEDGE_CTA_CLICK,SERVICE_VIEW,PLAN_VIEW,CONTACT_CLICK,SOCIAL_CLICK"
+    },
+    {
+      "fieldName": "occurredAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "occurredDate",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "documentation": "Rotating per-visit hash; supports UNIQUE_VISITORS without a persistent identifier.",
+      "fieldName": "sessionHash",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "locale",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "10"
+    },
+    {
+      "fieldName": "sourcePage",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "utmSource",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "utmMedium",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "utmCampaign",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "referrerHost",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "deviceType",
+      "fieldType": "DeviceType",
+      "fieldValues": "DESKTOP,MOBILE,TABLET,BOT,UNKNOWN"
+    },
+    {
+      "fieldName": "countryCode",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "2"
+    },
+    {
+      "documentation": "What was interacted with — a service slug, plan code, tier code or social platform.",
+      "fieldName": "targetKey",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "CaptureEvent",
+  "pagination": "pagination",
+  "readOnly": true,
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

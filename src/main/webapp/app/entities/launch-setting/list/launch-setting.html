@@ -1,0 +1,156 @@
+<div>
+  <h2 id="page-heading" data-cy="LaunchSettingHeading">
+    <span jhiTranslate="abofonsaPreviewApp.launchSetting.home.title">Launch Settings</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="abofonsaPreviewApp.launchSetting.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-launch-setting"
+        [routerLink]="['/launch-setting/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="abofonsaPreviewApp.launchSetting.home.createLabel">Create a new Launch Setting</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (launchSettings().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="abofonsaPreviewApp.launchSetting.home.notFound">No Launch Settings found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="settingKey">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.settingKey">Setting Key</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="organisationName">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.organisationName">Organisation Name</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="tagline">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.tagline">Tagline</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="launchAt">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.launchAt">Launch At</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="launchTimezone">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.launchTimezone">Launch Timezone</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fundUrl">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.fundUrl">Fund Url</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="contactEmail">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.contactEmail">Contact Email</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="contactPhone">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.contactPhone">Contact Phone</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="officeAddress">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.officeAddress">Office Address</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="active">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchSetting.active">Active</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (launchSetting of launchSettings(); track trackId(launchSetting)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/launch-setting', launchSetting.id, 'view']">{{ launchSetting.id }}</a>
+              </td>
+              <td>{{ launchSetting.settingKey }}</td>
+              <td>{{ launchSetting.organisationName }}</td>
+              <td>{{ launchSetting.tagline }}</td>
+              <td>{{ launchSetting.launchAt | formatMediumDatetime }}</td>
+              <td>{{ launchSetting.launchTimezone }}</td>
+              <td>{{ launchSetting.fundUrl }}</td>
+              <td>{{ launchSetting.contactEmail }}</td>
+              <td>{{ launchSetting.contactPhone }}</td>
+              <td>{{ launchSetting.officeAddress }}</td>
+              <td>{{ launchSetting.active }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/launch-setting', launchSetting.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/launch-setting', launchSetting.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(launchSetting)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

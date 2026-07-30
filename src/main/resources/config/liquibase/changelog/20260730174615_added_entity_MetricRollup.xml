@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity MetricRollup.
+    -->
+    <changeSet id="20260730174615-1" author="jhipster">
+        <createTable tableName="metric_rollup" remarks="Pre-aggregated counts, one row per (metric, granularity, bucket, dimension). Lets the\ndashboard zoom from hour to year without scanning CaptureEvent, and lets an export of\n&apos;captures per month&apos; be a single indexed read.">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="metric_key" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="bucket_type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="bucket_start" type="${datetimeType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="bucket_end" type="${datetimeType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="dimension_name" type="varchar(60)" remarks="null on the total row; otherwise the facet being split by, e.g. &apos;utmSource&apos;.">
+                <constraints nullable="true" />
+            </column>
+            <column name="dimension_value" type="varchar(160)">
+                <constraints nullable="true" />
+            </column>
+            <column name="value" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="computed_at" type="${datetimeType}">
+                <constraints nullable="false" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="metric_rollup" columnName="bucket_start" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="metric_rollup" columnName="bucket_end" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="metric_rollup" columnName="computed_at" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+</databaseChangeLog>

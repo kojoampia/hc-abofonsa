@@ -1,0 +1,145 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (waitlistSignup(); as waitlistSignupRef) {
+      <div>
+        <h2 data-cy="waitlistSignupDetailsHeading">
+          <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.detail.title">Waitlist Signup</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.email">Email</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.email }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.emailNormalized">Email Normalized</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.emailNormalized }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.fullName">Full Name</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.fullName }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.organisation">Organisation</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.organisation }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.audience">Audience</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.AudienceType.' + (waitlistSignupRef.audience ?? 'null')">{{
+              {
+                null: '',
+                CLINIC: 'CLINIC',
+                PHARMACY: 'PHARMACY',
+                LABORATORY: 'LABORATORY',
+                HOSPITAL: 'HOSPITAL',
+                PATIENT: 'PATIENT',
+                CAREGIVER: 'CAREGIVER',
+                PARTNER: 'PARTNER',
+                INVESTOR: 'INVESTOR',
+                OTHER: 'OTHER',
+              }[waitlistSignupRef.audience ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.planOfInterest">Plan Of Interest</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.PlanCode.' + (waitlistSignupRef.planOfInterest ?? 'null')">{{
+              { null: '', PEAR: 'PEAR', PAWPAW: 'PAWPAW', MELON: 'MELON' }[waitlistSignupRef.planOfInterest ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.status">Status</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.SignupStatus.' + (waitlistSignupRef.status ?? 'null')">{{
+              { null: '', PENDING: 'PENDING', CONFIRMED: 'CONFIRMED', UNSUBSCRIBED: 'UNSUBSCRIBED', BOUNCED: 'BOUNCED' }[
+                waitlistSignupRef.status ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.locale">Locale</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.locale }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.sourcePage">Source Page</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.sourcePage }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.utmSource">Utm Source</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.utmSource }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.utmMedium">Utm Medium</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.utmMedium }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.utmCampaign">Utm Campaign</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.utmCampaign }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.referrer">Referrer</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.referrer }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.deviceType">Device Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.DeviceType.' + (waitlistSignupRef.deviceType ?? 'null')">{{
+              { null: '', DESKTOP: 'DESKTOP', MOBILE: 'MOBILE', TABLET: 'TABLET', BOT: 'BOT', UNKNOWN: 'UNKNOWN' }[
+                waitlistSignupRef.deviceType ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.consentGiven">Consent Given</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.consentGiven }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmationToken">Confirmation Token</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.confirmationToken }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmedAt">Confirmed At</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.confirmedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.unsubscribedAt">Unsubscribed At</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.unsubscribedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.capturedAt">Captured At</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.capturedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt>
+            <span
+              [ngbTooltip]="'abofonsaPreviewApp.waitlistSignup.help.ipHash' | translate"
+              jhiTranslate="abofonsaPreviewApp.waitlistSignup.ipHash"
+              >Ip Hash</span
+            >
+          </dt>
+          <dd>
+            <span>{{ waitlistSignupRef.ipHash }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.userAgent">User Agent</span></dt>
+          <dd>
+            <span>{{ waitlistSignupRef.userAgent }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/waitlist-signup', waitlistSignupRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

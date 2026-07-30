@@ -1,0 +1,32 @@
+{
+  "abofonsaPreviewApp": {
+    "captureEvent": {
+      "home": {
+        "title": "CaptureEvents",
+        "refreshListLabel": "Actualiser la liste",
+        "notFound": "Aucun Capture Event trouvé"
+      },
+      "detail": {
+        "title": "Capture Event"
+      },
+      "id": "ID",
+      "eventType": "Event Type",
+      "occurredAt": "Occurred At",
+      "occurredDate": "Occurred Date",
+      "sessionHash": "Session Hash",
+      "locale": "Locale",
+      "sourcePage": "Source Page",
+      "utmSource": "Utm Source",
+      "utmMedium": "Utm Medium",
+      "utmCampaign": "Utm Campaign",
+      "referrerHost": "Referrer Host",
+      "deviceType": "Device Type",
+      "countryCode": "Country Code",
+      "targetKey": "Target Key",
+      "help": {
+        "sessionHash": "Rotating per-visit hash; supports UNIQUE_VISITORS without a persistent identifier.",
+        "targetKey": "What was interacted with — a service slug, plan code, tier code or social platform."
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "abofonsaPreviewApp": {
+    "dataExportLog": {
+      "home": {
+        "title": "DataExportLogs",
+        "refreshListLabel": "Actualiser la liste",
+        "notFound": "Aucun Data Export Log trouvé"
+      },
+      "detail": {
+        "title": "Data Export Log"
+      },
+      "id": "ID",
+      "exportKind": "Export Kind",
+      "format": "Format",
+      "rangeFrom": "Range From",
+      "rangeTo": "Range To",
+      "bucketType": "Bucket Type",
+      "filterSummary": "Filter Summary",
+      "rowCount": "Row Count",
+      "requestedBy": "Requested By",
+      "requestedAt": "Requested At",
+      "durationMs": "Duration Ms"
+    }
+  }
+}

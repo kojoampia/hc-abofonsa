@@ -1,0 +1,50 @@
+{
+  "annotations": {
+    "changelogDate": "20260730175415"
+  },
+  "applications": ["abofonsaPreview"],
+  "documentation": "A step on the 'Road to launch' timeline.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "phaseLabel",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "40"
+    },
+    {
+      "fieldName": "title",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "body",
+      "fieldType": "TextBlob"
+    },
+    {
+      "fieldName": "milestoneDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "current",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "displayOrder",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "published",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "LaunchMilestone",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

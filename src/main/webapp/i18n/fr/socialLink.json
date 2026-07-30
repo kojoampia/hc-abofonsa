@@ -1,0 +1,29 @@
+{
+  "abofonsaPreviewApp": {
+    "socialLink": {
+      "home": {
+        "title": "SocialLinks",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Social Link",
+        "createOrEditLabel": "Créer ou éditer un Social Link",
+        "notFound": "Aucun Social Link trouvé"
+      },
+      "created": "Un nouveau Social Link a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Social Link avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Social Link avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Social Link {{ id }} ?"
+      },
+      "detail": {
+        "title": "Social Link"
+      },
+      "id": "ID",
+      "platform": "Platform",
+      "label": "Label",
+      "url": "Url",
+      "iconKey": "Icon Key",
+      "displayOrder": "Display Order",
+      "active": "Active"
+    }
+  }
+}

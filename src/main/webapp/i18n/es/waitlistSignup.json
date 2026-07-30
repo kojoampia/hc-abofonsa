@@ -1,0 +1,47 @@
+{
+  "abofonsaPreviewApp": {
+    "waitlistSignup": {
+      "home": {
+        "title": "Waitlist Signups",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Waitlist Signup",
+        "createOrEditLabel": "Crear o editar Waitlist Signup",
+        "notFound": "Ningún Waitlist Signups encontrado"
+      },
+      "created": "Un nuevo Waitlist Signup ha sido creado con el identificador {{ param }}",
+      "updated": "Un Waitlist Signup ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Waitlist Signup ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Waitlist Signup {{ id }}?"
+      },
+      "detail": {
+        "title": "Waitlist Signup"
+      },
+      "id": "ID",
+      "email": "Email",
+      "emailNormalized": "Email Normalized",
+      "fullName": "Full Name",
+      "organisation": "Organisation",
+      "audience": "Audience",
+      "planOfInterest": "Plan Of Interest",
+      "status": "Status",
+      "locale": "Locale",
+      "sourcePage": "Source Page",
+      "utmSource": "Utm Source",
+      "utmMedium": "Utm Medium",
+      "utmCampaign": "Utm Campaign",
+      "referrer": "Referrer",
+      "deviceType": "Device Type",
+      "consentGiven": "Consent Given",
+      "confirmationToken": "Confirmation Token",
+      "confirmedAt": "Confirmed At",
+      "unsubscribedAt": "Unsubscribed At",
+      "capturedAt": "Captured At",
+      "ipHash": "Ip Hash",
+      "userAgent": "User Agent",
+      "help": {
+        "ipHash": "Salted hash, never the address itself — enough to rate-limit, not enough to re-identify."
+      }
+    }
+  }
+}

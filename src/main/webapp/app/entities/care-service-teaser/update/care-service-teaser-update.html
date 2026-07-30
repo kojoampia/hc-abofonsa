@@ -1,0 +1,174 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-care-service-teaser-heading"
+        data-cy="CareServiceTeaserCreateUpdateHeading"
+        jhiTranslate="abofonsaPreviewApp.careServiceTeaser.home.createOrEditLabel"
+      >
+        Create or edit a Care Service Teaser
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let slugRef = editForm.get('slug')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_slug" jhiTranslate="abofonsaPreviewApp.careServiceTeaser.slug">Slug</label>
+          <input type="text" class="form-control" name="slug" id="field_slug" data-cy="slug" formControlName="slug" />
+          @if (slugRef.invalid && (slugRef.dirty || slugRef.touched)) {
+            <div>
+              @if (editForm.get('slug')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('slug')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '80' }"
+                  >This field cannot be longer than 80 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let nameRef = editForm.get('name')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_name" jhiTranslate="abofonsaPreviewApp.careServiceTeaser.name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          @if (nameRef.invalid && (nameRef.dirty || nameRef.touched)) {
+            <div>
+              @if (editForm.get('name')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('name')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '120' }"
+                  >This field cannot be longer than 120 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let blurbRef = editForm.get('blurb')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_blurb" jhiTranslate="abofonsaPreviewApp.careServiceTeaser.blurb">Blurb</label>
+          <textarea class="form-control" name="blurb" id="field_blurb" data-cy="blurb" formControlName="blurb"></textarea>
+          @if (blurbRef.invalid && (blurbRef.dirty || blurbRef.touched)) {
+            <div>
+              @if (editForm.get('blurb')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let iconKeyRef = editForm.get('iconKey')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_iconKey" jhiTranslate="abofonsaPreviewApp.careServiceTeaser.iconKey">Icon Key</label>
+          <input type="text" class="form-control" name="iconKey" id="field_iconKey" data-cy="iconKey" formControlName="iconKey" />
+          @if (iconKeyRef.invalid && (iconKeyRef.dirty || iconKeyRef.touched)) {
+            <div>
+              @if (editForm.get('iconKey')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '60' }"
+                  >This field cannot be longer than 60 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let availableOnRef = editForm.get('availableOn')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_availableOn" jhiTranslate="abofonsaPreviewApp.careServiceTeaser.availableOn"
+            >Available On</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="availableOn"
+            id="field_availableOn"
+            data-cy="availableOn"
+            formControlName="availableOn"
+          />
+          @if (availableOnRef.invalid && (availableOnRef.dirty || availableOnRef.touched)) {
+            <div>
+              @if (editForm.get('availableOn')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '160' }"
+                  >This field cannot be longer than 160 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let displayOrderRef = editForm.get('displayOrder')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_displayOrder" jhiTranslate="abofonsaPreviewApp.careServiceTeaser.displayOrder"
+            >Display Order</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="displayOrder"
+            id="field_displayOrder"
+            data-cy="displayOrder"
+            formControlName="displayOrder"
+          />
+          @if (displayOrderRef.invalid && (displayOrderRef.dirty || displayOrderRef.touched)) {
+            <div>
+              @if (editForm.get('displayOrder')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('displayOrder')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('displayOrder')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let publishedRef = editForm.get('published')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_published" jhiTranslate="abofonsaPreviewApp.careServiceTeaser.published">Published</label>
+          <input type="checkbox" class="form-check" name="published" id="field_published" data-cy="published" formControlName="published" />
+          @if (publishedRef.invalid && (publishedRef.dirty || publishedRef.touched)) {
+            <div>
+              @if (editForm.get('published')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

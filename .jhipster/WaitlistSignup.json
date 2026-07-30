@@ -1,0 +1,138 @@
+{
+  "annotations": {
+    "changelogDate": "20260730174415"
+  },
+  "applications": ["abofonsaPreview"],
+  "documentation": "One captured email. `emailNormalized` (lower-cased, trimmed) carries the unique constraint\\nrather than `email`, so 'Ama@Clinic.org' and 'ama@clinic.org' cannot both get on the list\\nwhile the address is still displayed back exactly as it was typed.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength", "pattern"],
+      "fieldValidateRulesMaxlength": "254",
+      "fieldValidateRulesPattern": "^[^@]+@[^@]+[.][^@]+$"
+    },
+    {
+      "fieldName": "emailNormalized",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength", "unique"],
+      "fieldValidateRulesMaxlength": "254"
+    },
+    {
+      "fieldName": "fullName",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "organisation",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "160"
+    },
+    {
+      "fieldName": "audience",
+      "fieldType": "AudienceType",
+      "fieldTypeDocumentation": "Who signed up — drives the 'early access for clinics, pharmacies and partners' segmentation.",
+      "fieldValues": "CLINIC,PHARMACY,LABORATORY,HOSPITAL,PATIENT,CAREGIVER,PARTNER,INVESTOR,OTHER"
+    },
+    {
+      "fieldName": "planOfInterest",
+      "fieldType": "PlanCode",
+      "fieldTypeDocumentation": "The three care subscriptions from hc-abofonsa-web.",
+      "fieldValues": "PEAR,PAWPAW,MELON"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "SignupStatus",
+      "fieldTypeDocumentation": "Lifecycle of a captured email. Double opt-in: PENDING until the link is clicked.",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PENDING,CONFIRMED,UNSUBSCRIBED,BOUNCED"
+    },
+    {
+      "fieldName": "locale",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "10"
+    },
+    {
+      "fieldName": "sourcePage",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "utmSource",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "utmMedium",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "utmCampaign",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "120"
+    },
+    {
+      "fieldName": "referrer",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "512"
+    },
+    {
+      "fieldName": "deviceType",
+      "fieldType": "DeviceType",
+      "fieldValues": "DESKTOP,MOBILE,TABLET,BOT,UNKNOWN"
+    },
+    {
+      "fieldName": "consentGiven",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "confirmationToken",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "confirmedAt",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "unsubscribedAt",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "capturedAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "documentation": "Salted hash, never the address itself — enough to rate-limit, not enough to re-identify.",
+      "fieldName": "ipHash",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "userAgent",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "512"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "WaitlistSignup",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

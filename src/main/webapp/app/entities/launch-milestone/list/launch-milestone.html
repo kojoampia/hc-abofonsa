@@ -1,0 +1,140 @@
+<div>
+  <h2 id="page-heading" data-cy="LaunchMilestoneHeading">
+    <span jhiTranslate="abofonsaPreviewApp.launchMilestone.home.title">Launch Milestones</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="abofonsaPreviewApp.launchMilestone.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-launch-milestone"
+        [routerLink]="['/launch-milestone/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="abofonsaPreviewApp.launchMilestone.home.createLabel">Create a new Launch Milestone</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (launchMilestones().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="abofonsaPreviewApp.launchMilestone.home.notFound">No Launch Milestones found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="phaseLabel">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchMilestone.phaseLabel">Phase Label</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="title">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchMilestone.title">Title</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="body">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchMilestone.body">Body</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="milestoneDate">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchMilestone.milestoneDate">Milestone Date</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="current">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchMilestone.current">Current</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="displayOrder">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchMilestone.displayOrder">Display Order</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="published">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.launchMilestone.published">Published</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (launchMilestone of launchMilestones(); track trackId(launchMilestone)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/launch-milestone', launchMilestone.id, 'view']">{{ launchMilestone.id }}</a>
+              </td>
+              <td>{{ launchMilestone.phaseLabel }}</td>
+              <td>{{ launchMilestone.title }}</td>
+              <td>{{ launchMilestone.body }}</td>
+              <td>{{ launchMilestone.milestoneDate | formatMediumDate }}</td>
+              <td>{{ launchMilestone.current }}</td>
+              <td>{{ launchMilestone.displayOrder }}</td>
+              <td>{{ launchMilestone.published }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/launch-milestone', launchMilestone.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/launch-milestone', launchMilestone.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(launchMilestone)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

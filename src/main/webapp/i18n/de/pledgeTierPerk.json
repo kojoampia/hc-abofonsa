@@ -1,0 +1,26 @@
+{
+  "abofonsaPreviewApp": {
+    "pledgeTierPerk": {
+      "home": {
+        "title": "Pledge Tier Perks",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Pledge Tier Perk erstellen",
+        "createOrEditLabel": "Pledge Tier Perk erstellen oder bearbeiten",
+        "notFound": "Keine Pledge Tier Perks gefunden"
+      },
+      "created": "Pledge Tier Perk erstellt mit ID {{ param }}",
+      "updated": "Pledge Tier Perk aktualisiert mit ID {{ param }}",
+      "deleted": "Pledge Tier Perk gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Pledge Tier Perk {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Pledge Tier Perk"
+      },
+      "id": "ID",
+      "label": "Label",
+      "displayOrder": "Display Order",
+      "tier": "Tier"
+    }
+  }
+}

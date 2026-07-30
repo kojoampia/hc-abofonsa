@@ -1,0 +1,202 @@
+<div>
+  <h2 id="page-heading" data-cy="CaptureEventHeading">
+    <span jhiTranslate="abofonsaPreviewApp.captureEvent.home.title">Capture Events</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="abofonsaPreviewApp.captureEvent.home.refreshListLabel">Refresh list</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (captureEvents().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="abofonsaPreviewApp.captureEvent.home.notFound">No Capture Events found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="eventType">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.eventType">Event Type</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="occurredAt">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.occurredAt">Occurred At</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="occurredDate">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.occurredDate">Occurred Date</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="sessionHash">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.sessionHash">Session Hash</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="locale">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.locale">Locale</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="sourcePage">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.sourcePage">Source Page</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="utmSource">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.utmSource">Utm Source</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="utmMedium">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.utmMedium">Utm Medium</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="utmCampaign">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.utmCampaign">Utm Campaign</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="referrerHost">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.referrerHost">Referrer Host</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="deviceType">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.deviceType">Device Type</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="countryCode">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.countryCode">Country Code</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="targetKey">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.captureEvent.targetKey">Target Key</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (captureEvent of captureEvents(); track trackId(captureEvent)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/capture-event', captureEvent.id, 'view']">{{ captureEvent.id }}</a>
+              </td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.CaptureEventType.' + (captureEvent.eventType ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    PAGE_VIEW: 'PAGE_VIEW',
+                    WAITLIST_SUBMIT: 'WAITLIST_SUBMIT',
+                    WAITLIST_CONFIRM: 'WAITLIST_CONFIRM',
+                    WAITLIST_DUPLICATE: 'WAITLIST_DUPLICATE',
+                    PLEDGE_CTA_CLICK: 'PLEDGE_CTA_CLICK',
+                    SERVICE_VIEW: 'SERVICE_VIEW',
+                    PLAN_VIEW: 'PLAN_VIEW',
+                    CONTACT_CLICK: 'CONTACT_CLICK',
+                    SOCIAL_CLICK: 'SOCIAL_CLICK',
+                  }[captureEvent.eventType ?? 'null']
+                }}
+              </td>
+              <td>{{ captureEvent.occurredAt | formatMediumDatetime }}</td>
+              <td>{{ captureEvent.occurredDate | formatMediumDate }}</td>
+              <td>{{ captureEvent.sessionHash }}</td>
+              <td>{{ captureEvent.locale }}</td>
+              <td>{{ captureEvent.sourcePage }}</td>
+              <td>{{ captureEvent.utmSource }}</td>
+              <td>{{ captureEvent.utmMedium }}</td>
+              <td>{{ captureEvent.utmCampaign }}</td>
+              <td>{{ captureEvent.referrerHost }}</td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.DeviceType.' + (captureEvent.deviceType ?? 'null')">
+                {{
+                  { null: '', DESKTOP: 'DESKTOP', MOBILE: 'MOBILE', TABLET: 'TABLET', BOT: 'BOT', UNKNOWN: 'UNKNOWN' }[
+                    captureEvent.deviceType ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ captureEvent.countryCode }}</td>
+              <td>{{ captureEvent.targetKey }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/capture-event', captureEvent.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (captureEvents().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems()"
+          [page]="page()"
+          [pageSize]="itemsPerPage()"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        />
+      </div>
+    </div>
+  }
+</div>

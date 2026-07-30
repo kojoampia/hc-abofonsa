@@ -1,0 +1,35 @@
+{
+  "annotations": {
+    "changelogDate": "20260730175315"
+  },
+  "applications": ["abofonsaPreview"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "label",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "160"
+    },
+    {
+      "fieldName": "displayOrder",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    }
+  ],
+  "name": "PledgeTierPerk",
+  "relationships": [
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "pledgeTierTeaser",
+      "otherEntityRelationshipName": "perk",
+      "relationshipName": "tier",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

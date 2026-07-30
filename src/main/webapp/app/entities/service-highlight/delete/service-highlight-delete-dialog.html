@@ -1,0 +1,28 @@
+@if (serviceHighlight) {
+  <form name="deleteForm" (ngSubmit)="confirmDelete(serviceHighlight.id!)">
+    <div class="modal-header">
+      <h4 class="modal-title" data-cy="serviceHighlightDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
+    </div>
+
+    <div class="modal-body">
+      <jhi-alert-error />
+      <p
+        id="jhi-delete-serviceHighlight-heading"
+        jhiTranslate="abofonsaPreviewApp.serviceHighlight.delete.question"
+        [translateValues]="{ id: serviceHighlight.id }"
+      >
+        Are you sure you want to delete Service Highlight {{ serviceHighlight.id }}?
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+        <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+      </button>
+
+      <button id="jhi-confirm-delete-serviceHighlight" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger">
+        <fa-icon icon="times" />&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
+      </button>
+    </div>
+  </form>
+}

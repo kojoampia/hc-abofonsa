@@ -1,0 +1,10 @@
+{
+  "abofonsaPreviewApp": {
+    "ExportFormat": {
+      "null": "",
+      "CSV": "CSV",
+      "JSON": "JSON",
+      "XLSX": "XLSX"
+    }
+  }
+}

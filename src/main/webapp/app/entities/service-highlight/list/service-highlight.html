@@ -1,0 +1,113 @@
+<div>
+  <h2 id="page-heading" data-cy="ServiceHighlightHeading">
+    <span jhiTranslate="abofonsaPreviewApp.serviceHighlight.home.title">Service Highlights</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="abofonsaPreviewApp.serviceHighlight.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-service-highlight"
+        [routerLink]="['/service-highlight/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="abofonsaPreviewApp.serviceHighlight.home.createLabel">Create a new Service Highlight</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (serviceHighlights().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="abofonsaPreviewApp.serviceHighlight.home.notFound">No Service Highlights found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="label">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.serviceHighlight.label">Label</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="displayOrder">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.serviceHighlight.displayOrder">Display Order</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="service.name">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.serviceHighlight.service">Service</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (serviceHighlight of serviceHighlights(); track trackId(serviceHighlight)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/service-highlight', serviceHighlight.id, 'view']">{{ serviceHighlight.id }}</a>
+              </td>
+              <td>{{ serviceHighlight.label }}</td>
+              <td>{{ serviceHighlight.displayOrder }}</td>
+              <td>
+                @if (serviceHighlight.service) {
+                  <div>
+                    <a [routerLink]="['/care-service-teaser', serviceHighlight.service.id, 'view']">{{ serviceHighlight.service.name }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/service-highlight', serviceHighlight.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/service-highlight', serviceHighlight.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(serviceHighlight)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

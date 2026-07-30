@@ -1,0 +1,159 @@
+<div>
+  <h2 id="page-heading" data-cy="MetricRollupHeading">
+    <span jhiTranslate="abofonsaPreviewApp.metricRollup.home.title">Metric Rollups</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="abofonsaPreviewApp.metricRollup.home.refreshListLabel">Refresh list</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (metricRollups().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="abofonsaPreviewApp.metricRollup.home.notFound">No Metric Rollups found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="metricKey">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.metricRollup.metricKey">Metric Key</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bucketType">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.metricRollup.bucketType">Bucket Type</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bucketStart">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.metricRollup.bucketStart">Bucket Start</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bucketEnd">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.metricRollup.bucketEnd">Bucket End</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dimensionName">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.metricRollup.dimensionName">Dimension Name</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dimensionValue">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.metricRollup.dimensionValue">Dimension Value</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="value">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.metricRollup.value">Value</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="computedAt">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.metricRollup.computedAt">Computed At</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (metricRollup of metricRollups(); track trackId(metricRollup)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/metric-rollup', metricRollup.id, 'view']">{{ metricRollup.id }}</a>
+              </td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.MetricKey.' + (metricRollup.metricKey ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    WAITLIST_SIGNUPS: 'WAITLIST_SIGNUPS',
+                    WAITLIST_CONFIRMED: 'WAITLIST_CONFIRMED',
+                    WAITLIST_UNSUBSCRIBED: 'WAITLIST_UNSUBSCRIBED',
+                    PLEDGE_CLICKS: 'PLEDGE_CLICKS',
+                    PAGE_VIEWS: 'PAGE_VIEWS',
+                    UNIQUE_VISITORS: 'UNIQUE_VISITORS',
+                  }[metricRollup.metricKey ?? 'null']
+                }}
+              </td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.BucketType.' + (metricRollup.bucketType ?? 'null')">
+                {{
+                  { null: '', HOUR: 'HOUR', DAY: 'DAY', WEEK: 'WEEK', MONTH: 'MONTH', QUARTER: 'QUARTER', YEAR: 'YEAR' }[
+                    metricRollup.bucketType ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ metricRollup.bucketStart | formatMediumDatetime }}</td>
+              <td>{{ metricRollup.bucketEnd | formatMediumDatetime }}</td>
+              <td>{{ metricRollup.dimensionName }}</td>
+              <td>{{ metricRollup.dimensionValue }}</td>
+              <td>{{ metricRollup.value }}</td>
+              <td>{{ metricRollup.computedAt | formatMediumDatetime }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/metric-rollup', metricRollup.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (metricRollups().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems()"
+          [page]="page()"
+          [pageSize]="itemsPerPage()"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        />
+      </div>
+    </div>
+  }
+</div>

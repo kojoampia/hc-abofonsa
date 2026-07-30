@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity CareServiceTeaser.
+    -->
+    <changeSet id="20260730174815-1" author="jhipster">
+        <createTable tableName="care_service_teaser" remarks="A care service teaser card. Seeded from hc-abofonsa-web&apos;s six services.">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="slug" type="varchar(80)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_care_service_teaser__slug" />
+            </column>
+            <column name="name" type="varchar(120)">
+                <constraints nullable="false" />
+            </column>
+            <column name="blurb" type="${clobType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="icon_key" type="varchar(60)">
+                <constraints nullable="true" />
+            </column>
+            <column name="available_on" type="varchar(160)">
+                <constraints nullable="true" />
+            </column>
+            <column name="display_order" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="published" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+</databaseChangeLog>

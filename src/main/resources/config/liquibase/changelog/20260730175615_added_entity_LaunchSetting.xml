@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity LaunchSetting.
+    -->
+    <changeSet id="20260730175615-1" author="jhipster">
+        <createTable tableName="launch_setting" remarks="Single-row site configuration, including the launch instant the countdown ticks down to.\n`settingKey` is fixed at &apos;DEFAULT&apos; and carries the unique constraint, so a second row cannot\nbe created and leave the page choosing between two launch dates.">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="setting_key" type="varchar(80)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ux_launch_setting__setting_key" />
+            </column>
+            <column name="organisation_name" type="varchar(120)">
+                <constraints nullable="false" />
+            </column>
+            <column name="tagline" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="launch_at" type="${datetimeType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="launch_timezone" type="varchar(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="fund_url" type="varchar(512)">
+                <constraints nullable="false" />
+            </column>
+            <column name="contact_email" type="varchar(254)">
+                <constraints nullable="false" />
+            </column>
+            <column name="contact_phone" type="varchar(40)">
+                <constraints nullable="true" />
+            </column>
+            <column name="office_address" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="active" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="launch_setting" columnName="launch_at" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+</databaseChangeLog>

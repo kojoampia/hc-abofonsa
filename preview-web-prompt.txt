@@ -1,0 +1,7 @@
+Create a monolith web application (count-down, email waitlist capture, service teaser, social + contact links, pre-book/pledge) designed after web with a planned launch for 1st February, 2027.
+Pledge or pre-booking is described in detail at hc-crowdfund-app. Services are described at hc-abofonsa-web.
+Provide a mini admin protected dashboard that displays emails and a line graph showing a count of captured emails on a daily bases.
+Create metrics and export metrics for drilling down and zooming out to see captures per date/week/month/hour etc.
+Structure the application layout and naming convention after a JHipster shape. Use jhipster-mcp tool where necessary.
+Create a JDL file for models before implementation. Plan the work in phases and small TODO tasks. Ask questions where not sure.
+See abofonsa-countdown.html for design guideline and hc-abofonsa-web/.../styles/* for colors and styling.

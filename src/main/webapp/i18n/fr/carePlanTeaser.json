@@ -1,0 +1,34 @@
+{
+  "abofonsaPreviewApp": {
+    "carePlanTeaser": {
+      "home": {
+        "title": "CarePlanTeasers",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Care Plan Teaser",
+        "createOrEditLabel": "Créer ou éditer un Care Plan Teaser",
+        "notFound": "Aucun Care Plan Teaser trouvé"
+      },
+      "created": "Un nouveau Care Plan Teaser a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Care Plan Teaser avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Care Plan Teaser avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Care Plan Teaser {{ id }} ?"
+      },
+      "detail": {
+        "title": "Care Plan Teaser"
+      },
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "forWho": "For Who",
+      "priceAmount": "Price Amount",
+      "priceCurrency": "Price Currency",
+      "pricePeriod": "Price Period",
+      "priceNote": "Price Note",
+      "featured": "Featured",
+      "displayOrder": "Display Order",
+      "published": "Published",
+      "feature": "Feature"
+    }
+  }
+}

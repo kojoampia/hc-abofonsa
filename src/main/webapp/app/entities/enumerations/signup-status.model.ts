@@ -1,0 +1,9 @@
+export enum SignupStatus {
+  PENDING = 'PENDING',
+
+  CONFIRMED = 'CONFIRMED',
+
+  UNSUBSCRIBED = 'UNSUBSCRIBED',
+
+  BOUNCED = 'BOUNCED',
+}

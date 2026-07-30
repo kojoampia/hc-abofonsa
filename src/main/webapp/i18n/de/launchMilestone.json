@@ -1,0 +1,30 @@
+{
+  "abofonsaPreviewApp": {
+    "launchMilestone": {
+      "home": {
+        "title": "Launch Milestones",
+        "refreshListLabel": "Liste aktualisieren",
+        "createLabel": "Launch Milestone erstellen",
+        "createOrEditLabel": "Launch Milestone erstellen oder bearbeiten",
+        "notFound": "Keine Launch Milestones gefunden"
+      },
+      "created": "Launch Milestone erstellt mit ID {{ param }}",
+      "updated": "Launch Milestone aktualisiert mit ID {{ param }}",
+      "deleted": "Launch Milestone gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Launch Milestone {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Launch Milestone"
+      },
+      "id": "ID",
+      "phaseLabel": "Phase Label",
+      "title": "Title",
+      "body": "Body",
+      "milestoneDate": "Milestone Date",
+      "current": "Current",
+      "displayOrder": "Display Order",
+      "published": "Published"
+    }
+  }
+}

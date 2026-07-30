@@ -1,0 +1,318 @@
+/**
+ * Abofonsa BridgeCare — Health Connect launch preview site.
+ *
+ * A JHipster monolith serving one public page (countdown, waitlist capture, service teaser,
+ * pledge hand-off, social/contact) plus a protected mini admin dashboard over the captured
+ * emails and their daily/weekly/monthly/hourly metrics.
+ *
+ * Design reference: abofonsa-countdown.html (dark teal/gold treatment).
+ * Brand tokens:     hc-abofonsa-web/web/src/styles/{theme.scss,_theme-colors.scss,brand.css}
+ * Services/plans:   hc-abofonsa-web api V004SeedServices / V005SeedPlans.
+ * Pledge tiers:     hc-crowdfund-app V2__seed_tiers.sql — displayed here, transacted at
+ *                   fund.abofonsa.com. This app never takes money; it only entices and hands off.
+ *
+ * Generate with:  jhipster jdl abofonsa-preview.jdl
+ */
+
+application {
+  config {
+    baseName abofonsaPreview
+    applicationType monolith
+    packageName net.jojoaddison.abofonsa.preview
+    authenticationType jwt
+    databaseType sql
+    prodDatabaseType postgresql
+    devDatabaseType postgresql
+    cacheProvider caffeine
+    enableHibernateCache true
+    buildTool maven
+    clientFramework angular
+    enableTranslation true
+    nativeLanguage en
+    languages [en, fr, es, de]
+    testFrameworks [cypress]
+    withAdminUi true
+    serverPort 8080
+    reactive false
+  }
+  entities *
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Enumerations
+// ───────────────────────────────────────────────────────────────────────────
+
+/** Lifecycle of a captured email. Double opt-in: PENDING until the link is clicked. */
+enum SignupStatus {
+  PENDING, CONFIRMED, UNSUBSCRIBED, BOUNCED
+}
+
+/** Who signed up — drives the 'early access for clinics, pharmacies and partners' segmentation. */
+enum AudienceType {
+  CLINIC, PHARMACY, LABORATORY, HOSPITAL, PATIENT, CAREGIVER, PARTNER, INVESTOR, OTHER
+}
+
+/** The three care subscriptions from hc-abofonsa-web. */
+enum PlanCode {
+  PEAR, PAWPAW, MELON
+}
+
+/** The three backer tiers from hc-crowdfund-app; shown here, purchased at fund.abofonsa.com. */
+enum PledgeTierCode {
+  BRONZE, SILVER, GOLD
+}
+
+enum SocialPlatform {
+  X, LINKEDIN, INSTAGRAM, FACEBOOK, YOUTUBE, WHATSAPP, EMAIL, PHONE, WEBSITE
+}
+
+/**
+ * Every countable thing the public page does. PLEDGE_CTA_CLICK is how a hand-off to
+ * fund.abofonsa.com stays measurable on this side of the redirect.
+ */
+enum CaptureEventType {
+  PAGE_VIEW, WAITLIST_SUBMIT, WAITLIST_CONFIRM, WAITLIST_DUPLICATE,
+  PLEDGE_CTA_CLICK, SERVICE_VIEW, PLAN_VIEW, CONTACT_CLICK, SOCIAL_CLICK
+}
+
+/** The series a rollup row belongs to. */
+enum MetricKey {
+  WAITLIST_SIGNUPS, WAITLIST_CONFIRMED, WAITLIST_UNSUBSCRIBED,
+  PLEDGE_CLICKS, PAGE_VIEWS, UNIQUE_VISITORS
+}
+
+/** Granularity of a rollup bucket — the zoom levels the dashboard offers. */
+enum BucketType {
+  HOUR, DAY, WEEK, MONTH, QUARTER, YEAR
+}
+
+enum DeviceType {
+  DESKTOP, MOBILE, TABLET, BOT, UNKNOWN
+}
+
+enum ExportFormat {
+  CSV, JSON, XLSX
+}
+
+enum ExportKind {
+  WAITLIST_EMAILS, CAPTURE_EVENTS, METRIC_ROLLUPS
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Capture
+// ───────────────────────────────────────────────────────────────────────────
+
+/**
+ * One captured email. `emailNormalized` (lower-cased, trimmed) carries the unique constraint
+ * rather than `email`, so 'Ama@Clinic.org' and 'ama@clinic.org' cannot both get on the list
+ * while the address is still displayed back exactly as it was typed.
+ */
+entity WaitlistSignup {
+  // Character classes, not \S: the pattern is copied verbatim into the generated i18n JSON, where
+  // a backslash escape JHipster does not re-escape makes the translation file unparseable.
+  email String required maxlength(254) pattern(/^[^@]+@[^@]+[.][^@]+$/)
+  emailNormalized String required maxlength(254) unique
+  fullName String maxlength(120)
+  organisation String maxlength(160)
+  audience AudienceType
+  planOfInterest PlanCode
+  status SignupStatus required
+  locale String maxlength(10)
+  sourcePage String maxlength(255)
+  utmSource String maxlength(120)
+  utmMedium String maxlength(120)
+  utmCampaign String maxlength(120)
+  referrer String maxlength(512)
+  deviceType DeviceType
+  consentGiven Boolean required
+  confirmationToken String maxlength(64)
+  confirmedAt Instant
+  unsubscribedAt Instant
+  capturedAt Instant required
+  /** Salted hash, never the address itself — enough to rate-limit, not enough to re-identify. */
+  ipHash String maxlength(64)
+  userAgent String maxlength(512)
+}
+
+/**
+ * The raw event log the metrics are derived from. Append-only: rollups are recomputed from
+ * here, so this table is the single source of truth for every chart.
+ *
+ * `occurredDate` is redundant with `occurredAt` on purpose — it is the index the day/week/month
+ * drill-downs group on, and grouping on a derived date_trunc cannot use an index on the Instant.
+ */
+entity CaptureEvent {
+  eventType CaptureEventType required
+  occurredAt Instant required
+  occurredDate LocalDate required
+  /** Rotating per-visit hash; supports UNIQUE_VISITORS without a persistent identifier. */
+  sessionHash String maxlength(64)
+  locale String maxlength(10)
+  sourcePage String maxlength(255)
+  utmSource String maxlength(120)
+  utmMedium String maxlength(120)
+  utmCampaign String maxlength(120)
+  referrerHost String maxlength(255)
+  deviceType DeviceType
+  countryCode String maxlength(2)
+  /** What was interacted with — a service slug, plan code, tier code or social platform. */
+  targetKey String maxlength(120)
+}
+
+/**
+ * Pre-aggregated counts, one row per (metric, granularity, bucket, dimension). Lets the
+ * dashboard zoom from hour to year without scanning CaptureEvent, and lets an export of
+ * 'captures per month' be a single indexed read.
+ */
+entity MetricRollup {
+  metricKey MetricKey required
+  bucketType BucketType required
+  bucketStart Instant required
+  bucketEnd Instant required
+  /** null on the total row; otherwise the facet being split by, e.g. 'utmSource'. */
+  dimensionName String maxlength(60)
+  dimensionValue String maxlength(160)
+  value Long required min(0)
+  computedAt Instant required
+}
+
+/** Audit trail for every drill-down export — who pulled which emails, when, and how many. */
+entity DataExportLog {
+  exportKind ExportKind required
+  format ExportFormat required
+  rangeFrom Instant
+  rangeTo Instant
+  bucketType BucketType
+  filterSummary String maxlength(512)
+  rowCount Integer required min(0)
+  requestedBy String required maxlength(120)
+  requestedAt Instant required
+  durationMs Long
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Public page content
+// ───────────────────────────────────────────────────────────────────────────
+
+/** A care service teaser card. Seeded from hc-abofonsa-web's six services. */
+entity CareServiceTeaser {
+  slug String required maxlength(80) unique
+  name String required maxlength(120)
+  blurb TextBlob required
+  iconKey String maxlength(60)
+  availableOn String maxlength(160)
+  displayOrder Integer required min(0)
+  published Boolean required
+}
+
+entity ServiceHighlight {
+  label String required maxlength(160)
+  displayOrder Integer required min(0)
+}
+
+/** PEAR / PAWPAW / MELON, with the same GHS pricing the main site quotes. */
+entity CarePlanTeaser {
+  code PlanCode required unique
+  name String required maxlength(80)
+  forWho TextBlob required
+  priceAmount BigDecimal required min(0)
+  priceCurrency String required maxlength(3)
+  pricePeriod String required maxlength(20)
+  priceNote String maxlength(255)
+  featured Boolean required
+  displayOrder Integer required min(0)
+  published Boolean required
+}
+
+entity PlanFeature {
+  label String required maxlength(160)
+  included Boolean required
+  emphasised Boolean required
+  displayOrder Integer required min(0)
+}
+
+/**
+ * A backer tier shown on the pledge teaser. `handoffUrl` is the deep link into
+ * fund.abofonsa.com — this app displays the offer and counts the click, and the crowdfunding
+ * platform owns identity, payment, vouchers and certificates end to end.
+ */
+entity PledgeTierTeaser {
+  code PledgeTierCode required unique
+  name String required maxlength(80)
+  blurb TextBlob
+  amount BigDecimal required min(0)
+  currency String required maxlength(3)
+  voucherValue BigDecimal min(0)
+  handoffUrl String required maxlength(512)
+  displayOrder Integer required min(0)
+  published Boolean required
+}
+
+entity PledgeTierPerk {
+  label String required maxlength(160)
+  displayOrder Integer required min(0)
+}
+
+/** A step on the 'Road to launch' timeline. */
+entity LaunchMilestone {
+  phaseLabel String required maxlength(40)
+  title String required maxlength(120)
+  body TextBlob
+  milestoneDate LocalDate
+  current Boolean required
+  displayOrder Integer required min(0)
+  published Boolean required
+}
+
+/** Footer social icons and contact channels — one row per link, ordered and toggleable. */
+entity SocialLink {
+  platform SocialPlatform required
+  label String required maxlength(80)
+  url String required maxlength(512)
+  iconKey String maxlength(60)
+  displayOrder Integer required min(0)
+  active Boolean required
+}
+
+/**
+ * Single-row site configuration, including the launch instant the countdown ticks down to.
+ * `settingKey` is fixed at 'DEFAULT' and carries the unique constraint, so a second row cannot
+ * be created and leave the page choosing between two launch dates.
+ */
+entity LaunchSetting {
+  settingKey String required maxlength(80) unique
+  organisationName String required maxlength(120)
+  tagline String maxlength(255)
+  launchAt Instant required
+  launchTimezone String required maxlength(64)
+  fundUrl String required maxlength(512)
+  contactEmail String required maxlength(254)
+  contactPhone String maxlength(40)
+  officeAddress String maxlength(255)
+  active Boolean required
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Relationships
+// ───────────────────────────────────────────────────────────────────────────
+
+relationship OneToMany {
+  CareServiceTeaser{highlight(label)} to ServiceHighlight{service(name) required}
+  CarePlanTeaser{feature(label)} to PlanFeature{plan(name) required}
+  PledgeTierTeaser{perk(label)} to PledgeTierPerk{tier(name) required}
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Generation options
+// ───────────────────────────────────────────────────────────────────────────
+
+dto * with mapstruct
+service * with serviceClass
+
+/** Criteria-based querying: this is what makes the dashboard's drill-down filters cheap. */
+filter WaitlistSignup, CaptureEvent, MetricRollup, DataExportLog
+
+paginate WaitlistSignup, CaptureEvent, MetricRollup, DataExportLog with pagination
+
+/** Derived data — the admin views it and exports it, but never hand-edits it. */
+readOnly CaptureEvent, MetricRollup, DataExportLog

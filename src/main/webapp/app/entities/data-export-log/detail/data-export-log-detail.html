@@ -1,0 +1,78 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (dataExportLog(); as dataExportLogRef) {
+      <div>
+        <h2 data-cy="dataExportLogDetailsHeading">
+          <span jhiTranslate="abofonsaPreviewApp.dataExportLog.detail.title">Data Export Log</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ dataExportLogRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.exportKind">Export Kind</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.ExportKind.' + (dataExportLogRef.exportKind ?? 'null')">{{
+              { null: '', WAITLIST_EMAILS: 'WAITLIST_EMAILS', CAPTURE_EVENTS: 'CAPTURE_EVENTS', METRIC_ROLLUPS: 'METRIC_ROLLUPS' }[
+                dataExportLogRef.exportKind ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.format">Format</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.ExportFormat.' + (dataExportLogRef.format ?? 'null')">{{
+              { null: '', CSV: 'CSV', JSON: 'JSON', XLSX: 'XLSX' }[dataExportLogRef.format ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.rangeFrom">Range From</span></dt>
+          <dd>
+            <span>{{ dataExportLogRef.rangeFrom | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.rangeTo">Range To</span></dt>
+          <dd>
+            <span>{{ dataExportLogRef.rangeTo | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.bucketType">Bucket Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.BucketType.' + (dataExportLogRef.bucketType ?? 'null')">{{
+              { null: '', HOUR: 'HOUR', DAY: 'DAY', WEEK: 'WEEK', MONTH: 'MONTH', QUARTER: 'QUARTER', YEAR: 'YEAR' }[
+                dataExportLogRef.bucketType ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.filterSummary">Filter Summary</span></dt>
+          <dd>
+            <span>{{ dataExportLogRef.filterSummary }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.rowCount">Row Count</span></dt>
+          <dd>
+            <span>{{ dataExportLogRef.rowCount }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.requestedBy">Requested By</span></dt>
+          <dd>
+            <span>{{ dataExportLogRef.requestedBy }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.requestedAt">Requested At</span></dt>
+          <dd>
+            <span>{{ dataExportLogRef.requestedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.dataExportLog.durationMs">Duration Ms</span></dt>
+          <dd>
+            <span>{{ dataExportLogRef.durationMs }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

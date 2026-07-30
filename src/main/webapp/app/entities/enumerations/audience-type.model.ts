@@ -1,0 +1,19 @@
+export enum AudienceType {
+  CLINIC = 'CLINIC',
+
+  PHARMACY = 'PHARMACY',
+
+  LABORATORY = 'LABORATORY',
+
+  HOSPITAL = 'HOSPITAL',
+
+  PATIENT = 'PATIENT',
+
+  CAREGIVER = 'CAREGIVER',
+
+  PARTNER = 'PARTNER',
+
+  INVESTOR = 'INVESTOR',
+
+  OTHER = 'OTHER',
+}

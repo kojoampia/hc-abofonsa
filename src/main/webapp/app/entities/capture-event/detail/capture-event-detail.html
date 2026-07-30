@@ -1,0 +1,107 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (captureEvent(); as captureEventRef) {
+      <div>
+        <h2 data-cy="captureEventDetailsHeading"><span jhiTranslate="abofonsaPreviewApp.captureEvent.detail.title">Capture Event</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ captureEventRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.eventType">Event Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.CaptureEventType.' + (captureEventRef.eventType ?? 'null')">{{
+              {
+                null: '',
+                PAGE_VIEW: 'PAGE_VIEW',
+                WAITLIST_SUBMIT: 'WAITLIST_SUBMIT',
+                WAITLIST_CONFIRM: 'WAITLIST_CONFIRM',
+                WAITLIST_DUPLICATE: 'WAITLIST_DUPLICATE',
+                PLEDGE_CTA_CLICK: 'PLEDGE_CTA_CLICK',
+                SERVICE_VIEW: 'SERVICE_VIEW',
+                PLAN_VIEW: 'PLAN_VIEW',
+                CONTACT_CLICK: 'CONTACT_CLICK',
+                SOCIAL_CLICK: 'SOCIAL_CLICK',
+              }[captureEventRef.eventType ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.occurredAt">Occurred At</span></dt>
+          <dd>
+            <span>{{ captureEventRef.occurredAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.occurredDate">Occurred Date</span></dt>
+          <dd>
+            <span>{{ captureEventRef.occurredDate | formatMediumDate }}</span>
+          </dd>
+          <dt>
+            <span
+              [ngbTooltip]="'abofonsaPreviewApp.captureEvent.help.sessionHash' | translate"
+              jhiTranslate="abofonsaPreviewApp.captureEvent.sessionHash"
+              >Session Hash</span
+            >
+          </dt>
+          <dd>
+            <span>{{ captureEventRef.sessionHash }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.locale">Locale</span></dt>
+          <dd>
+            <span>{{ captureEventRef.locale }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.sourcePage">Source Page</span></dt>
+          <dd>
+            <span>{{ captureEventRef.sourcePage }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.utmSource">Utm Source</span></dt>
+          <dd>
+            <span>{{ captureEventRef.utmSource }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.utmMedium">Utm Medium</span></dt>
+          <dd>
+            <span>{{ captureEventRef.utmMedium }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.utmCampaign">Utm Campaign</span></dt>
+          <dd>
+            <span>{{ captureEventRef.utmCampaign }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.referrerHost">Referrer Host</span></dt>
+          <dd>
+            <span>{{ captureEventRef.referrerHost }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.deviceType">Device Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.DeviceType.' + (captureEventRef.deviceType ?? 'null')">{{
+              { null: '', DESKTOP: 'DESKTOP', MOBILE: 'MOBILE', TABLET: 'TABLET', BOT: 'BOT', UNKNOWN: 'UNKNOWN' }[
+                captureEventRef.deviceType ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.captureEvent.countryCode">Country Code</span></dt>
+          <dd>
+            <span>{{ captureEventRef.countryCode }}</span>
+          </dd>
+          <dt>
+            <span
+              [ngbTooltip]="'abofonsaPreviewApp.captureEvent.help.targetKey' | translate"
+              jhiTranslate="abofonsaPreviewApp.captureEvent.targetKey"
+              >Target Key</span
+            >
+          </dt>
+          <dd>
+            <span>{{ captureEventRef.targetKey }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

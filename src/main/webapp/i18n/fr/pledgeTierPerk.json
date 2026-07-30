@@ -1,0 +1,26 @@
+{
+  "abofonsaPreviewApp": {
+    "pledgeTierPerk": {
+      "home": {
+        "title": "PledgeTierPerks",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Pledge Tier Perk",
+        "createOrEditLabel": "Créer ou éditer un Pledge Tier Perk",
+        "notFound": "Aucun Pledge Tier Perk trouvé"
+      },
+      "created": "Un nouveau Pledge Tier Perk a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Pledge Tier Perk avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Pledge Tier Perk avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Pledge Tier Perk {{ id }} ?"
+      },
+      "detail": {
+        "title": "Pledge Tier Perk"
+      },
+      "id": "ID",
+      "label": "Label",
+      "displayOrder": "Display Order",
+      "tier": "Tier"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity CaptureEvent.
+    -->
+    <changeSet id="20260730174515-1" author="jhipster">
+        <createTable tableName="capture_event" remarks="The raw event log the metrics are derived from. Append-only: rollups are recomputed from\nhere, so this table is the single source of truth for every chart.\n\n`occurredDate` is redundant with `occurredAt` on purpose — it is the index the day/week/month\ndrill-downs group on, and grouping on a derived date_trunc cannot use an index on the Instant.">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="event_type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="occurred_at" type="${datetimeType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="occurred_date" type="date">
+                <constraints nullable="false" />
+            </column>
+            <column name="session_hash" type="varchar(64)" remarks="Rotating per-visit hash; supports UNIQUE_VISITORS without a persistent identifier.">
+                <constraints nullable="true" />
+            </column>
+            <column name="locale" type="varchar(10)">
+                <constraints nullable="true" />
+            </column>
+            <column name="source_page" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="utm_source" type="varchar(120)">
+                <constraints nullable="true" />
+            </column>
+            <column name="utm_medium" type="varchar(120)">
+                <constraints nullable="true" />
+            </column>
+            <column name="utm_campaign" type="varchar(120)">
+                <constraints nullable="true" />
+            </column>
+            <column name="referrer_host" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="device_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="country_code" type="varchar(2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="target_key" type="varchar(120)" remarks="What was interacted with — a service slug, plan code, tier code or social platform.">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="capture_event" columnName="occurred_at" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+</databaseChangeLog>

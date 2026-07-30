@@ -1,0 +1,10 @@
+{
+  "abofonsaPreviewApp": {
+    "PledgeTierCode": {
+      "null": "",
+      "BRONZE": "BRONZE",
+      "SILVER": "SILVER",
+      "GOLD": "GOLD"
+    }
+  }
+}

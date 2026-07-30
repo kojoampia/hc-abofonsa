@@ -1,0 +1,67 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (socialLink(); as socialLinkRef) {
+      <div>
+        <h2 data-cy="socialLinkDetailsHeading"><span jhiTranslate="abofonsaPreviewApp.socialLink.detail.title">Social Link</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ socialLinkRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.socialLink.platform">Platform</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.SocialPlatform.' + (socialLinkRef.platform ?? 'null')">{{
+              {
+                null: '',
+                X: 'X',
+                LINKEDIN: 'LINKEDIN',
+                INSTAGRAM: 'INSTAGRAM',
+                FACEBOOK: 'FACEBOOK',
+                YOUTUBE: 'YOUTUBE',
+                WHATSAPP: 'WHATSAPP',
+                EMAIL: 'EMAIL',
+                PHONE: 'PHONE',
+                WEBSITE: 'WEBSITE',
+              }[socialLinkRef.platform ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.socialLink.label">Label</span></dt>
+          <dd>
+            <span>{{ socialLinkRef.label }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.socialLink.url">Url</span></dt>
+          <dd>
+            <span>{{ socialLinkRef.url }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.socialLink.iconKey">Icon Key</span></dt>
+          <dd>
+            <span>{{ socialLinkRef.iconKey }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.socialLink.displayOrder">Display Order</span></dt>
+          <dd>
+            <span>{{ socialLinkRef.displayOrder }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.socialLink.active">Active</span></dt>
+          <dd>
+            <span>{{ socialLinkRef.active }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/social-link', socialLinkRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

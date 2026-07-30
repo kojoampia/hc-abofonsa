@@ -1,0 +1,26 @@
+{
+  "abofonsaPreviewApp": {
+    "serviceHighlight": {
+      "home": {
+        "title": "Service Highlights",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Service Highlight",
+        "createOrEditLabel": "Crear o editar Service Highlight",
+        "notFound": "Ningún Service Highlights encontrado"
+      },
+      "created": "Un nuevo Service Highlight ha sido creado con el identificador {{ param }}",
+      "updated": "Un Service Highlight ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Service Highlight ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Service Highlight {{ id }}?"
+      },
+      "detail": {
+        "title": "Service Highlight"
+      },
+      "id": "ID",
+      "label": "Label",
+      "displayOrder": "Display Order",
+      "service": "Service"
+    }
+  }
+}

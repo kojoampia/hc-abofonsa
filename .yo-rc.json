@@ -1,0 +1,41 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "abofonsaPreview",
+    "buildTool": "maven",
+    "cacheProvider": "caffeine",
+    "clientFramework": "angular",
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "enableHibernateCache": true,
+    "enableTranslation": true,
+    "entities": [
+      "WaitlistSignup",
+      "CaptureEvent",
+      "MetricRollup",
+      "DataExportLog",
+      "CareServiceTeaser",
+      "ServiceHighlight",
+      "CarePlanTeaser",
+      "PlanFeature",
+      "PledgeTierTeaser",
+      "PledgeTierPerk",
+      "LaunchMilestone",
+      "SocialLink",
+      "LaunchSetting"
+    ],
+    "jhipsterVersion": "9.1.0",
+    "jwtSecretKey": "OTVmMTM5NzRkZWMzMDkzNWI4MWY1Yzk3MzcwMzAyZDNlM2RkNzhiMWIwMzdlNGI3ZTU4ZDdiNGUyZmU2ODE4NGJmMDQzZDFhYWY0NTk1MzZjMGY5YWY2NzQ3MTc5ZWQyOTY2ZjBmZGNjMDdmMWVkODAxYWJkYzhjOTNiY2RkMTM=",
+    "languages": ["en", "fr", "es", "de"],
+    "lastLiquibaseTimestamp": 1785434175000,
+    "nativeLanguage": "en",
+    "packageName": "net.jojoaddison.abofonsa.preview",
+    "prodDatabaseType": "postgresql",
+    "reactive": false,
+    "serverPort": "8080",
+    "skipFakeData": true,
+    "testFrameworks": ["cypress"],
+    "withAdminUi": true
+  }
+}

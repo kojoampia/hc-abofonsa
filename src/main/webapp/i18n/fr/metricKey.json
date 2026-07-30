@@ -1,0 +1,13 @@
+{
+  "abofonsaPreviewApp": {
+    "MetricKey": {
+      "null": "",
+      "WAITLIST_SIGNUPS": "WAITLIST_SIGNUPS",
+      "WAITLIST_CONFIRMED": "WAITLIST_CONFIRMED",
+      "WAITLIST_UNSUBSCRIBED": "WAITLIST_UNSUBSCRIBED",
+      "PLEDGE_CLICKS": "PLEDGE_CLICKS",
+      "PAGE_VIEWS": "PAGE_VIEWS",
+      "UNIQUE_VISITORS": "UNIQUE_VISITORS"
+    }
+  }
+}

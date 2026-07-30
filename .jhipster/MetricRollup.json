@@ -1,0 +1,65 @@
+{
+  "annotations": {
+    "changelogDate": "20260730174615"
+  },
+  "applications": ["abofonsaPreview"],
+  "documentation": "Pre-aggregated counts, one row per (metric, granularity, bucket, dimension). Lets the\\ndashboard zoom from hour to year without scanning CaptureEvent, and lets an export of\\n'captures per month' be a single indexed read.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "metricKey",
+      "fieldType": "MetricKey",
+      "fieldTypeDocumentation": "The series a rollup row belongs to.",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "WAITLIST_SIGNUPS,WAITLIST_CONFIRMED,WAITLIST_UNSUBSCRIBED,PLEDGE_CLICKS,PAGE_VIEWS,UNIQUE_VISITORS"
+    },
+    {
+      "fieldName": "bucketType",
+      "fieldType": "BucketType",
+      "fieldTypeDocumentation": "Granularity of a rollup bucket — the zoom levels the dashboard offers.",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "HOUR,DAY,WEEK,MONTH,QUARTER,YEAR"
+    },
+    {
+      "fieldName": "bucketStart",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "bucketEnd",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "documentation": "null on the total row; otherwise the facet being split by, e.g. 'utmSource'.",
+      "fieldName": "dimensionName",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "60"
+    },
+    {
+      "fieldName": "dimensionValue",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "160"
+    },
+    {
+      "fieldName": "value",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "computedAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "MetricRollup",
+  "pagination": "pagination",
+  "readOnly": true,
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

@@ -1,0 +1,224 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-pledge-tier-teaser-heading"
+        data-cy="PledgeTierTeaserCreateUpdateHeading"
+        jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.home.createOrEditLabel"
+      >
+        Create or edit a Pledge Tier Teaser
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let codeRef = editForm.get('code')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_code" jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.code">Code</label>
+          <select class="form-control" name="code" formControlName="code" id="field_code" data-cy="code">
+            <option [ngValue]="null">{{ 'abofonsaPreviewApp.PledgeTierCode.null' | translate }}</option>
+            @for (pledgeTierCode of pledgeTierCodeValues; track $index) {
+              <option [value]="pledgeTierCode">{{ 'abofonsaPreviewApp.PledgeTierCode.' + pledgeTierCode | translate }}</option>
+            }
+          </select>
+          @if (codeRef.invalid && (codeRef.dirty || codeRef.touched)) {
+            <div>
+              @if (editForm.get('code')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let nameRef = editForm.get('name')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_name" jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          @if (nameRef.invalid && (nameRef.dirty || nameRef.touched)) {
+            <div>
+              @if (editForm.get('name')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('name')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '80' }"
+                  >This field cannot be longer than 80 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_blurb" jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.blurb">Blurb</label>
+          <textarea class="form-control" name="blurb" id="field_blurb" data-cy="blurb" formControlName="blurb"></textarea>
+        </div>
+
+        @let amountRef = editForm.get('amount')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_amount" jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.amount">Amount</label>
+          <input type="number" class="form-control" name="amount" id="field_amount" data-cy="amount" formControlName="amount" />
+          @if (amountRef.invalid && (amountRef.dirty || amountRef.touched)) {
+            <div>
+              @if (editForm.get('amount')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('amount')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('amount')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let currencyRef = editForm.get('currency')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_currency" jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.currency">Currency</label>
+          <input type="text" class="form-control" name="currency" id="field_currency" data-cy="currency" formControlName="currency" />
+          @if (currencyRef.invalid && (currencyRef.dirty || currencyRef.touched)) {
+            <div>
+              @if (editForm.get('currency')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('currency')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '3' }"
+                  >This field cannot be longer than 3 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let voucherValueRef = editForm.get('voucherValue')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_voucherValue" jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.voucherValue"
+            >Voucher Value</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="voucherValue"
+            id="field_voucherValue"
+            data-cy="voucherValue"
+            formControlName="voucherValue"
+          />
+          @if (voucherValueRef.invalid && (voucherValueRef.dirty || voucherValueRef.touched)) {
+            <div>
+              @if (editForm.get('voucherValue')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('voucherValue')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let handoffUrlRef = editForm.get('handoffUrl')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_handoffUrl" jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.handoffUrl">Handoff Url</label>
+          <input
+            type="text"
+            class="form-control"
+            name="handoffUrl"
+            id="field_handoffUrl"
+            data-cy="handoffUrl"
+            formControlName="handoffUrl"
+          />
+          @if (handoffUrlRef.invalid && (handoffUrlRef.dirty || handoffUrlRef.touched)) {
+            <div>
+              @if (editForm.get('handoffUrl')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('handoffUrl')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '512' }"
+                  >This field cannot be longer than 512 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let displayOrderRef = editForm.get('displayOrder')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_displayOrder" jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.displayOrder"
+            >Display Order</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="displayOrder"
+            id="field_displayOrder"
+            data-cy="displayOrder"
+            formControlName="displayOrder"
+          />
+          @if (displayOrderRef.invalid && (displayOrderRef.dirty || displayOrderRef.touched)) {
+            <div>
+              @if (editForm.get('displayOrder')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('displayOrder')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('displayOrder')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let publishedRef = editForm.get('published')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_published" jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.published">Published</label>
+          <input type="checkbox" class="form-check" name="published" id="field_published" data-cy="published" formControlName="published" />
+          @if (publishedRef.invalid && (publishedRef.dirty || publishedRef.touched)) {
+            <div>
+              @if (editForm.get('published')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

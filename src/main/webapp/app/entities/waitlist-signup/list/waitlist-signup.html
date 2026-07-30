@@ -1,0 +1,302 @@
+<div>
+  <h2 id="page-heading" data-cy="WaitlistSignupHeading">
+    <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.home.title">Waitlist Signups</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-waitlist-signup"
+        [routerLink]="['/waitlist-signup/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.home.createLabel">Create a new Waitlist Signup</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (waitlistSignups().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.home.notFound">No Waitlist Signups found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="email">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.email">Email</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="emailNormalized">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.emailNormalized">Email Normalized</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fullName">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.fullName">Full Name</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="organisation">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.organisation">Organisation</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="audience">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.audience">Audience</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="planOfInterest">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.planOfInterest">Plan Of Interest</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.status">Status</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="locale">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.locale">Locale</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="sourcePage">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.sourcePage">Source Page</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="utmSource">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.utmSource">Utm Source</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="utmMedium">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.utmMedium">Utm Medium</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="utmCampaign">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.utmCampaign">Utm Campaign</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="referrer">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.referrer">Referrer</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="deviceType">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.deviceType">Device Type</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="consentGiven">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.consentGiven">Consent Given</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="confirmationToken">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmationToken">Confirmation Token</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="confirmedAt">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmedAt">Confirmed At</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="unsubscribedAt">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.unsubscribedAt">Unsubscribed At</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="capturedAt">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.capturedAt">Captured At</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="ipHash">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.ipHash">Ip Hash</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="userAgent">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.userAgent">User Agent</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (waitlistSignup of waitlistSignups(); track trackId(waitlistSignup)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/waitlist-signup', waitlistSignup.id, 'view']">{{ waitlistSignup.id }}</a>
+              </td>
+              <td>{{ waitlistSignup.email }}</td>
+              <td>{{ waitlistSignup.emailNormalized }}</td>
+              <td>{{ waitlistSignup.fullName }}</td>
+              <td>{{ waitlistSignup.organisation }}</td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.AudienceType.' + (waitlistSignup.audience ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    CLINIC: 'CLINIC',
+                    PHARMACY: 'PHARMACY',
+                    LABORATORY: 'LABORATORY',
+                    HOSPITAL: 'HOSPITAL',
+                    PATIENT: 'PATIENT',
+                    CAREGIVER: 'CAREGIVER',
+                    PARTNER: 'PARTNER',
+                    INVESTOR: 'INVESTOR',
+                    OTHER: 'OTHER',
+                  }[waitlistSignup.audience ?? 'null']
+                }}
+              </td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.PlanCode.' + (waitlistSignup.planOfInterest ?? 'null')">
+                {{ { null: '', PEAR: 'PEAR', PAWPAW: 'PAWPAW', MELON: 'MELON' }[waitlistSignup.planOfInterest ?? 'null'] }}
+              </td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.SignupStatus.' + (waitlistSignup.status ?? 'null')">
+                {{
+                  { null: '', PENDING: 'PENDING', CONFIRMED: 'CONFIRMED', UNSUBSCRIBED: 'UNSUBSCRIBED', BOUNCED: 'BOUNCED' }[
+                    waitlistSignup.status ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ waitlistSignup.locale }}</td>
+              <td>{{ waitlistSignup.sourcePage }}</td>
+              <td>{{ waitlistSignup.utmSource }}</td>
+              <td>{{ waitlistSignup.utmMedium }}</td>
+              <td>{{ waitlistSignup.utmCampaign }}</td>
+              <td>{{ waitlistSignup.referrer }}</td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.DeviceType.' + (waitlistSignup.deviceType ?? 'null')">
+                {{
+                  { null: '', DESKTOP: 'DESKTOP', MOBILE: 'MOBILE', TABLET: 'TABLET', BOT: 'BOT', UNKNOWN: 'UNKNOWN' }[
+                    waitlistSignup.deviceType ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ waitlistSignup.consentGiven }}</td>
+              <td>{{ waitlistSignup.confirmationToken }}</td>
+              <td>{{ waitlistSignup.confirmedAt | formatMediumDatetime }}</td>
+              <td>{{ waitlistSignup.unsubscribedAt | formatMediumDatetime }}</td>
+              <td>{{ waitlistSignup.capturedAt | formatMediumDatetime }}</td>
+              <td>{{ waitlistSignup.ipHash }}</td>
+              <td>{{ waitlistSignup.userAgent }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/waitlist-signup', waitlistSignup.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/waitlist-signup', waitlistSignup.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(waitlistSignup)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (waitlistSignups().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems()"
+          [page]="page()"
+          [pageSize]="itemsPerPage()"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        />
+      </div>
+    </div>
+  }
+</div>

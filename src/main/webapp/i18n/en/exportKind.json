@@ -1,0 +1,10 @@
+{
+  "abofonsaPreviewApp": {
+    "ExportKind": {
+      "null": "",
+      "WAITLIST_EMAILS": "WAITLIST_EMAILS",
+      "CAPTURE_EVENTS": "CAPTURE_EVENTS",
+      "METRIC_ROLLUPS": "METRIC_ROLLUPS"
+    }
+  }
+}

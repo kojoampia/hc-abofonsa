@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity DataExportLog.
+    -->
+    <changeSet id="20260730174715-1" author="jhipster">
+        <createTable tableName="data_export_log" remarks="Audit trail for every drill-down export — who pulled which emails, when, and how many.">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="export_kind" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="format" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="range_from" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="range_to" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="bucket_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="filter_summary" type="varchar(512)">
+                <constraints nullable="true" />
+            </column>
+            <column name="row_count" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="requested_by" type="varchar(120)">
+                <constraints nullable="false" />
+            </column>
+            <column name="requested_at" type="${datetimeType}">
+                <constraints nullable="false" />
+            </column>
+            <column name="duration_ms" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="data_export_log" columnName="range_from" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="data_export_log" columnName="range_to" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="data_export_log" columnName="requested_at" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+</databaseChangeLog>

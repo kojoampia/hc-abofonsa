@@ -1,0 +1,74 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (carePlanTeaser(); as carePlanTeaserRef) {
+      <div>
+        <h2 data-cy="carePlanTeaserDetailsHeading">
+          <span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.detail.title">Care Plan Teaser</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.code">Code</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.PlanCode.' + (carePlanTeaserRef.code ?? 'null')">{{
+              { null: '', PEAR: 'PEAR', PAWPAW: 'PAWPAW', MELON: 'MELON' }[carePlanTeaserRef.code ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.name">Name</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.forWho">For Who</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.forWho }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.priceAmount">Price Amount</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.priceAmount }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.priceCurrency">Price Currency</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.priceCurrency }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.pricePeriod">Price Period</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.pricePeriod }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.priceNote">Price Note</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.priceNote }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.featured">Featured</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.featured }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.displayOrder">Display Order</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.displayOrder }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.carePlanTeaser.published">Published</span></dt>
+          <dd>
+            <span>{{ carePlanTeaserRef.published }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/care-plan-teaser', carePlanTeaserRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

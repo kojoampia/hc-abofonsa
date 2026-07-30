@@ -1,0 +1,31 @@
+{
+  "abofonsaPreviewApp": {
+    "careServiceTeaser": {
+      "home": {
+        "title": "Care Service Teasers",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Care Service Teaser",
+        "createOrEditLabel": "Crear o editar Care Service Teaser",
+        "notFound": "Ningún Care Service Teasers encontrado"
+      },
+      "created": "Un nuevo Care Service Teaser ha sido creado con el identificador {{ param }}",
+      "updated": "Un Care Service Teaser ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Care Service Teaser ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Care Service Teaser {{ id }}?"
+      },
+      "detail": {
+        "title": "Care Service Teaser"
+      },
+      "id": "ID",
+      "slug": "Slug",
+      "name": "Name",
+      "blurb": "Blurb",
+      "iconKey": "Icon Key",
+      "availableOn": "Available On",
+      "displayOrder": "Display Order",
+      "published": "Published",
+      "highlight": "Highlight"
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "annotations": {
+    "changelogDate": "20260730175215"
+  },
+  "applications": ["abofonsaPreview"],
+  "documentation": "A backer tier shown on the pledge teaser. `handoffUrl` is the deep link into\\nfund.abofonsa.com — this app displays the offer and counts the click, and the crowdfunding\\nplatform owns identity, payment, vouchers and certificates end to end.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "PledgeTierCode",
+      "fieldTypeDocumentation": "The three backer tiers from hc-crowdfund-app; shown here, purchased at fund.abofonsa.com.",
+      "fieldValidateRules": ["required", "unique"],
+      "fieldValues": "BRONZE,SILVER,GOLD"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "80"
+    },
+    {
+      "fieldName": "blurb",
+      "fieldType": "TextBlob"
+    },
+    {
+      "fieldName": "amount",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "currency",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "3"
+    },
+    {
+      "fieldName": "voucherValue",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "handoffUrl",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "512"
+    },
+    {
+      "fieldName": "displayOrder",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "published",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "PledgeTierTeaser",
+  "relationships": [
+    {
+      "otherEntityField": "label",
+      "otherEntityName": "pledgeTierPerk",
+      "otherEntityRelationshipName": "tier",
+      "relationshipName": "perk",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

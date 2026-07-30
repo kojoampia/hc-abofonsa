@@ -1,0 +1,113 @@
+<div>
+  <h2 id="page-heading" data-cy="PledgeTierPerkHeading">
+    <span jhiTranslate="abofonsaPreviewApp.pledgeTierPerk.home.title">Pledge Tier Perks</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="abofonsaPreviewApp.pledgeTierPerk.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-pledge-tier-perk"
+        [routerLink]="['/pledge-tier-perk/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="abofonsaPreviewApp.pledgeTierPerk.home.createLabel">Create a new Pledge Tier Perk</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (pledgeTierPerks().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="abofonsaPreviewApp.pledgeTierPerk.home.notFound">No Pledge Tier Perks found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="label">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.pledgeTierPerk.label">Label</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="displayOrder">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.pledgeTierPerk.displayOrder">Display Order</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="tier.name">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.pledgeTierPerk.tier">Tier</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (pledgeTierPerk of pledgeTierPerks(); track trackId(pledgeTierPerk)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/pledge-tier-perk', pledgeTierPerk.id, 'view']">{{ pledgeTierPerk.id }}</a>
+              </td>
+              <td>{{ pledgeTierPerk.label }}</td>
+              <td>{{ pledgeTierPerk.displayOrder }}</td>
+              <td>
+                @if (pledgeTierPerk.tier) {
+                  <div>
+                    <a [routerLink]="['/pledge-tier-teaser', pledgeTierPerk.tier.id, 'view']">{{ pledgeTierPerk.tier.name }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/pledge-tier-perk', pledgeTierPerk.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/pledge-tier-perk', pledgeTierPerk.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(pledgeTierPerk)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

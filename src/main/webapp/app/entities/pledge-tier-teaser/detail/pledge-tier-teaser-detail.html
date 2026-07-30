@@ -1,0 +1,70 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (pledgeTierTeaser(); as pledgeTierTeaserRef) {
+      <div>
+        <h2 data-cy="pledgeTierTeaserDetailsHeading">
+          <span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.detail.title">Pledge Tier Teaser</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ pledgeTierTeaserRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.code">Code</span></dt>
+          <dd>
+            <span [jhiTranslate]="'abofonsaPreviewApp.PledgeTierCode.' + (pledgeTierTeaserRef.code ?? 'null')">{{
+              { null: '', BRONZE: 'BRONZE', SILVER: 'SILVER', GOLD: 'GOLD' }[pledgeTierTeaserRef.code ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.name">Name</span></dt>
+          <dd>
+            <span>{{ pledgeTierTeaserRef.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.blurb">Blurb</span></dt>
+          <dd>
+            <span>{{ pledgeTierTeaserRef.blurb }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.amount">Amount</span></dt>
+          <dd>
+            <span>{{ pledgeTierTeaserRef.amount }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.currency">Currency</span></dt>
+          <dd>
+            <span>{{ pledgeTierTeaserRef.currency }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.voucherValue">Voucher Value</span></dt>
+          <dd>
+            <span>{{ pledgeTierTeaserRef.voucherValue }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.handoffUrl">Handoff Url</span></dt>
+          <dd>
+            <span>{{ pledgeTierTeaserRef.handoffUrl }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.displayOrder">Display Order</span></dt>
+          <dd>
+            <span>{{ pledgeTierTeaserRef.displayOrder }}</span>
+          </dd>
+          <dt><span jhiTranslate="abofonsaPreviewApp.pledgeTierTeaser.published">Published</span></dt>
+          <dd>
+            <span>{{ pledgeTierTeaserRef.published }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/pledge-tier-teaser', pledgeTierTeaserRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

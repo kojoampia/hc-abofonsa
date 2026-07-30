@@ -1,0 +1,33 @@
+{
+  "abofonsaPreviewApp": {
+    "launchSetting": {
+      "home": {
+        "title": "LaunchSettings",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Launch Setting",
+        "createOrEditLabel": "Créer ou éditer un Launch Setting",
+        "notFound": "Aucun Launch Setting trouvé"
+      },
+      "created": "Un nouveau Launch Setting a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Launch Setting avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Launch Setting avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Launch Setting {{ id }} ?"
+      },
+      "detail": {
+        "title": "Launch Setting"
+      },
+      "id": "ID",
+      "settingKey": "Setting Key",
+      "organisationName": "Organisation Name",
+      "tagline": "Tagline",
+      "launchAt": "Launch At",
+      "launchTimezone": "Launch Timezone",
+      "fundUrl": "Fund Url",
+      "contactEmail": "Contact Email",
+      "contactPhone": "Contact Phone",
+      "officeAddress": "Office Address",
+      "active": "Active"
+    }
+  }
+}

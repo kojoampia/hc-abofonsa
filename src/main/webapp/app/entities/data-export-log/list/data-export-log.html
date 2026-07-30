@@ -1,0 +1,175 @@
+<div>
+  <h2 id="page-heading" data-cy="DataExportLogHeading">
+    <span jhiTranslate="abofonsaPreviewApp.dataExportLog.home.title">Data Export Logs</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="abofonsaPreviewApp.dataExportLog.home.refreshListLabel">Refresh list</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (dataExportLogs().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="abofonsaPreviewApp.dataExportLog.home.notFound">No Data Export Logs found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="exportKind">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.exportKind">Export Kind</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="format">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.format">Format</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="rangeFrom">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.rangeFrom">Range From</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="rangeTo">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.rangeTo">Range To</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="bucketType">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.bucketType">Bucket Type</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="filterSummary">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.filterSummary">Filter Summary</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="rowCount">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.rowCount">Row Count</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="requestedBy">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.requestedBy">Requested By</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="requestedAt">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.requestedAt">Requested At</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="durationMs">
+              <div class="d-flex">
+                <span jhiTranslate="abofonsaPreviewApp.dataExportLog.durationMs">Duration Ms</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (dataExportLog of dataExportLogs(); track trackId(dataExportLog)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/data-export-log', dataExportLog.id, 'view']">{{ dataExportLog.id }}</a>
+              </td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.ExportKind.' + (dataExportLog.exportKind ?? 'null')">
+                {{
+                  { null: '', WAITLIST_EMAILS: 'WAITLIST_EMAILS', CAPTURE_EVENTS: 'CAPTURE_EVENTS', METRIC_ROLLUPS: 'METRIC_ROLLUPS' }[
+                    dataExportLog.exportKind ?? 'null'
+                  ]
+                }}
+              </td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.ExportFormat.' + (dataExportLog.format ?? 'null')">
+                {{ { null: '', CSV: 'CSV', JSON: 'JSON', XLSX: 'XLSX' }[dataExportLog.format ?? 'null'] }}
+              </td>
+              <td>{{ dataExportLog.rangeFrom | formatMediumDatetime }}</td>
+              <td>{{ dataExportLog.rangeTo | formatMediumDatetime }}</td>
+              <td [jhiTranslate]="'abofonsaPreviewApp.BucketType.' + (dataExportLog.bucketType ?? 'null')">
+                {{
+                  { null: '', HOUR: 'HOUR', DAY: 'DAY', WEEK: 'WEEK', MONTH: 'MONTH', QUARTER: 'QUARTER', YEAR: 'YEAR' }[
+                    dataExportLog.bucketType ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ dataExportLog.filterSummary }}</td>
+              <td>{{ dataExportLog.rowCount }}</td>
+              <td>{{ dataExportLog.requestedBy }}</td>
+              <td>{{ dataExportLog.requestedAt | formatMediumDatetime }}</td>
+              <td>{{ dataExportLog.durationMs }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/data-export-log', dataExportLog.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (dataExportLogs().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems()"
+          [page]="page()"
+          [pageSize]="itemsPerPage()"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        />
+      </div>
+    </div>
+  }
+</div>

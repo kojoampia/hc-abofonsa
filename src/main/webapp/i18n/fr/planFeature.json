@@ -1,0 +1,28 @@
+{
+  "abofonsaPreviewApp": {
+    "planFeature": {
+      "home": {
+        "title": "PlanFeatures",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Plan Feature",
+        "createOrEditLabel": "Créer ou éditer un Plan Feature",
+        "notFound": "Aucun Plan Feature trouvé"
+      },
+      "created": "Un nouveau Plan Feature a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Plan Feature avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Plan Feature avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Plan Feature {{ id }} ?"
+      },
+      "detail": {
+        "title": "Plan Feature"
+      },
+      "id": "ID",
+      "label": "Label",
+      "included": "Included",
+      "emphasised": "Emphasised",
+      "displayOrder": "Display Order",
+      "plan": "Plan"
+    }
+  }
+}
