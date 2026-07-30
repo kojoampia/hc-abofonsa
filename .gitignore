@@ -116,7 +116,11 @@ Desktop.ini
 # Directories
 ######################
 /bin/
-/deploy/
+# NOT /deploy/ — generator-jhipster ignores that path by default (it expects build output there),
+# but in this repository deploy/ is hand-written source: the production compose file, the nginx
+# site, and the build/deploy scripts. Left ignored, the entire deployment setup is invisible to
+# `git status` and silently never committed. This build outputs to target/, which is ignored
+# separately, so nothing is lost by allowing it.
 
 ######################
 # Logs
@@ -151,3 +155,6 @@ Desktop.ini
 ######################
 coverage/
 .nyc_output/
+
+# Deployment backups: pg_dumps hold real email addresses and must never be committed.
+deploy/prod-server/backups/
