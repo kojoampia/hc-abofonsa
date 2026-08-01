@@ -76,16 +76,17 @@ jobs:
           OWNER="$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')"
           REPO="ghcr.io/${OWNER}/abofonsa-preview"
 
-          # deploy.sh and build.sh both default TAG to `git rev-parse --short HEAD`, so publish
-          # exactly that — "the tag my checkout would deploy" and "the tag Actions pushed" have to
-          # be the same string. git's abbreviation length is object-count dependent (a shallow
-          # runner clone can differ from a full local one), so publish the plain 7-character prefix
-          # as well. One of the two is always what a local deploy.sh asks for, and both name this
-          # same image.
-          SHA_TAG="$(git rev-parse --short HEAD)"
+          # deploy.sh and build.sh both default TAG to `git rev-parse --short HEAD`, so that string
+          # has to be among the tags published here. It is a poor *primary* tag, though: git's
+          # abbreviation length is object-count dependent, and actions/checkout makes a shallow
+          # clone holding far fewer objects than a full local one, so `--short` here can disagree
+          # with `--short` there — and the primary tag is the one everything else is derived from.
+          # Take the fixed 7-character prefix of GITHUB_SHA, which depends on nothing, and let the
+          # git-abbreviated form ride along as an extra tag on the rare occasion it differs.
+          SHA_TAG="${GITHUB_SHA:0:7}"
           EXTRA=()
-          SHORT7="${GITHUB_SHA:0:7}"
-          [[ "$SHA_TAG" == "$SHORT7" ]] || EXTRA+=("$SHORT7")
+          GIT_ABBREV="$(git rev-parse --short HEAD)"
+          [[ "$GIT_ABBREV" == "$SHA_TAG" ]] || EXTRA+=("$GIT_ABBREV")
 
           # `latest` is what compose.yml falls back to when .env carries no TAG, so only ever move
           # it on a default-branch build — never on a workflow_dispatch run of some feature branch.
@@ -146,6 +147,47 @@ jobs:
           # image can be deployed, and this repository has no separate CI workflow that would have
           # run the suite already. Testcontainers needs a Docker daemon — ubuntu-latest ships one.
           ./mvnw -ntp --batch-mode -Pprod verify jib:build "${ARGS[@]}"
+
+      # A push is not published until the registry serves it. Run 30689039960 is why this step
+      # exists: every step went green and `latest` appeared, but no SHA tag was ever resolvable
+      # afterwards, so `deploy.sh --channel github` failed its published-tag check against a build
+      # that claimed success. Whatever swallowed that tag, asserting the end state here turns it
+      # into a red run instead of a deploy-time surprise.
+      #
+      # `buildx imagetools inspect` rather than `docker manifest inspect`: it reads the same
+      # ~/.docker/config.json the login step wrote, and needs no experimental CLI flag.
+      #
+      # Retried, because a registry may serve a manifest a moment after accepting it and a false
+      # red here would be worse than the bug — but bounded, so a tag that never lands still fails.
+      - name: Verify every tag resolves in the registry
+        env:
+          REPO: ${{ steps.meta.outputs.repo }}
+          ALL_TAGS: ${{ steps.meta.outputs.all_tags }}
+        run: |
+          set -euo pipefail
+
+          missing=()
+          for t in $(tr ',' ' ' <<<"$ALL_TAGS"); do
+            resolved=false
+            for attempt in 1 2 3 4 5 6; do
+              if docker buildx imagetools inspect "${REPO}:${t}" >/dev/null 2>&1; then
+                resolved=true
+                break
+              fi
+              sleep 5
+            done
+            if $resolved; then
+              echo "ok      ${REPO}:${t}"
+            else
+              echo "MISSING ${REPO}:${t}"
+              missing+=("$t")
+            fi
+          done
+
+          if [[ ${#missing[@]} -gt 0 ]]; then
+            echo "::error::jib reported success, but these tags do not resolve in the registry: ${missing[*]}"
+            exit 1
+          fi
 
       - name: Summary
         env:
