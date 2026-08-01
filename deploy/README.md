@@ -35,7 +35,70 @@ deploy/
     infra.sh                      one-time: create the external network
     start                         pull the tagged image and recreate the stack
     backup.sh                     nightly pg_dump, 14-day retention
+.github/workflows/
+  publish.yml                     the github channel: same image, built on a GitHub runner
 ```
+
+## Channels
+
+`--channel` decides **where the image comes from**. It changes nothing else: the same
+`compose.yml`, the same `.env`, the same verification.
+
+| Channel | Image | Built by |
+| --- | --- | --- |
+| `private` (default) | `docker.jojoaddison.net/abofonsa-preview` | `build.sh`, on your machine |
+| `github` | `ghcr.io/<owner>/abofonsa-preview` | `.github/workflows/publish.yml`, on a GitHub runner |
+
+```bash
+./deploy/deploy.sh                                   # private: build here, push, deploy
+./deploy/deploy.sh --channel github                  # github: deploy what Actions already built
+TAG=<sha> ./deploy/deploy.sh --channel github        # roll back to any published tag
+```
+
+The channel is stored on the server as `REGISTRY` in `.env`, and `deploy.sh` rewrites that line —
+after showing you the change and asking — whenever the requested channel differs from what the host
+is pointing at. So the same commit can be served from either registry without editing anything on
+the host by hand. `--github` is shorthand for `--channel github`.
+
+`--channel github` never builds. Falling through to `build.sh` would push a locally built image over
+the one Actions published *under the same tag*, which is the drift the channel exists to prevent.
+Instead the script checks the tag is really published (`docker manifest inspect`) before it touches
+the server, warns if HEAD is not on a remote branch — an unpushed commit is one Actions never saw —
+and after the restart confirms the running container's image actually came from `$REGISTRY`. The
+same tag can exist in both registries, so the published-tag check alone would pass while the
+container still ran the other channel's image.
+
+### What publish.yml does
+
+Runs on every push to `main`, on `v*` tags, and on demand. It builds with **jib** — not
+`docker/build-push-action`, because JHipster generates no Dockerfile and the `jib-maven-plugin`
+configuration in `pom.xml` *is* the image definition — and it runs `-Pprod verify` first, exactly as
+`build.sh` does. This repository has no separate CI workflow, so that is the only gate an image
+passes through.
+
+It publishes `:<short-sha>`, plus the bare 7-character prefix when git's abbreviation length differs
+(a shallow runner clone can abbreviate differently from your full local one, and `deploy.sh` asks
+for whatever *your* checkout produces). `:latest` moves only on a default-branch build, never on a
+`workflow_dispatch` run of a feature branch. A pushed `v1.2.3` tag becomes an image tag of the same
+name.
+
+Authentication is `GITHUB_TOKEN` with `packages: write` — no PAT, no repository secret, and nothing
+in the workflow can reach the production server. Publishing and releasing stay separate steps.
+
+### Before the github channel works
+
+Two things this repository cannot do for itself:
+
+1. **The first push has to land.** `origin` is `github.com:kojoampia/hc-abofonsa`, and the GHCR
+   namespace follows from that owner — `ghcr.io/kojoampia/abofonsa-preview`, which is also
+   `deploy.sh`'s default and what the sibling `hc-crowdfund-app` uses. Until a push to `main`
+   completes a workflow run, there is nothing in GHCR to deploy. Override the namespace for a fork
+   or an organisation with `GITHUB_REGISTRY=ghcr.io/<owner>`.
+2. **A GHCR package is private by default.** Either make it public (Packages → `abofonsa-preview` →
+   Package settings → Change visibility) or give the server a credential:
+   `ssh webserver 'docker login ghcr.io -u <user>'` with a PAT carrying `read:packages`. `deploy.sh`
+   checks for that credential on the host and warns, because the alternative is discovering it from
+   a failed pull with the stack already stopped.
 
 ## First-time install
 

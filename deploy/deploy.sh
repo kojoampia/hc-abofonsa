@@ -8,6 +8,20 @@
 #   TAG=a1b2c3d ./deploy/deploy.sh --skip-build   # roll back to a previous image
 #   ./deploy/deploy.sh --yes           # non-interactive; skips the prompts (NOT the certbot one)
 #
+# Two channels decide where the image comes from (--channel, default 'private'):
+#
+#   private   built here by ./build.sh and pushed to docker.jojoaddison.net. Needs a JDK 21 and a
+#             `docker login docker.jojoaddison.net` on this machine.
+#   github    built by .github/workflows/publish.yml on a GitHub runner and pulled from
+#             ghcr.io/<owner>/abofonsa-preview. Nothing is built locally, so this script confirms
+#             the tag really is published before it touches the server.
+#
+#   ./deploy/deploy.sh --channel github               # deploy this commit's GHCR image
+#   TAG=a1b2c3d ./deploy/deploy.sh --channel github   # roll back to any published tag
+#
+# Switching channels rewrites REGISTRY in the server's .env — after showing you the change — so the
+# same commit can be served from either registry without editing anything on the host by hand.
+#
 #   ./deploy/deploy.sh --recover       # stack is running but its compose.yml/.env went missing
 #   ./deploy/deploy.sh --bootstrap     # FIRST-TIME INSTALL on a server with nothing deployed
 #   ./deploy/deploy.sh --bootstrap --with-nginx        # ... and install the host nginx site
@@ -35,7 +49,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 SSH_HOST="${SSH_HOST:-webserver}"                                        # ~/.ssh/config alias
 REMOTE_DIR="${REMOTE_DIR:-~/webroot/01-healthconnect/abofonsa-preview}"  # expanded remotely, not here
-REGISTRY="${REGISTRY:-docker.jojoaddison.net}"
 PUBLIC_URL="${PUBLIC_URL:-https://abofonsa.com}"
 # Extra hostnames served by the same nginx block and covered by the same certificate.
 # Must match `server_name` in prod-server/abofonsa-preview.conf.
@@ -54,6 +67,17 @@ NGINX_CONF="abofonsa-preview.conf"
 HEALTH_TIMEOUT_SECS="${HEALTH_TIMEOUT_SECS:-600}"
 HEALTH_POLL_SECS=10
 
+# Where each channel's image lives. Both are namespaces, not bare hosts: GHCR addresses images as
+# ghcr.io/<owner>/<image>, and compose.yml interpolates "${REGISTRY}/abofonsa-preview:${TAG}"
+# either way, so nothing downstream needs to know which channel produced the image.
+#
+# The GHCR owner is the account the repository lives under: origin is github.com:kojoampia/
+# hc-abofonsa, the same namespace as the sibling hc-crowdfund-app. Hard-coded rather than parsed out
+# of `git remote` so a clone with a differently-named remote still deploys the same image;
+# GITHUB_REGISTRY overrides it for a fork or an organisation.
+PRIVATE_REGISTRY="${PRIVATE_REGISTRY:-docker.jojoaddison.net}"
+GITHUB_REGISTRY="${GITHUB_REGISTRY:-ghcr.io/kojoampia}"
+
 # --- Argument parsing --------------------------------------------------------------------------
 
 SKIP_BUILD=false
@@ -63,6 +87,7 @@ BOOTSTRAP=false
 RECOVER=false
 WITH_NGINX=false
 WITH_TLS=false
+CHANNEL="${CHANNEL:-private}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -73,11 +98,41 @@ while [[ $# -gt 0 ]]; do
     --recover)     RECOVER=true; SKIP_BUILD=true ;;
     --with-nginx)  WITH_NGINX=true ;;
     --with-tls)    WITH_TLS=true; WITH_NGINX=true ;;
-    -h|--help)      sed -n '2,25p' "$SCRIPT_PATH" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --channel)     shift; CHANNEL="${1:-}"; [[ -n "$CHANNEL" ]] || { echo "--channel needs a value: private|github" >&2; exit 2; } ;;
+    --channel=*)   CHANNEL="${1#--channel=}" ;;
+    --github)      CHANNEL=github ;;   # shorthand for --channel github
+    # Prints the header block, stopping at `set -euo pipefail`. A fixed line range goes stale the
+    # first time the header grows — which is how --help ends up truncating the flag it documents.
+    -h|--help)     awk 'NR > 1 { if ($0 ~ /^set -euo pipefail/) exit; sub(/^# ?/, ""); print }' "$SCRIPT_PATH"; exit 0 ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
   shift
 done
+
+case "$CHANNEL" in
+  private)
+    REGISTRY="${REGISTRY:-$PRIVATE_REGISTRY}"
+    ;;
+  github)
+    REGISTRY="${REGISTRY:-$GITHUB_REGISTRY}"
+    # The whole point of this channel is that GitHub Actions did the building. Never fall through
+    # to build.sh here — that would push a locally built image over the one Actions published,
+    # under the same tag, which is exactly the drift the channel exists to prevent. The build step
+    # checks the tag really is published instead.
+    SKIP_BUILD=true
+    ;;
+  *) echo "unknown channel: $CHANNEL (expected 'private' or 'github')" >&2; exit 2 ;;
+esac
+
+# --verify-only inspects what is already running and deploys nothing, so there is no tag to check.
+GITHUB_CHANNEL_VERIFY=false
+if [[ "$CHANNEL" == "github" ]] && ! $VERIFY_ONLY; then
+  GITHUB_CHANNEL_VERIFY=true
+fi
+
+# Threaded through the rollback and re-run hints, so a copy-pasted command stays on this channel.
+CHANNEL_FLAG=""
+[[ "$CHANNEL" == "private" ]] || CHANNEL_FLAG="--channel $CHANNEL "
 
 # Domain for the nginx site and certbot, derived from PUBLIC_URL (https://host -> host).
 PUBLIC_HOST="${PUBLIC_URL#https://}"; PUBLIC_HOST="${PUBLIC_HOST#http://}"; PUBLIC_HOST="${PUBLIC_HOST%%/*}"
@@ -117,14 +172,41 @@ remote "command -v docker >/dev/null" || fail "docker not installed on $SSH_HOST
 ok "docker on $SSH_HOST"
 
 # A deploy from a dirty tree produces an image tagged with a commit that does not describe it. That
-# is not fatal, but it makes "what is deployed" unanswerable, so say so out loud.
-if [[ -n "$(git status --porcelain)" ]] && ! $VERIFY_ONLY; then
+# is not fatal, but it makes "what is deployed" unanswerable, so say so out loud. Only meaningful on
+# the private channel, where this working tree is what gets built.
+if [[ "$CHANNEL" == "private" ]] && [[ -n "$(git status --porcelain)" ]] && ! $VERIFY_ONLY; then
   warn "working tree is dirty — image ${TAG} will not match commit ${TAG}"
   confirm "continue anyway?" || fail "aborted"
 fi
 
+# On the github channel the image comes from a commit GitHub has, not from this working tree, so
+# what matters is that HEAD was actually pushed: an unpushed commit means Actions never saw it and
+# the tag cannot exist. Local edits are harmless here rather than misleading — they simply are not
+# in the image — so this warns and does not prompt.
+if $GITHUB_CHANNEL_VERIFY; then
+  if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
+    warn "working tree has uncommitted changes — they are NOT in image ${TAG} (Actions built commit ${TAG})"
+  fi
+  if git branch -r --contains HEAD 2>/dev/null | grep -q .; then
+    ok "commit ${TAG} is on a remote branch (the publish workflow could have built it)"
+  else
+    warn "commit ${TAG} is not on any remote branch — push it so .github/workflows/publish.yml runs"
+  fi
+
+  # The *server* does the pulling, and it is a different machine with its own credential store.
+  # A GHCR package is private by default, and a private package needs a login on the host — not
+  # here. Checked now rather than discovered from a failed pull with the stack already stopped.
+  if remote "grep -q ghcr.io ~/.docker/config.json 2>/dev/null"; then
+    ok "${SSH_HOST} has a stored ghcr.io credential"
+  else
+    warn "${SSH_HOST} has no stored ghcr.io credential. That is fine only if the package is public"
+    warn "(Packages -> abofonsa-preview -> Package settings -> Change visibility). Otherwise run:"
+    warn "  ssh ${SSH_HOST} 'docker login ghcr.io -u <user>'   # a PAT with read:packages"
+  fi
+fi
+
 info "tag:        ${TAG}"
-info "registry:   ${REGISTRY}"
+info "channel:    ${CHANNEL} (${REGISTRY})"
 info "remote dir: ${REMOTE_DIR}"
 info "public url: ${PUBLIC_URL}"
 
@@ -194,6 +276,24 @@ if ! $SKIP_BUILD; then
   step "Build and push ${REGISTRY}/abofonsa-preview:${TAG}"
   TAG="$TAG" REGISTRY="$REGISTRY" ./build.sh
   ok "image pushed"
+elif $GITHUB_CHANNEL_VERIFY; then
+  # Nothing is built here; GitHub Actions did that. Confirm the image exists under this tag before
+  # restarting anything — the alternative is finding out from a failed `pull` with the stack
+  # already stopped.
+  step "Check ${TAG} is published to ${REGISTRY}"
+  info "Published by .github/workflows/publish.yml — see the repository's Actions tab if this fails."
+
+  if docker manifest inspect "${REGISTRY}/abofonsa-preview:${TAG}" >/dev/null 2>&1; then
+    ok "${REGISTRY}/abofonsa-preview:${TAG} exists"
+  else
+    # A warning rather than a hard stop: this same lookup fails for a package that is published but
+    # private, and nothing on this machine is necessarily logged in to ghcr.io. Refusing to deploy
+    # on that basis would block a perfectly good private-package setup.
+    warn "cannot see ${REGISTRY}/abofonsa-preview:${TAG}. Either the workflow has not published it"
+    warn "yet, or the package is private and this machine is not logged in:"
+    warn "  docker login ${REGISTRY%%/*} -u <user>   # a PAT with read:packages"
+    confirm "continue and let the server try to pull it?" || fail "aborted"
+  fi
 else
   $VERIFY_ONLY || info "skipping build; deploying existing tag ${TAG}"
 fi
@@ -212,8 +312,28 @@ if ! $VERIFY_ONLY; then
   remote "chmod +x ${REMOTE_DIR}/start ${REMOTE_DIR}/backup.sh ${REMOTE_DIR}/infra.sh"
   ok "compose.yml, start, backup.sh, infra.sh"
 
-  # Point .env at the tag being deployed. sed in place rather than rewriting the file, because the
-  # file holds secrets this script must never read, let alone reconstruct.
+  # Point .env at the registry and tag being deployed. sed in place rather than rewriting the file,
+  # because it holds secrets this script must never read, let alone reconstruct.
+  #
+  # REGISTRY first, and always — compose.yml reads "${REGISTRY}/abofonsa-preview:${TAG}", so
+  # switching channels is exactly this one line changing. Leave it stale and the pull below quietly
+  # fetches the other channel's image at the new tag, or fails because that registry never had it.
+  # `|` as the sed delimiter, not `/`: a GHCR namespace contains a slash.
+  #
+  # An .env predating this key would otherwise fall through to compose.yml's own default, which is
+  # the private registry — silently ignoring --channel github.
+  remote_registry="$(remote "grep -m1 '^REGISTRY=' ${REMOTE_DIR}/.env | cut -d= -f2-" || true)"
+  if [[ "$remote_registry" == "$REGISTRY" ]]; then
+    ok "REGISTRY=${REGISTRY} already set in .env (${CHANNEL} channel)"
+  else
+    info "the server pulls from ${remote_registry:-<unset>}; this deploy uses ${REGISTRY}"
+    confirm "switch the server's REGISTRY to ${REGISTRY}?" || fail "aborted"
+    remote "grep -q '^REGISTRY=' ${REMOTE_DIR}/.env \
+      && sed -i 's|^REGISTRY=.*|REGISTRY=${REGISTRY}|' ${REMOTE_DIR}/.env \
+      || echo 'REGISTRY=${REGISTRY}' >> ${REMOTE_DIR}/.env"
+    ok "REGISTRY: ${remote_registry:-<unset>} -> ${REGISTRY}"
+  fi
+
   remote "grep -q '^TAG=' ${REMOTE_DIR}/.env \
     && sed -i 's|^TAG=.*|TAG=${TAG}|' ${REMOTE_DIR}/.env \
     || echo 'TAG=${TAG}' >> ${REMOTE_DIR}/.env"
@@ -322,6 +442,20 @@ fi
 
 step "Verify"
 
+# Which image is actually running. The same tag can exist in both registries, so the published-tag
+# check above would pass while the container still ran the other channel's image — only this says
+# the REGISTRY switch reached the container. Skipped for --verify-only, which reports on whatever is
+# live rather than on a channel someone asked for.
+running_image="$(remote "docker inspect ${APP_CONTAINER} --format '{{.Config.Image}}'" 2>/dev/null || echo "")"
+info "image:    ${running_image:-<unknown>}"
+if ! $VERIFY_ONLY; then
+  if [[ "$running_image" == "${REGISTRY}/"*":${TAG}" ]]; then
+    ok "running  ${TAG} from ${REGISTRY} (${CHANNEL} channel)"
+  else
+    warn "expected ${REGISTRY}/abofonsa-preview:${TAG} — the .env change may not have been applied"
+  fi
+fi
+
 # Internal: straight at the container's loopback port, bypassing nginx. Distinguishes "the app is
 # broken" from "the proxy is misconfigured", which look identical from outside.
 internal_health="$(remote "curl -sf -m 10 http://127.0.0.1:${APP_PORT}/management/health" || echo "")"
@@ -375,6 +509,7 @@ fi
 echo ""
 step "Deployed ${TAG}"
 info "public:   ${PUBLIC_URL}"
+info "channel:  ${CHANNEL} (${REGISTRY})"
 info "logs:     ssh ${SSH_HOST} 'docker logs -f ${APP_CONTAINER}'"
 info "psql:     ssh ${SSH_HOST} 'docker exec -it ${DB_CONTAINER} psql -U abofonsaPreview -d abofonsaPreview'"
-info "rollback: TAG=<previous-sha> ./deploy/deploy.sh --skip-build"
+info "rollback: TAG=<previous-sha> ./deploy/deploy.sh ${CHANNEL_FLAG}--skip-build"
