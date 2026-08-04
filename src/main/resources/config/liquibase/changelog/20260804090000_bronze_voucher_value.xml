@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        Bronze Angel's care voucher is worth 3,000 GHS, not 5,000.
+
+        Mirrors hc-crowdfund-app's V9__bronze_voucher_value_correction.sql, which corrects the same
+        figure at the source (voucher_value_minor 500000 -> 300000). That platform owns the pledge;
+        this table is display-only, so the only thing that has to happen here is that the two agree.
+
+        Only the tier is repriced there, not pledge.voucher_value_minor — that is a snapshot taken
+        at pledge time, so existing Bronze backers keep the 5,000 GHS voucher they were promised.
+        Nothing in this table is a snapshot of anything, so there is no equivalent concern here.
+
+        A NEW changelog, not an edit to 20260730190400. Liquibase checksums applied changesets, so
+        changing one in place fails validation on the next boot and takes the application down — and
+        it would not update anything anyway, because an applied changeset never re-runs. On a fresh
+        database the seed inserts 5000.00 and this changeset immediately corrects it; the end state
+        is the same either way.
+    -->
+
+    <changeSet id="20260804090000-1" author="abofonsa" contextFilter="!test">
+        <comment>Bronze Angel voucher: 5000.00 -> 3000.00 GHS.</comment>
+        <update tableName="pledge_tier_teaser">
+            <column name="voucher_value" valueNumeric="3000.00"/>
+            <where>code = 'BRONZE'</where>
+        </update>
+    </changeSet>
+
+    <!--
+        contextFilter="!test" for the same reason 20260730190400 carries it: the row this updates is
+        seed content, and the seed does not load in the test context. Without the filter this would
+        be a no-op update against an empty table on every test run.
+    -->
+
+</databaseChangeLog>

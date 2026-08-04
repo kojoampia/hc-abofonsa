@@ -23,7 +23,7 @@ which is the same generator the MCP server would have driven.
 - `docs/design/abofonsa-countdown.html` — the design guideline (dark teal/gold, ambient orbs, glass countdown units)
 - `hc-abofonsa-web/web/src/styles/{theme.scss,_theme-colors.scss,brand.css}` — brand tokens
 - `hc-abofonsa-web/api/.../dbmigrations/V004SeedServices.java`, `V005SeedPlans.java` — service and plan copy
-- `hc-crowdfund-app/backend/.../db/migration/V2__seed_tiers.sql`, `V8__*.sql` — pledge tiers and voucher values
+- `hc-crowdfund-app/backend/.../db/migration/V2__seed_tiers.sql`, `V8__*.sql`, `V9__*.sql` — pledge tiers and voucher values
 
 Note the two palettes differ: the countdown page is dark teal/gold (`#04211f` / `#0d6e66` / `#f0b429`),
 the main site is light navy/gold (`#0d3058` / `#c59437`). The preview site follows the **countdown**
