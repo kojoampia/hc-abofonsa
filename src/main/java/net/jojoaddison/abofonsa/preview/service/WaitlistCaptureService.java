@@ -126,12 +126,12 @@ public class WaitlistCaptureService {
     }
 
     /**
-     * Completes double opt-in. Idempotent: clicking the link twice is a success, not an error.
+     * Completes double opt-in.
      *
-     * <p>The token is consumed on use and is refused once {@code confirmationExpiresAt} has passed,
-     * so a link cannot be replayed out of an old mailbox. An already-confirmed row is still
-     * answered as a success even though its token is gone — that is the double-click case, and it
-     * is resolved by status rather than by leaving the credential live.
+     * <p>The confirmation token is single-use and expires at {@code confirmationExpiresAt}.
+     * Replaying a consumed or expired token returns {@link Optional#empty()}.
+     *
+     * <p>The status remains {@code CONFIRMED} once set; only the credential is consumed.
      */
     public Optional<WaitlistSignup> confirm(String token, HttpServletRequest request) {
         return repository
