@@ -50,7 +50,8 @@ export class TelemetryService {
     if (!win?.performance) {
       return;
     }
-    if (Math.random() >= config.sampleRatio) {
+    const sampleRatio = Number.isFinite(config.sampleRatio) ? Math.min(1, Math.max(0, config.sampleRatio)) : 0;
+    if (Math.random() >= sampleRatio) {
       // Not sampled: mark as started so a later call does not roll the dice again mid-visit and
       // produce a trace with no document-load span at its root.
       this.started = true;
