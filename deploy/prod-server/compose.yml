@@ -144,6 +144,13 @@ services:
       # Tempo. This is the whole point of shipping logs and traces to the same place.
       OTEL_INSTRUMENTATION_LOGBACK_MDC_ENABLED: 'true'
 
+      # Bridges Micrometer meters onto OTLP, which is the only way WaitlistMetrics and
+      # SecurityMetersService reach Mimir. **Off by default in the agent**, and its absence is
+      # invisible: the JVM and HTTP metrics arrive perfectly, the dashboards look healthy, and the
+      # application's own counters are simply not there. Verified by querying Mimir for
+      # `abofonsa_waitlist_signups_submissions_total` rather than by trusting the agent's defaults.
+      OTEL_INSTRUMENTATION_MICROMETER_ENABLED: 'true'
+
       # Browser-side sampling, served to the page inside /api/public/content. See .env.example for
       # why this is a different number from the backend ratio above.
       RUM_SAMPLE_RATIO: ${RUM_SAMPLE_RATIO:-0.25}

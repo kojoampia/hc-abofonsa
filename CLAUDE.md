@@ -175,6 +175,13 @@ Traps, all of them load-bearing:
   `RUM_SAMPLE_RATIO` (browser, delivered inside `/api/public/content`) are both `.env` and a
   restart. The browser one rides on the content response on purpose: a dedicated config endpoint
   would be a second request on every page load to answer a question worth two numbers.
+- **`OTEL_INSTRUMENTATION_MICROMETER_ENABLED` is off by default in the agent.** Without it the JVM
+  and HTTP metrics arrive normally and every dashboard looks healthy, while `WaitlistMetrics` and
+  `SecurityMetersService` are simply absent from Mimir. Found by querying for a counter that was not
+  there, after deploying in the belief that it worked.
+- **A Micrometer meter reaches Mimir only once it has been incremented.** A counter registered at
+  zero is not exported, so a panel for something that has never happened reads "No data" rather than
+  a flat zero. Do not conclude the pipeline is broken from that alone.
 - **`/management/prometheus` is a fallback, not the path.** Nothing scrapes it. It stays enabled
   because it costs nothing and is what you have if the collector is down.
 

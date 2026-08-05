@@ -1,0 +1,114 @@
+{
+  "title": "Abofonsa Preview — Waitlist Funnel",
+  "uid": "abofonsa-preview-funnel",
+  "tags": ["abofonsa", "waitlist", "application"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {},
+        "hide": 0
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "text",
+      "title": "What this is for",
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "options": {
+        "mode": "markdown",
+        "content": "The JVM, HTTP and trace views for this service live in **Technical → Service Deep Dive** (pick `abofonsa-preview`) and **Apps RED Overview**; it appears there automatically because the agent emits `jvm_*`. This dashboard covers the one thing those cannot show: whether the **signup funnel** is working.\n\nA launch page whose signups have quietly stopped — an over-eager honeypot, an SMTP failure, a rate limit set too low — returns HTTP 200 to everything and looks perfectly healthy on request rate and error rate. `rejected` or `throttled` climbing while `accepted` falls is what makes that visible.\n\nCounts here are **not** the source of truth. `capture_event` and `waitlist_signup` are, and everything is recomputable from them; these are a live view, and a restart resets them."
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Waitlist submissions by outcome",
+      "description": "accepted = a new row. duplicate = an address already on the list. rejected = failed the honeypot or dwell-time check. throttled = over the hourly cap for that client.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 4 },
+      "fieldConfig": {
+        "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "stacking": { "mode": "normal" }, "fillOpacity": 70 } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "accepted" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }] },
+          { "matcher": { "id": "byName", "options": "rejected" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
+          { "matcher": { "id": "byName", "options": "throttled" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum by (outcome) (increase(abofonsa_waitlist_signups_submissions_total{service_name=\"abofonsa-preview\"}[$__rate_interval]))",
+          "legendFormat": "{{outcome}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Opt-in outcomes",
+      "description": "confirmed = double opt-in completed. invalid = a token that was already used, expired, or never existed. unsubscribed = an opt-out honoured.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 4 },
+      "fieldConfig": {
+        "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "stacking": { "mode": "normal" }, "fillOpacity": 70 } },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum by (outcome) (increase(abofonsa_waitlist_opt_in_events_total{service_name=\"abofonsa-preview\"}[$__rate_interval]))",
+          "legendFormat": "{{outcome}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Confirmation emails that failed to send",
+      "description": "The signup is still captured when this fires — but the person can never complete an opt-in they never received, so they are stranded mid-funnel. Any sustained non-zero value here is a broken SMTP configuration.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 13 },
+      "options": { "colorMode": "background", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum(increase(abofonsa_waitlist_confirmation_mail_failures_messages_total{service_name=\"abofonsa-preview\"}[$__range]))",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Failed sign-in attempts",
+      "description": "bad-credentials = a wrong password. throttled = a client refused before its password was checked, having failed ten times in fifteen minutes. There is one account, so a sustained rate here is somebody guessing at it.",
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "gridPos": { "h": 6, "w": 16, "x": 8, "y": 13 },
+      "fieldConfig": {
+        "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "fillOpacity": 70 } },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "sum by (outcome) (increase(security_authentication_failures_attempts_total{service_name=\"abofonsa-preview\"}[$__rate_interval]))",
+          "legendFormat": "{{outcome}}",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}
