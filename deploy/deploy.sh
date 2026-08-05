@@ -61,6 +61,7 @@ APP_CONTAINER="abofonsa-preview-app"
 DB_CONTAINER="abofonsa-preview-postgres"
 APP_NETWORK="abofonsapreviewnet"
 NGINX_CONF="abofonsa-preview.conf"
+NGINX_HEADERS="abofonsa-security-headers.conf"   # included by the site file; must be installed with it
 
 # Liquibase runs 19 changelogs and the metrics rollup backfills on startup, on a single-core host.
 # This is expected, not a hang — see prod-server/compose.yml's healthcheck comment.
@@ -379,6 +380,12 @@ ok "${APP_CONTAINER} is healthy"
 if $WITH_NGINX; then
   step "Install the nginx site"
   confirm "install /etc/nginx/sites-available/${NGINX_CONF} on ${SSH_HOST} (needs sudo)?" || fail "aborted"
+
+  # The site file `include`s the headers snippet, so that has to land first or `nginx -t` fails.
+  scp -q "prod-server/${NGINX_HEADERS}" "${SSH_HOST}:/tmp/${NGINX_HEADERS}"
+  remote "sudo install -D -m 0644 -o root -g root /tmp/${NGINX_HEADERS} /etc/nginx/snippets/${NGINX_HEADERS} \
+       && rm -f /tmp/${NGINX_HEADERS}"
+  ok "security headers snippet installed"
 
   scp -q "prod-server/${NGINX_CONF}" "${SSH_HOST}:/tmp/${NGINX_CONF}"
   remote "sudo mv /tmp/${NGINX_CONF} /etc/nginx/sites-available/${NGINX_CONF} \
