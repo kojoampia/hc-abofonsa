@@ -54,14 +54,21 @@
               "src/main/webapp/content/scss/global.scss",
               "src/main/webapp/content/scss/launch.scss"
             ],
-            "scripts": [],
+            "scripts": ["src/main/webapp/slow-load-notice.js"],
             "define": {
               "SERVER_API_URL": "''"
             }
           },
           "configurations": {
             "production": {
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "fonts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                }
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,

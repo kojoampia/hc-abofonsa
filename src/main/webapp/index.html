@@ -74,17 +74,14 @@
     <noscript>
       <h1>You must enable JavaScript to view this page.</h1>
     </noscript>
-    <script type="text/javascript">
-      // show an error message if the app loading takes more than 4 sec
-      window.onload = function () {
-        setTimeout(showError, 4000);
-      };
-      function showError() {
-        const errorElm = document.getElementById('jhipster-error');
-        if (errorElm?.style) {
-          errorElm.style.display = 'block';
-        }
-      }
-    </script>
+    <!--
+      The "still loading" notice used to be driven by an inline script element here. It now lives in
+      slow-load-notice.js, registered in angular.json, because the Content-Security-Policy is
+      `script-src 'self'` and an inline script is refused. Do not put one back: the failure is
+      silent — the page still renders, and only the notice quietly stops working.
+
+      (Written without a literal tag name, which inside a comment confuses naive parsers — including
+      the check that verifies this file has no inline scripts left.)
+    -->
   </body>
 </html>
