@@ -26,6 +26,17 @@ export default defineConfig(
     },
   },
   {
+    // Plain browser scripts shipped as-is via angular.json `scripts`, rather than compiled from
+    // TypeScript. Only slow-load-notice.js so far, which exists because the CSP is
+    // `script-src 'self'` and index.html therefore cannot carry an inline one.
+    files: ['src/main/webapp/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+    },
+  },
+  {
     files: ['src/main/webapp/**/*.ts'],
     extends: [...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylistic, ...angular.configs.tsRecommended],
     languageOptions: {
