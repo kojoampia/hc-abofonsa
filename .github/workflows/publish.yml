@@ -43,7 +43,7 @@ jobs:
       # like `@v4` is whatever the owner last pushed to it, and these run in a job holding a token
       # with `packages: write` — a retagged or compromised action would publish under our name.
       # Dependabot updates the SHAs and the comments together.
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # JDK 21, not the runner's default. JHipster's maven-enforcer rejects anything outside
       # 21-25 outright ("JHipster supports JDK 21 to 25"), so the build fails before it compiles
