@@ -84,6 +84,22 @@
         "pill": "Link nicht erkannt",
         "heading": "Dieser Link hat nicht funktioniert.",
         "body": "Er wurde möglicherweise bereits verwendet oder unterwegs verändert. Tragen Sie sich erneut ein, erhalten Sie einen neuen Link."
+      },
+      "confirm": {
+        "pill": "Noch ein Schritt",
+        "prompt": {
+          "heading": "Bestätigen Sie Ihren Platz.",
+          "body": "Klicken Sie auf die Schaltfläche, um diese E-Mail-Adresse zu bestätigen und der Health-Connect-Warteliste beizutreten.",
+          "action": "Platz bestätigen"
+        }
+      },
+      "unsubscribe": {
+        "pill": "Liste verlassen",
+        "prompt": {
+          "heading": "Adresse entfernen?",
+          "body": "Klicken Sie auf die Schaltfläche, und wir schreiben Ihnen nicht mehr über den Start.",
+          "action": "Abmelden"
+        }
       }
     },
     "owner": {

@@ -147,13 +147,6 @@
                 <fa-icon class="p-1" icon="sort" />
               </div>
             </th>
-            <th scope="col" jhiSortBy="confirmationToken">
-              <div class="d-flex">
-                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmationToken">Confirmation Token</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
             <th scope="col" jhiSortBy="confirmedAt">
               <div class="d-flex">
                 <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmedAt">Confirmed At</span>
@@ -171,20 +164,6 @@
             <th scope="col" jhiSortBy="capturedAt">
               <div class="d-flex">
                 <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.capturedAt">Captured At</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="ipHash">
-              <div class="d-flex">
-                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.ipHash">Ip Hash</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="userAgent">
-              <div class="d-flex">
-                <span jhiTranslate="abofonsaPreviewApp.waitlistSignup.userAgent">User Agent</span>
 
                 <fa-icon class="p-1" icon="sort" />
               </div>
@@ -242,12 +221,9 @@
                 }}
               </td>
               <td>{{ waitlistSignup.consentGiven }}</td>
-              <td>{{ waitlistSignup.confirmationToken }}</td>
               <td>{{ waitlistSignup.confirmedAt | formatMediumDatetime }}</td>
               <td>{{ waitlistSignup.unsubscribedAt | formatMediumDatetime }}</td>
               <td>{{ waitlistSignup.capturedAt | formatMediumDatetime }}</td>
-              <td>{{ waitlistSignup.ipHash }}</td>
-              <td>{{ waitlistSignup.userAgent }}</td>
               <td class="text-end">
                 <div class="btn-group">
                   <a

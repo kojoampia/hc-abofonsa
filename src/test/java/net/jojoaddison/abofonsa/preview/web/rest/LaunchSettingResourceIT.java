@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import net.jojoaddison.abofonsa.preview.IntegrationTest;
 import net.jojoaddison.abofonsa.preview.domain.LaunchSetting;
 import net.jojoaddison.abofonsa.preview.repository.LaunchSettingRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.dto.LaunchSettingDTO;
 import net.jojoaddison.abofonsa.preview.service.mapper.LaunchSettingMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -33,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class LaunchSettingResourceIT {
 
     private static final String DEFAULT_SETTING_KEY = "AAAAAAAAAA";

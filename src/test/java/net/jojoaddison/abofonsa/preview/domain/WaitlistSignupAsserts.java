@@ -62,12 +62,9 @@ public class WaitlistSignupAsserts {
             .satisfies(a -> assertThat(a.getReferrer()).as("check referrer").isEqualTo(expected.getReferrer()))
             .satisfies(a -> assertThat(a.getDeviceType()).as("check deviceType").isEqualTo(expected.getDeviceType()))
             .satisfies(a -> assertThat(a.getConsentGiven()).as("check consentGiven").isEqualTo(expected.getConsentGiven()))
-            .satisfies(a -> assertThat(a.getConfirmationToken()).as("check confirmationToken").isEqualTo(expected.getConfirmationToken()))
             .satisfies(a -> assertThat(a.getConfirmedAt()).as("check confirmedAt").isEqualTo(expected.getConfirmedAt()))
             .satisfies(a -> assertThat(a.getUnsubscribedAt()).as("check unsubscribedAt").isEqualTo(expected.getUnsubscribedAt()))
-            .satisfies(a -> assertThat(a.getCapturedAt()).as("check capturedAt").isEqualTo(expected.getCapturedAt()))
-            .satisfies(a -> assertThat(a.getIpHash()).as("check ipHash").isEqualTo(expected.getIpHash()))
-            .satisfies(a -> assertThat(a.getUserAgent()).as("check userAgent").isEqualTo(expected.getUserAgent()));
+            .satisfies(a -> assertThat(a.getCapturedAt()).as("check capturedAt").isEqualTo(expected.getCapturedAt()));
     }
 
     /**

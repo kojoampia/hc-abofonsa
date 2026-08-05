@@ -33,6 +33,8 @@
     <include file="config/liquibase/changelog/20260730190400_seeded_pledge_tiers.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260730220000_added_parent_company.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260804090000_bronze_voucher_value.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260805110000_removed_seeded_user_account.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260805110100_split_opt_in_tokens.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260730174915_added_entity_constraints_ServiceHighlight.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260730175115_added_entity_constraints_PlanFeature.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260730175315_added_entity_constraints_PledgeTierPerk.xml" relativeToChangelogFile="false"/>

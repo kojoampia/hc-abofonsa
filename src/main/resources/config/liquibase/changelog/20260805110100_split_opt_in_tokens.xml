@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        Gives unsubscribing its own credential, and the confirmation token an expiry.
+
+        One token did both jobs and never expired, so a confirmation link that was forwarded, quoted
+        in a reply or simply left in an old mailbox stayed able to confirm *and* to unsubscribe for
+        as long as the row existed. The two want opposite lifetimes: the confirmation is a one-time
+        proof that somebody read their email this week, the unsubscribe link has to keep working in
+        every message we ever send.
+    -->
+    <changeSet id="20260805110100-1" author="security-audit">
+        <addColumn tableName="waitlist_signup">
+            <column name="confirmation_expires_at" type="${datetimeType}"/>
+            <column name="unsubscribe_token" type="varchar(64)"/>
+        </addColumn>
+    </changeSet>
+
+    <!--
+        Backfill, before the unique index goes on: existing rows have no unsubscribe token, and a
+        null one would mean their next email carried no way out of the list.
+
+        gen_random_uuid() is core PostgreSQL from 13 onwards (no pgcrypto needed) and is what the
+        application would have produced anyway — 32 hex characters from a CSPRNG.
+    -->
+    <changeSet id="20260805110100-2" author="security-audit">
+        <sql dbms="postgresql">
+            update waitlist_signup
+            set unsubscribe_token = replace(gen_random_uuid()::text, '-', '')
+            where unsubscribe_token is null
+        </sql>
+    </changeSet>
+
+    <changeSet id="20260805110100-3" author="security-audit">
+        <addUniqueConstraint
+            tableName="waitlist_signup"
+            columnNames="unsubscribe_token"
+            constraintName="ux_waitlist_signup__unsubscribe_token"/>
+    </changeSet>
+
+    <!--
+        Existing confirmation tokens get a deadline rather than being revoked outright: anybody
+        mid-signup keeps the link they were sent, and it stops working when it should have.
+    -->
+    <changeSet id="20260805110100-4" author="security-audit">
+        <sql dbms="postgresql">
+            update waitlist_signup
+            set confirmation_expires_at = captured_at + interval '72 hours'
+            where confirmation_token is not null
+              and confirmation_expires_at is null
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

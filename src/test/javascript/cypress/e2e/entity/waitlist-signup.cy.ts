@@ -219,9 +219,6 @@ describe('WaitlistSignup e2e test', () => {
       cy.get(`[data-cy="consentGiven"]`).click();
       cy.get(`[data-cy="consentGiven"]`).should('be.checked');
 
-      cy.get(`[data-cy="confirmationToken"]`).type('gently');
-      cy.get(`[data-cy="confirmationToken"]`).should('have.value', 'gently');
-
       cy.get(`[data-cy="confirmedAt"]`).type('2026-07-30T01:25');
       cy.get(`[data-cy="confirmedAt"]`).blur();
       cy.get(`[data-cy="confirmedAt"]`).should('have.value', '2026-07-30T01:25');
@@ -233,12 +230,6 @@ describe('WaitlistSignup e2e test', () => {
       cy.get(`[data-cy="capturedAt"]`).type('2026-07-30T06:06');
       cy.get(`[data-cy="capturedAt"]`).blur();
       cy.get(`[data-cy="capturedAt"]`).should('have.value', '2026-07-30T06:06');
-
-      cy.get(`[data-cy="ipHash"]`).type('drat trusty stake');
-      cy.get(`[data-cy="ipHash"]`).should('have.value', 'drat trusty stake');
-
-      cy.get(`[data-cy="userAgent"]`).type('scarily distant persecute');
-      cy.get(`[data-cy="userAgent"]`).should('have.value', 'scarily distant persecute');
 
       cy.get(entityCreateSaveButtonSelector).click();
 

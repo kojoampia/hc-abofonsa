@@ -89,12 +89,9 @@ public class WaitlistSignupQueryService extends QueryService<WaitlistSignup> {
                     buildStringSpecification(criteria.getReferrer(), WaitlistSignup_.referrer),
                     buildSpecification(criteria.getDeviceType(), WaitlistSignup_.deviceType),
                     buildSpecification(criteria.getConsentGiven(), WaitlistSignup_.consentGiven),
-                    buildStringSpecification(criteria.getConfirmationToken(), WaitlistSignup_.confirmationToken),
                     buildRangeSpecification(criteria.getConfirmedAt(), WaitlistSignup_.confirmedAt),
                     buildRangeSpecification(criteria.getUnsubscribedAt(), WaitlistSignup_.unsubscribedAt),
-                    buildRangeSpecification(criteria.getCapturedAt(), WaitlistSignup_.capturedAt),
-                    buildStringSpecification(criteria.getIpHash(), WaitlistSignup_.ipHash),
-                    buildStringSpecification(criteria.getUserAgent(), WaitlistSignup_.userAgent)
+                    buildRangeSpecification(criteria.getCapturedAt(), WaitlistSignup_.capturedAt)
                 )
             );
         }

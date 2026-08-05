@@ -16,6 +16,7 @@ import net.jojoaddison.abofonsa.preview.domain.enumeration.BucketType;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.ExportFormat;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.ExportKind;
 import net.jojoaddison.abofonsa.preview.repository.DataExportLogRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.mapper.DataExportLogMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class DataExportLogResourceIT {
 
     private static final ExportKind DEFAULT_EXPORT_KIND = ExportKind.WAITLIST_EMAILS;

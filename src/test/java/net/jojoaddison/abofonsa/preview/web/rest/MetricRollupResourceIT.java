@@ -15,6 +15,7 @@ import net.jojoaddison.abofonsa.preview.domain.MetricRollup;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.BucketType;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.MetricKey;
 import net.jojoaddison.abofonsa.preview.repository.MetricRollupRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.mapper.MetricRollupMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class MetricRollupResourceIT {
 
     private static final MetricKey DEFAULT_METRIC_KEY = MetricKey.WAITLIST_SIGNUPS;

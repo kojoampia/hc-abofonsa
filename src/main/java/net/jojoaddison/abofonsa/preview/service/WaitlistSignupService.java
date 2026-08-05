@@ -44,14 +44,28 @@ public class WaitlistSignupService {
     /**
      * Update a waitlistSignup.
      *
+     * <p>The DTO deliberately no longer carries {@code confirmationToken}, {@code unsubscribeToken},
+     * {@code confirmationExpiresAt}, {@code ipHash} or {@code userAgent} — they are credentials and
+     * personal data with no business being serialised to an admin screen. That leaves a trap:
+     * {@code toEntity} maps a whole row from a DTO that no longer mentions those columns, so saving
+     * the result would write nulls over them and silently break the opt-in and unsubscribe links of
+     * whichever row was edited. They are carried across from the stored row instead.
+     *
      * @param waitlistSignupDTO the entity to save.
      * @return the persisted entity.
      */
     public WaitlistSignupDTO update(WaitlistSignupDTO waitlistSignupDTO) {
         LOG.debug("Request to update WaitlistSignup : {}", waitlistSignupDTO);
         WaitlistSignup waitlistSignup = waitlistSignupMapper.toEntity(waitlistSignupDTO);
-        waitlistSignup = waitlistSignupRepository.save(waitlistSignup);
-        return waitlistSignupMapper.toDto(waitlistSignup);
+        waitlistSignupRepository.findById(waitlistSignupDTO.getId()).ifPresent(existing -> {
+            waitlistSignup.setConfirmationToken(existing.getConfirmationToken());
+            waitlistSignup.setConfirmationExpiresAt(existing.getConfirmationExpiresAt());
+            waitlistSignup.setUnsubscribeToken(existing.getUnsubscribeToken());
+            waitlistSignup.setIpHash(existing.getIpHash());
+            waitlistSignup.setUserAgent(existing.getUserAgent());
+        });
+        WaitlistSignup saved = waitlistSignupRepository.save(waitlistSignup);
+        return waitlistSignupMapper.toDto(saved);
     }
 
     /**

@@ -17,6 +17,7 @@ import net.jojoaddison.abofonsa.preview.IntegrationTest;
 import net.jojoaddison.abofonsa.preview.domain.PledgeTierTeaser;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.PledgeTierCode;
 import net.jojoaddison.abofonsa.preview.repository.PledgeTierTeaserRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.dto.PledgeTierTeaserDTO;
 import net.jojoaddison.abofonsa.preview.service.mapper.PledgeTierTeaserMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -34,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class PledgeTierTeaserResourceIT {
 
     private static final PledgeTierCode DEFAULT_CODE = PledgeTierCode.BRONZE;

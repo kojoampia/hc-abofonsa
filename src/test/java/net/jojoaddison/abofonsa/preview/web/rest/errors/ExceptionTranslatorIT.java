@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import net.jojoaddison.abofonsa.preview.IntegrationTest;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -16,8 +17,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 /**
  * Integration tests {@link ExceptionTranslator} controller advice.
+ *
+ * <p>Admin, because the test controller is mapped under {@code /api/exception-translator-test} and
+ * everything under {@code /api} that is not {@code /api/public} now requires ROLE_ADMIN. Without it
+ * every case here fails on a 403 before the advice it is meant to exercise ever runs.
  */
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 @AutoConfigureMockMvc
 @IntegrationTest
 class ExceptionTranslatorIT {

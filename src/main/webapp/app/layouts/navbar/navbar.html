@@ -367,18 +367,12 @@
                   <span jhiTranslate="global.menu.account.login">Sign in</span>
                 </a>
               </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  routerLink="/account/register"
-                  routerLinkActive="active"
-                  (click)="collapseNavbar()"
-                  data-cy="register"
-                >
-                  <fa-icon icon="user-plus" [fixedWidth]="true" />
-                  <span jhiTranslate="global.menu.account.register">Register</span>
-                </a>
-              </li>
+              <!--
+                No "Register" entry. There is one account here, seeded by Liquibase and given its
+                password by AdminAccountInitializer; /api/register is deleted and denied. The login
+                page's equivalent links were removed when the endpoints were first closed off and
+                this one was missed, which left a menu item leading to a form that could not work.
+              -->
             }
           </ul>
         </li>

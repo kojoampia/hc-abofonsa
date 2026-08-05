@@ -33,15 +33,9 @@
       "referrer": "Referrer",
       "deviceType": "Device Type",
       "consentGiven": "Consent Given",
-      "confirmationToken": "Confirmation Token",
       "confirmedAt": "Confirmed At",
       "unsubscribedAt": "Unsubscribed At",
-      "capturedAt": "Captured At",
-      "ipHash": "Ip Hash",
-      "userAgent": "User Agent",
-      "help": {
-        "ipHash": "Salted hash, never the address itself — enough to rate-limit, not enough to re-identify."
-      }
+      "capturedAt": "Captured At"
     }
   }
 }

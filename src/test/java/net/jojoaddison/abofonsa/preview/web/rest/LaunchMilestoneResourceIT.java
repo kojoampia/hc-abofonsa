@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import net.jojoaddison.abofonsa.preview.IntegrationTest;
 import net.jojoaddison.abofonsa.preview.domain.LaunchMilestone;
 import net.jojoaddison.abofonsa.preview.repository.LaunchMilestoneRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.dto.LaunchMilestoneDTO;
 import net.jojoaddison.abofonsa.preview.service.mapper.LaunchMilestoneMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -33,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class LaunchMilestoneResourceIT {
 
     private static final String DEFAULT_PHASE_LABEL = "AAAAAAAAAA";

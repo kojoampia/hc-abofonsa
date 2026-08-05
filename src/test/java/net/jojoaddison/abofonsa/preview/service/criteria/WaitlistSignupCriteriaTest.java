@@ -91,12 +91,9 @@ class WaitlistSignupCriteriaTest {
         waitlistSignupCriteria.referrer();
         waitlistSignupCriteria.deviceType();
         waitlistSignupCriteria.consentGiven();
-        waitlistSignupCriteria.confirmationToken();
         waitlistSignupCriteria.confirmedAt();
         waitlistSignupCriteria.unsubscribedAt();
         waitlistSignupCriteria.capturedAt();
-        waitlistSignupCriteria.ipHash();
-        waitlistSignupCriteria.userAgent();
         waitlistSignupCriteria.distinct();
     }
 
@@ -119,12 +116,9 @@ class WaitlistSignupCriteriaTest {
                 condition.apply(criteria.getReferrer()) &&
                 condition.apply(criteria.getDeviceType()) &&
                 condition.apply(criteria.getConsentGiven()) &&
-                condition.apply(criteria.getConfirmationToken()) &&
                 condition.apply(criteria.getConfirmedAt()) &&
                 condition.apply(criteria.getUnsubscribedAt()) &&
                 condition.apply(criteria.getCapturedAt()) &&
-                condition.apply(criteria.getIpHash()) &&
-                condition.apply(criteria.getUserAgent()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -152,12 +146,9 @@ class WaitlistSignupCriteriaTest {
                 condition.apply(criteria.getReferrer(), copy.getReferrer()) &&
                 condition.apply(criteria.getDeviceType(), copy.getDeviceType()) &&
                 condition.apply(criteria.getConsentGiven(), copy.getConsentGiven()) &&
-                condition.apply(criteria.getConfirmationToken(), copy.getConfirmationToken()) &&
                 condition.apply(criteria.getConfirmedAt(), copy.getConfirmedAt()) &&
                 condition.apply(criteria.getUnsubscribedAt(), copy.getUnsubscribedAt()) &&
                 condition.apply(criteria.getCapturedAt(), copy.getCapturedAt()) &&
-                condition.apply(criteria.getIpHash(), copy.getIpHash()) &&
-                condition.apply(criteria.getUserAgent(), copy.getUserAgent()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

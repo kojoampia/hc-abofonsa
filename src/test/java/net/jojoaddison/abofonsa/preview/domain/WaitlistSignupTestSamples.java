@@ -21,10 +21,7 @@ public class WaitlistSignupTestSamples {
             .utmSource("utmSource1")
             .utmMedium("utmMedium1")
             .utmCampaign("utmCampaign1")
-            .referrer("referrer1")
-            .confirmationToken("confirmationToken1")
-            .ipHash("ipHash1")
-            .userAgent("userAgent1");
+            .referrer("referrer1");
     }
 
     public static WaitlistSignup getWaitlistSignupSample2() {
@@ -39,10 +36,7 @@ public class WaitlistSignupTestSamples {
             .utmSource("utmSource2")
             .utmMedium("utmMedium2")
             .utmCampaign("utmCampaign2")
-            .referrer("referrer2")
-            .confirmationToken("confirmationToken2")
-            .ipHash("ipHash2")
-            .userAgent("userAgent2");
+            .referrer("referrer2");
     }
 
     public static WaitlistSignup getWaitlistSignupRandomSampleGenerator() {
@@ -57,9 +51,6 @@ public class WaitlistSignupTestSamples {
             .utmSource(UUID.randomUUID().toString())
             .utmMedium(UUID.randomUUID().toString())
             .utmCampaign(UUID.randomUUID().toString())
-            .referrer(UUID.randomUUID().toString())
-            .confirmationToken(UUID.randomUUID().toString())
-            .ipHash(UUID.randomUUID().toString())
-            .userAgent(UUID.randomUUID().toString());
+            .referrer(UUID.randomUUID().toString());
     }
 }

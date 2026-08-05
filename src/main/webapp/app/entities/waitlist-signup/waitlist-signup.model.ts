@@ -5,6 +5,12 @@ import { DeviceType } from 'app/entities/enumerations/device-type.model';
 import { PlanCode } from 'app/entities/enumerations/plan-code.model';
 import { SignupStatus } from 'app/entities/enumerations/signup-status.model';
 
+/**
+ * Note what is absent: `confirmationToken`, `unsubscribeToken`, `confirmationExpiresAt`, `ipHash`
+ * and `userAgent`. They exist on the entity and are deliberately not on the DTO — the first three
+ * are credentials for the opt-in and unsubscribe links, and the last two are personal data with no
+ * reason to reach an admin screen. Re-running the entity generator will put them back.
+ */
 export interface IWaitlistSignup {
   id: number;
   email?: string | null;
@@ -22,12 +28,9 @@ export interface IWaitlistSignup {
   referrer?: string | null;
   deviceType?: keyof typeof DeviceType | null;
   consentGiven?: boolean | null;
-  confirmationToken?: string | null;
   confirmedAt?: dayjs.Dayjs | null;
   unsubscribedAt?: dayjs.Dayjs | null;
   capturedAt?: dayjs.Dayjs | null;
-  ipHash?: string | null;
-  userAgent?: string | null;
 }
 
 export type NewWaitlistSignup = Omit<IWaitlistSignup, 'id'> & { id: null };

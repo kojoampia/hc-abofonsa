@@ -42,6 +42,12 @@ public class WaitlistCaptureService {
      */
     private static final Duration MIN_DWELL = Duration.ofMillis(800);
 
+    /**
+     * How long a confirmation link stays good for. Long enough to survive a weekend and an email
+     * client that batches; short enough that a link resurfacing years later does nothing.
+     */
+    private static final Duration CONFIRMATION_VALIDITY = Duration.ofHours(72);
+
     private final WaitlistSignupRepository repository;
     private final VisitorContextService visitorContext;
     private final CaptureEventRecorder eventRecorder;
@@ -101,6 +107,8 @@ public class WaitlistCaptureService {
         signup.setDeviceType(visitorContext.deviceType(request));
         signup.setConsentGiven(true);
         signup.setConfirmationToken(newToken());
+        signup.setConfirmationExpiresAt(Instant.now().plus(CONFIRMATION_VALIDITY));
+        signup.setUnsubscribeToken(newToken());
         signup.setCapturedAt(Instant.now());
         signup.setIpHash(ipHash);
         signup.setUserAgent(visitorContext.userAgent(request));
@@ -117,26 +125,51 @@ public class WaitlistCaptureService {
         );
     }
 
-    /** Completes double opt-in. Idempotent: clicking the link twice is a success, not an error. */
+    /**
+     * Completes double opt-in.
+     *
+     * <p>The confirmation token is single-use and expires at {@code confirmationExpiresAt}.
+     * Replaying a consumed or expired token returns {@link Optional#empty()}.
+     *
+     * <p>The status remains {@code CONFIRMED} once set; only the credential is consumed.
+     */
     public Optional<WaitlistSignup> confirm(String token, HttpServletRequest request) {
-        return repository.findByConfirmationToken(token).map(signup -> {
-            if (signup.getStatus() != SignupStatus.CONFIRMED) {
-                signup.setStatus(SignupStatus.CONFIRMED);
-                signup.setConfirmedAt(Instant.now());
+        return repository
+            .findByConfirmationToken(token)
+            .filter(signup -> {
+                Instant expiry = signup.getConfirmationExpiresAt();
+                boolean live = expiry == null || expiry.isAfter(Instant.now());
+                if (!live) {
+                    LOG.debug("Refused an expired confirmation token");
+                }
+                return live;
+            })
+            .map(signup -> {
+                if (signup.getStatus() != SignupStatus.CONFIRMED) {
+                    signup.setStatus(SignupStatus.CONFIRMED);
+                    signup.setConfirmedAt(Instant.now());
+                    eventRecorder.recordServerSide(CaptureEventType.WAITLIST_CONFIRM, request, signup.getLocale(), null, null);
+                }
+                // One use. Everything after this point identifies the row by status, and the
+                // unsubscribe link has a credential of its own that this does not affect.
+                signup.setConfirmationToken(null);
+                signup.setConfirmationExpiresAt(null);
                 repository.save(signup);
-                eventRecorder.recordServerSide(CaptureEventType.WAITLIST_CONFIRM, request, signup.getLocale(), null, null);
-            }
-            return signup;
-        });
+                return signup;
+            });
     }
 
     /**
      * Honours an unsubscribe. The row is kept rather than deleted, so the address stays recognisable
      * as one that asked to be left alone; an actual erasure request is a separate, deliberate
      * action taken from the admin side.
+     *
+     * <p>Keyed on {@code unsubscribeToken}, not on the confirmation token the two used to share. It
+     * does not expire: every message carries this link, and an opt-out that has quietly stopped
+     * working is worse than none.
      */
     public Optional<WaitlistSignup> unsubscribe(String token) {
-        return repository.findByConfirmationToken(token).map(signup -> {
+        return repository.findByUnsubscribeToken(token).map(signup -> {
             if (signup.getStatus() != SignupStatus.UNSUBSCRIBED) {
                 signup.setStatus(SignupStatus.UNSUBSCRIBED);
                 signup.setUnsubscribedAt(Instant.now());
@@ -158,6 +191,12 @@ public class WaitlistCaptureService {
         // opt-in click is what actually puts them back on the list.
         if (existing.getConfirmationToken() == null) {
             existing.setConfirmationToken(newToken());
+        }
+        // Always refreshed, even when the token is reused: an unexpired link is the point of
+        // re-sending it, and leaving a stale deadline would mail somebody a link already dead.
+        existing.setConfirmationExpiresAt(Instant.now().plus(CONFIRMATION_VALIDITY));
+        if (existing.getUnsubscribeToken() == null) {
+            existing.setUnsubscribeToken(newToken());
         }
         existing.setStatus(SignupStatus.PENDING);
         repository.save(existing);
@@ -184,13 +223,16 @@ public class WaitlistCaptureService {
 
     private void sendConfirmation(WaitlistSignup signup) {
         String link = publicBaseUrl + "/confirm?token=" + signup.getConfirmationToken();
+        String optOut = publicBaseUrl + "/unsubscribe?token=" + signup.getUnsubscribeToken();
         try {
             mailService.sendEmail(
                 signup.getEmail(),
                 "Confirm your place on the Health Connect waitlist",
                 "Please confirm your email address by opening this link:\n\n" +
                     link +
-                    "\n\nIf you did not request this, ignore this message and nothing further will happen.",
+                    "\n\nThe link is good for 72 hours. If you did not request this, ignore this message " +
+                    "and nothing further will happen.\n\nTo be removed from this list at any time:\n\n" +
+                    optOut,
                 false,
                 false
             );

@@ -49,12 +49,9 @@ type WaitlistSignupFormGroupContent = {
   referrer: FormControl<WaitlistSignupFormRawValue['referrer']>;
   deviceType: FormControl<WaitlistSignupFormRawValue['deviceType']>;
   consentGiven: FormControl<WaitlistSignupFormRawValue['consentGiven']>;
-  confirmationToken: FormControl<WaitlistSignupFormRawValue['confirmationToken']>;
   confirmedAt: FormControl<WaitlistSignupFormRawValue['confirmedAt']>;
   unsubscribedAt: FormControl<WaitlistSignupFormRawValue['unsubscribedAt']>;
   capturedAt: FormControl<WaitlistSignupFormRawValue['capturedAt']>;
-  ipHash: FormControl<WaitlistSignupFormRawValue['ipHash']>;
-  userAgent: FormControl<WaitlistSignupFormRawValue['userAgent']>;
 };
 
 export type WaitlistSignupFormGroup = FormGroup<WaitlistSignupFormGroupContent>;
@@ -117,19 +114,10 @@ export class WaitlistSignupFormService {
       consentGiven: new FormControl(waitlistSignupRawValue.consentGiven, {
         validators: [Validators.required],
       }),
-      confirmationToken: new FormControl(waitlistSignupRawValue.confirmationToken, {
-        validators: [Validators.maxLength(64)],
-      }),
       confirmedAt: new FormControl(waitlistSignupRawValue.confirmedAt),
       unsubscribedAt: new FormControl(waitlistSignupRawValue.unsubscribedAt),
       capturedAt: new FormControl(waitlistSignupRawValue.capturedAt, {
         validators: [Validators.required],
-      }),
-      ipHash: new FormControl(waitlistSignupRawValue.ipHash, {
-        validators: [Validators.maxLength(64)],
-      }),
-      userAgent: new FormControl(waitlistSignupRawValue.userAgent, {
-        validators: [Validators.maxLength(512)],
       }),
     });
   }

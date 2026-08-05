@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import net.jojoaddison.abofonsa.preview.repository.CarePlanTeaserRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.CarePlanTeaserService;
 import net.jojoaddison.abofonsa.preview.service.dto.CarePlanTeaserDTO;
 import net.jojoaddison.abofonsa.preview.web.rest.errors.BadRequestAlertException;
@@ -15,15 +16,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link net.jojoaddison.abofonsa.preview.domain.CarePlanTeaser}.
+ *
+ * <p>Administrative CRUD. The class-level {@code @Secured} repeats the URL rule in
+ * {@code SecurityConfiguration} on purpose: re-running the entity generator rewrites this file but
+ * not that one, and a resource that quietly falls back to "any authenticated principal" is how the
+ * whole waitlist table became readable to a seeded demo account.
  */
 @RestController
 @RequestMapping("/api/care-plan-teasers")
+@Secured(AuthoritiesConstants.ADMIN)
 public class CarePlanTeaserResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(CarePlanTeaserResource.class);

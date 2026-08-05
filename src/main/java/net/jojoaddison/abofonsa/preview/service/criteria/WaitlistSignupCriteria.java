@@ -128,17 +128,11 @@ public class WaitlistSignupCriteria implements Serializable, Criteria {
 
     private BooleanFilter consentGiven;
 
-    private StringFilter confirmationToken;
-
     private InstantFilter confirmedAt;
 
     private InstantFilter unsubscribedAt;
 
     private InstantFilter capturedAt;
-
-    private StringFilter ipHash;
-
-    private StringFilter userAgent;
 
     private Boolean distinct;
 
@@ -161,12 +155,9 @@ public class WaitlistSignupCriteria implements Serializable, Criteria {
         this.referrer = other.optionalReferrer().map(StringFilter::copy).orElse(null);
         this.deviceType = other.optionalDeviceType().map(DeviceTypeFilter::copy).orElse(null);
         this.consentGiven = other.optionalConsentGiven().map(BooleanFilter::copy).orElse(null);
-        this.confirmationToken = other.optionalConfirmationToken().map(StringFilter::copy).orElse(null);
         this.confirmedAt = other.optionalConfirmedAt().map(InstantFilter::copy).orElse(null);
         this.unsubscribedAt = other.optionalUnsubscribedAt().map(InstantFilter::copy).orElse(null);
         this.capturedAt = other.optionalCapturedAt().map(InstantFilter::copy).orElse(null);
-        this.ipHash = other.optionalIpHash().map(StringFilter::copy).orElse(null);
-        this.userAgent = other.optionalUserAgent().map(StringFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -479,25 +470,6 @@ public class WaitlistSignupCriteria implements Serializable, Criteria {
         this.consentGiven = consentGiven;
     }
 
-    public StringFilter getConfirmationToken() {
-        return confirmationToken;
-    }
-
-    public Optional<StringFilter> optionalConfirmationToken() {
-        return Optional.ofNullable(confirmationToken);
-    }
-
-    public StringFilter confirmationToken() {
-        if (confirmationToken == null) {
-            setConfirmationToken(new StringFilter());
-        }
-        return confirmationToken;
-    }
-
-    public void setConfirmationToken(StringFilter confirmationToken) {
-        this.confirmationToken = confirmationToken;
-    }
-
     public InstantFilter getConfirmedAt() {
         return confirmedAt;
     }
@@ -555,44 +527,6 @@ public class WaitlistSignupCriteria implements Serializable, Criteria {
         this.capturedAt = capturedAt;
     }
 
-    public StringFilter getIpHash() {
-        return ipHash;
-    }
-
-    public Optional<StringFilter> optionalIpHash() {
-        return Optional.ofNullable(ipHash);
-    }
-
-    public StringFilter ipHash() {
-        if (ipHash == null) {
-            setIpHash(new StringFilter());
-        }
-        return ipHash;
-    }
-
-    public void setIpHash(StringFilter ipHash) {
-        this.ipHash = ipHash;
-    }
-
-    public StringFilter getUserAgent() {
-        return userAgent;
-    }
-
-    public Optional<StringFilter> optionalUserAgent() {
-        return Optional.ofNullable(userAgent);
-    }
-
-    public StringFilter userAgent() {
-        if (userAgent == null) {
-            setUserAgent(new StringFilter());
-        }
-        return userAgent;
-    }
-
-    public void setUserAgent(StringFilter userAgent) {
-        this.userAgent = userAgent;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -638,12 +572,9 @@ public class WaitlistSignupCriteria implements Serializable, Criteria {
             Objects.equals(referrer, that.referrer) &&
             Objects.equals(deviceType, that.deviceType) &&
             Objects.equals(consentGiven, that.consentGiven) &&
-            Objects.equals(confirmationToken, that.confirmationToken) &&
             Objects.equals(confirmedAt, that.confirmedAt) &&
             Objects.equals(unsubscribedAt, that.unsubscribedAt) &&
             Objects.equals(capturedAt, that.capturedAt) &&
-            Objects.equals(ipHash, that.ipHash) &&
-            Objects.equals(userAgent, that.userAgent) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -667,12 +598,9 @@ public class WaitlistSignupCriteria implements Serializable, Criteria {
             referrer,
             deviceType,
             consentGiven,
-            confirmationToken,
             confirmedAt,
             unsubscribedAt,
             capturedAt,
-            ipHash,
-            userAgent,
             distinct
         );
     }
@@ -697,12 +625,9 @@ public class WaitlistSignupCriteria implements Serializable, Criteria {
             optionalReferrer().map(f -> "referrer=" + f + ", ").orElse("") +
             optionalDeviceType().map(f -> "deviceType=" + f + ", ").orElse("") +
             optionalConsentGiven().map(f -> "consentGiven=" + f + ", ").orElse("") +
-            optionalConfirmationToken().map(f -> "confirmationToken=" + f + ", ").orElse("") +
             optionalConfirmedAt().map(f -> "confirmedAt=" + f + ", ").orElse("") +
             optionalUnsubscribedAt().map(f -> "unsubscribedAt=" + f + ", ").orElse("") +
             optionalCapturedAt().map(f -> "capturedAt=" + f + ", ").orElse("") +
-            optionalIpHash().map(f -> "ipHash=" + f + ", ").orElse("") +
-            optionalUserAgent().map(f -> "userAgent=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

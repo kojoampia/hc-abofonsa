@@ -1,0 +1,21 @@
+<!doctype html>
+<!--
+  Test fixture, not the application's index.html.
+
+  SecurityHeadersIT boots a real servlet container and asks for an SPA route, which SpaWebFilter
+  answers by forwarding to /index.html. The forward has to resolve to something for the test to
+  assert on a 200 rather than on an error page — and an error page would prove nothing, because the
+  ERROR dispatch always carried the security headers even while the forward did not.
+
+  The real index.html is produced by the Angular build into target/classes/static and is absent from
+  a plain `./mvnw verify`, which is why this exists. Test resources precede main resources on the
+  test classpath, so this file is what tests see either way.
+-->
+<html lang="en">
+  <head>
+    <title>index fixture</title>
+  </head>
+  <body>
+    forwarded
+  </body>
+</html>

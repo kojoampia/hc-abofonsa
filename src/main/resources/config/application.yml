@@ -145,6 +145,20 @@ spring:
     problemdetails:
       enabled: true
   security:
+    filter:
+      # FORWARD is the addition; the other three are Spring Boot's defaults, repeated because setting
+      # this property replaces the list rather than adding to it.
+      #
+      # SpaWebFilter answers every SPA route by forwarding to /index.html. A forward does not re-enter
+      # the security filter chain, and the header writers never ran against the response the container
+      # ultimately committed — so /, /login and every other HTML document went out with no CSP, no
+      # X-Frame-Options, no Referrer-Policy and no nosniff, while /api/** carried the full set. A CSP
+      # on a JSON response protects nothing: it governs the document that loads the scripts, and that
+      # document was the bare one.
+      #
+      # Including FORWARD runs the chain again for the forwarded /index.html. That path is permitAll
+      # and contains a period, so SpaWebFilter passes it straight through and there is no loop.
+      dispatcher-types: async,error,forward,request
     oauth2:
       resourceserver:
         jwt:
@@ -213,7 +227,27 @@ jhipster:
     license: unlicensed
     license-url:
   security:
-    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:"
+    # Tightened from generator-jhipster's stock value, which was
+    #   script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com
+    # and gave away most of what a script-src is for. Nothing here needs any of the three:
+    #
+    #   'unsafe-inline' / 'unsafe-eval'  an Angular production build emits neither, and the
+    #                                    dashboard's chart is hand-written inline SVG rather than a
+    #                                    library that compiles templates at runtime.
+    #   storage.googleapis.com           a generator default. Swagger UI is served from
+    #                                    /swagger-ui/ and loads its bundle, preset and axios from
+    #                                    there, not from a shared Google bucket.
+    #
+    # style-src keeps 'unsafe-inline': Angular injects component styles at runtime and there is no
+    # way round it short of nonces the build does not emit.
+    #
+    # frame-ancestors, not just X-Frame-Options — the header is legacy and ignored by browsers that
+    # honour the directive. form-action and base-uri close off the two redirect-ish tricks that
+    # default-src does not cover.
+    #
+    # The dev profile relaxes this: Swagger UI's own index.html carries four inline scripts, and it
+    # is only reachable there. See application-dev.yml.
+    content-security-policy: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
 
 
 # jhipster-needle-add-application-yaml-document
@@ -249,3 +283,12 @@ abofonsa:
   waitlist:
     # Submissions per client per hour before the endpoint answers 429.
     max-per-hour-per-client: ${ABOFONSA_WAITLIST_MAX_PER_HOUR:5}
+
+  events:
+    # Analytics beacons per client per hour before /api/public/events answers 429. Counted in memory
+    # per instance, unlike the waitlist cap which is counted in the database.
+    #
+    # Deliberately generous: a real visit fires a page view, a few section views and perhaps a click,
+    # so 600 is two orders of magnitude above anybody reading the page and still bounds what a script
+    # can write to capture_event.
+    max-per-hour-per-client: ${ABOFONSA_EVENTS_MAX_PER_HOUR:600}

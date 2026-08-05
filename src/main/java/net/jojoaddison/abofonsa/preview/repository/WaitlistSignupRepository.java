@@ -24,6 +24,12 @@ public interface WaitlistSignupRepository extends JpaRepository<WaitlistSignup, 
     Optional<WaitlistSignup> findByConfirmationToken(String confirmationToken);
 
     /**
+     * Unsubscribing has its own credential. Sharing the confirmation token meant one leaked link
+     * granted both, and that a link with no expiry could still remove somebody years later.
+     */
+    Optional<WaitlistSignup> findByUnsubscribeToken(String unsubscribeToken);
+
+    /**
      * How many signups this client has produced since a cutoff. Counted against the salted IP hash
      * rather than the address, because an abuser varies the address and not the socket.
      */

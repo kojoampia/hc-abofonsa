@@ -24,6 +24,18 @@ management:
     metrics:
       export:
         enabled: false
+  endpoints:
+    web:
+      exposure:
+        # Narrower than application.yml's list, which is generator-jhipster's development set.
+        # `env`, `configprops`, `threaddump`, `logfile`, `loggers`, `caches` and `liquibase` all
+        # require ROLE_ADMIN, but an endpoint that is not exposed cannot be reached by a rule that is
+        # wrong either. These three are what production actually needs: `health` for the container
+        # healthcheck, `prometheus` for the monitoring network's scrape, `info` for build identity.
+        include:
+          - health
+          - info
+          - prometheus
 
 spring:
   devtools:
@@ -68,6 +80,16 @@ spring:
 server:
   port: 8080
   shutdown: graceful # see https://docs.spring.io/spring-boot/reference/web/graceful-shutdown.html#web.graceful-shutdown
+  # nginx terminates TLS and proxies to this container over plain HTTP on loopback, so without this
+  # every request looks insecure to the application. Two consequences, both silent:
+  #
+  #   - Spring Security suppresses Strict-Transport-Security on a request it believes is not HTTPS,
+  #     so the site had no HSTS at all and the first request of every visit stayed strippable.
+  #   - ServletUriComponentsBuilder, which builds the pagination Link headers, emitted http:// URLs.
+  #
+  # `framework` makes Spring honour the X-Forwarded-* headers nginx already sends. Safe only because
+  # nothing but that proxy can reach this port: compose publishes it on 127.0.0.1 only.
+  forward-headers-strategy: framework
   compression:
     enabled: true
     mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json,image/svg+xml
@@ -92,7 +114,11 @@ jhipster:
       jwt:
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
-        token-validity-in-seconds-for-remember-me: 2592000
+        # Seven days, down from thirty. These tokens are stateless, so there is no revoking one short
+        # of rotating JHIPSTER_SECURITY_AUTHENTICATION_JWT_BASE64_SECRET, which signs the operator
+        # out everywhere. A month-long bearer token sitting in localStorage is a long time to be
+        # unable to take something back.
+        token-validity-in-seconds-for-remember-me: 604800
   mail: # specific JHipster mail property, for standard properties see MailProperties
     base-url: http://my-server-url-to-change # Modify according to your server's URL
   logging:

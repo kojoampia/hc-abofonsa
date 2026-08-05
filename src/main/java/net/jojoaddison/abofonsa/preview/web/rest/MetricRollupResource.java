@@ -2,6 +2,7 @@ package net.jojoaddison.abofonsa.preview.web.rest;
 
 import java.util.List;
 import java.util.Optional;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.MetricRollupQueryService;
 import net.jojoaddison.abofonsa.preview.service.MetricRollupService;
 import net.jojoaddison.abofonsa.preview.service.criteria.MetricRollupCriteria;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.PaginationUtil;
@@ -19,9 +21,15 @@ import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link net.jojoaddison.abofonsa.preview.domain.MetricRollup}.
+ *
+ * <p>Administrative CRUD. The class-level {@code @Secured} repeats the URL rule in
+ * {@code SecurityConfiguration} on purpose: re-running the entity generator rewrites this file but
+ * not that one, and a resource that quietly falls back to "any authenticated principal" is how the
+ * whole waitlist table became readable to a seeded demo account.
  */
 @RestController
 @RequestMapping("/api/metric-rollups")
+@Secured(AuthoritiesConstants.ADMIN)
 public class MetricRollupResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetricRollupResource.class);

@@ -15,6 +15,20 @@ const routes: Routes = [
     title: 'launch.title',
     data: { chrome: false },
   },
+  // Where the links in an opt-in email land. `/confirm` and `/unsubscribe` ask and then post;
+  // `/confirmed` and `/unsubscribed` are the results, kept because older messages may point at them.
+  {
+    path: 'confirm',
+    loadComponent: () => import('./launch/opt-in-action.page'),
+    title: 'launch.optIn.confirmed.title',
+    data: { chrome: false, kind: 'confirm' },
+  },
+  {
+    path: 'unsubscribe',
+    loadComponent: () => import('./launch/opt-in-action.page'),
+    title: 'launch.optIn.unsubscribed.title',
+    data: { chrome: false, kind: 'unsubscribe' },
+  },
   {
     path: 'confirmed',
     loadComponent: () => import('./launch/opt-in-result.page'),
