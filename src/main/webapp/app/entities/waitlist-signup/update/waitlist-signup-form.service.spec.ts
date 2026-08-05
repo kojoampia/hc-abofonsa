@@ -35,12 +35,9 @@ describe('WaitlistSignup Form Service', () => {
             referrer: expect.any(Object),
             deviceType: expect.any(Object),
             consentGiven: expect.any(Object),
-            confirmationToken: expect.any(Object),
             confirmedAt: expect.any(Object),
             unsubscribedAt: expect.any(Object),
             capturedAt: expect.any(Object),
-            ipHash: expect.any(Object),
-            userAgent: expect.any(Object),
           }),
         );
       });
@@ -66,12 +63,9 @@ describe('WaitlistSignup Form Service', () => {
             referrer: expect.any(Object),
             deviceType: expect.any(Object),
             consentGiven: expect.any(Object),
-            confirmationToken: expect.any(Object),
             confirmedAt: expect.any(Object),
             unsubscribedAt: expect.any(Object),
             capturedAt: expect.any(Object),
-            ipHash: expect.any(Object),
-            userAgent: expect.any(Object),
           }),
         );
       });

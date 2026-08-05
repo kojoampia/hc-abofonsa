@@ -5,12 +5,10 @@ import java.util.*;
 import net.jojoaddison.abofonsa.preview.domain.User;
 import net.jojoaddison.abofonsa.preview.repository.UserRepository;
 import net.jojoaddison.abofonsa.preview.security.SecurityUtils;
-import net.jojoaddison.abofonsa.preview.service.MailService;
 import net.jojoaddison.abofonsa.preview.service.UserService;
 import net.jojoaddison.abofonsa.preview.service.dto.AdminUserDTO;
 import net.jojoaddison.abofonsa.preview.service.dto.PasswordChangeDTO;
 import net.jojoaddison.abofonsa.preview.web.rest.errors.*;
-import net.jojoaddison.abofonsa.preview.web.rest.vm.KeyAndPasswordVM;
 import net.jojoaddison.abofonsa.preview.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,7 +17,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * REST controller for managing the current user's account.
+ * The signed-in operator's own account.
+ *
+ * <p>Registration, activation and password reset used to live here too. They are deleted rather than
+ * merely unmapped: this application has exactly one account, seeded by Liquibase and given its
+ * password by {@code AdminAccountInitializer}, so there is no sign-up to open and nothing that
+ * should be able to create a second. Leaving the handlers in place meant they were reachable to any
+ * authenticated principal — which, while generator-jhipster's seeded {@code user}/{@code user}
+ * account was live, meant reachable to the public.
+ *
+ * <p>{@code SecurityConfiguration} additionally answers {@code denyAll} on those paths, so that
+ * re-running the generator restores the code without restoring the exposure.
  */
 @RestController
 @RequestMapping("/api")
@@ -38,44 +46,9 @@ public class AccountResource {
 
     private final UserService userService;
 
-    private final MailService mailService;
-
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    public AccountResource(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
         this.userService = userService;
-        this.mailService = mailService;
-    }
-
-    /**
-     * {@code POST  /register} : register the user.
-     *
-     * @param managedUserVM the managed user View Model.
-     * @throws InvalidPasswordException {@code 400 (Bad Request)} if the password is incorrect.
-     * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
-     * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
-     */
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
-        if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
-            throw new InvalidPasswordException();
-        }
-        User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
-        mailService.sendActivationEmail(user);
-    }
-
-    /**
-     * {@code GET  /activate} : activate the registered user.
-     *
-     * @param key the activation key.
-     * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
-     */
-    @GetMapping("/activate")
-    public void activateAccount(@RequestParam(value = "key") String key) {
-        Optional<User> user = userService.activateRegistration(key);
-        if (!user.isPresent()) {
-            throw new AccountResourceException("No user was found for this activation key");
-        }
     }
 
     /**
@@ -133,42 +106,6 @@ public class AccountResource {
             throw new InvalidPasswordException();
         }
         userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
-    }
-
-    /**
-     * {@code POST   /account/reset-password/init} : Send an email to reset the password of the user.
-     *
-     * @param mail the mail of the user.
-     */
-    @PostMapping(path = "/account/reset-password/init")
-    public void requestPasswordReset(@RequestBody String mail) {
-        Optional<User> user = userService.requestPasswordReset(mail);
-        if (user.isPresent()) {
-            mailService.sendPasswordResetMail(user.orElseThrow());
-        } else {
-            // Pretend the request has been successful to prevent checking which emails really exist
-            // but log that an invalid attempt has been made
-            LOG.warn("Password reset requested for non existing mail");
-        }
-    }
-
-    /**
-     * {@code POST   /account/reset-password/finish} : Finish to reset the password of the user.
-     *
-     * @param keyAndPassword the generated key and the new password.
-     * @throws InvalidPasswordException {@code 400 (Bad Request)} if the password is incorrect.
-     * @throws RuntimeException {@code 500 (Internal Server Error)} if the password could not be reset.
-     */
-    @PostMapping(path = "/account/reset-password/finish")
-    public void finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
-        if (isPasswordLengthInvalid(keyAndPassword.getNewPassword())) {
-            throw new InvalidPasswordException();
-        }
-        Optional<User> user = userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey());
-
-        if (!user.isPresent()) {
-            throw new AccountResourceException("No user was found for this reset key");
-        }
     }
 
     private static boolean isPasswordLengthInvalid(String password) {

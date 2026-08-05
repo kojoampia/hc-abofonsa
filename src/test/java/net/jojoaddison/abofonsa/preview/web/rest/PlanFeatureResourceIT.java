@@ -17,6 +17,7 @@ import net.jojoaddison.abofonsa.preview.IntegrationTest;
 import net.jojoaddison.abofonsa.preview.domain.CarePlanTeaser;
 import net.jojoaddison.abofonsa.preview.domain.PlanFeature;
 import net.jojoaddison.abofonsa.preview.repository.PlanFeatureRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.PlanFeatureService;
 import net.jojoaddison.abofonsa.preview.service.dto.PlanFeatureDTO;
 import net.jojoaddison.abofonsa.preview.service.mapper.PlanFeatureMapper;
@@ -41,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class PlanFeatureResourceIT {
 
     private static final String DEFAULT_LABEL = "AAAAAAAAAA";

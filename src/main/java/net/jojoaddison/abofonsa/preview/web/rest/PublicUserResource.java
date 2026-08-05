@@ -1,6 +1,7 @@
 package net.jojoaddison.abofonsa.preview.web.rest;
 
 import java.util.*;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.UserService;
 import net.jojoaddison.abofonsa.preview.service.dto.UserDTO;
 import org.slf4j.Logger;
@@ -11,12 +12,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.PaginationUtil;
 
+/**
+ * {@code GET /api/users}, the account list behind the admin screens.
+ *
+ * <p>Named "Public" by generator-jhipster, which means "only public fields", not "reachable by the
+ * public" — the distinction is easy to lose, so the {@code @Secured} says it out loud. It repeats
+ * the URL rule in {@code SecurityConfiguration} on purpose: re-running the generator rewrites this
+ * file but not that one.
+ */
 @RestController
 @RequestMapping("/api")
+@Secured(AuthoritiesConstants.ADMIN)
 public class PublicUserResource {
 
     private static final List<String> ALLOWED_ORDERED_PROPERTIES = List.of(

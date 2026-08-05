@@ -66,22 +66,12 @@ public class WaitlistSignupDTO implements Serializable {
     @NotNull
     private Boolean consentGiven;
 
-    @Size(max = 64)
-    private String confirmationToken;
-
     private Instant confirmedAt;
 
     private Instant unsubscribedAt;
 
     @NotNull
     private Instant capturedAt;
-
-    @Size(max = 64)
-    @Schema(description = "Salted hash, never the address itself — enough to rate-limit, not enough to re-identify.")
-    private String ipHash;
-
-    @Size(max = 512)
-    private String userAgent;
 
     public Long getId() {
         return id;
@@ -211,14 +201,6 @@ public class WaitlistSignupDTO implements Serializable {
         this.consentGiven = consentGiven;
     }
 
-    public String getConfirmationToken() {
-        return confirmationToken;
-    }
-
-    public void setConfirmationToken(String confirmationToken) {
-        this.confirmationToken = confirmationToken;
-    }
-
     public Instant getConfirmedAt() {
         return confirmedAt;
     }
@@ -243,22 +225,6 @@ public class WaitlistSignupDTO implements Serializable {
         this.capturedAt = capturedAt;
     }
 
-    public String getIpHash() {
-        return ipHash;
-    }
-
-    public void setIpHash(String ipHash) {
-        this.ipHash = ipHash;
-    }
-
-    public String getUserAgent() {
-        return userAgent;
-    }
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -280,32 +246,23 @@ public class WaitlistSignupDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
+    /**
+     * Identifies the row; does not reproduce it.
+     *
+     * <p>The generated version printed the address, the opt-in token and the salted IP hash, and
+     * {@code WaitlistSignupResource} logs this object on every save. Production runs at INFO so it
+     * never fired there, but the dev profile logs this package at DEBUG — which is how personal data
+     * and a live credential end up in a terminal, a scrollback buffer and a pasted stack trace.
+     */
     // prettier-ignore
     @Override
     public String toString() {
         return "WaitlistSignupDTO{" +
             "id=" + getId() +
-            ", email='" + getEmail() + "'" +
-            ", emailNormalized='" + getEmailNormalized() + "'" +
-            ", fullName='" + getFullName() + "'" +
-            ", organisation='" + getOrganisation() + "'" +
+            ", status='" + getStatus() + "'" +
             ", audience='" + getAudience() + "'" +
             ", planOfInterest='" + getPlanOfInterest() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", locale='" + getLocale() + "'" +
-            ", sourcePage='" + getSourcePage() + "'" +
-            ", utmSource='" + getUtmSource() + "'" +
-            ", utmMedium='" + getUtmMedium() + "'" +
-            ", utmCampaign='" + getUtmCampaign() + "'" +
-            ", referrer='" + getReferrer() + "'" +
-            ", deviceType='" + getDeviceType() + "'" +
-            ", consentGiven='" + getConsentGiven() + "'" +
-            ", confirmationToken='" + getConfirmationToken() + "'" +
-            ", confirmedAt='" + getConfirmedAt() + "'" +
-            ", unsubscribedAt='" + getUnsubscribedAt() + "'" +
             ", capturedAt='" + getCapturedAt() + "'" +
-            ", ipHash='" + getIpHash() + "'" +
-            ", userAgent='" + getUserAgent() + "'" +
             "}";
     }
 }

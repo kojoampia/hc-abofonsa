@@ -118,3 +118,14 @@ export interface WaitlistReceipt {
   alreadyRegistered: boolean;
   receivedAt: string;
 }
+
+/**
+ * The outcome of confirming or unsubscribing.
+ *
+ * `ok` or `invalid`, and nothing more granular: "no such token", "already used" and "expired" are
+ * each a fact about somebody else's subscription, and distinguishing them would turn the endpoint
+ * into a way to test whether a given address is on the list.
+ */
+export interface OptInResult {
+  status: 'ok' | 'invalid';
+}

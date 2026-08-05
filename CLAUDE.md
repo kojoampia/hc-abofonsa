@@ -53,6 +53,30 @@ frontend builds regardless — noise, not a missing step.
 
 Each of these cost real debugging time. All are commented at the site of the fix.
 
+- **generator-jhipster seeds _two_ accounts, and only one gets its password rotated.**
+  `config/liquibase/data/user.csv` carries `admin` and `user`, each with a committed bcrypt hash of
+  its own login. `AdminAccountInitializer` resets only `admin`, so `user`/`user` was live in
+  production — and because the rules said `/api/**` was merely `authenticated()`, it could read every
+  captured email address and its opt-in token, and rewrite the `fundUrl` the launch page sends donors
+  to. Deleted by `20260805110000_removed_seeded_user_account.xml`; `/api/**` now requires
+  `ROLE_ADMIN` both by URL rule and by a class-level `@Secured` on every generated resource, and
+  `ApiAuthorizationIT` asserts all of it. The CSV is deliberately **not** edited — Liquibase
+  checksums `loadData` over the file's contents, so changing it fails validation on every existing
+  database.
+- **Security headers never reached the HTML.** `SpaWebFilter` answers SPA routes by forwarding to
+  `/index.html`, and a forward does not re-enter the security filter chain, so `/` and `/login` went
+  out with no CSP, no `X-Frame-Options` and no nosniff while `/api/**` carried all of them. A CSP on
+  a JSON response protects nothing. Fixed with `spring.security.filter.dispatcher-types` including
+  `forward`. **MockMvc cannot see this** — it records a forward and never performs it, which is why
+  `SecurityHeadersIT` boots a real container on a real port.
+- **`X-Forwarded-For`'s first entry is attacker-controlled.** nginx builds the header with
+  `$proxy_add_x_forwarded_for`, which _appends_ the real peer to whatever the client sent, so the
+  first entry is the client's invention. Reading it meant the waitlist rate limit counted zero prior
+  signups every time. `VisitorContextService` reads `X-Real-IP` — which nginx sets unconditionally
+  from `$remote_addr` — and falls back to the _last_ `X-Forwarded-For` entry.
+- **Spring Boot 4 dropped `TestRestTemplate` from `spring-boot-test`.** `LocalServerPort` is still
+  there; the test client is not. Full-container tests use the JDK's own `HttpClient`.
+
 - **`@Lob String` on PostgreSQL reads as a large-object `oid`.** Hibernate maps a bare `@Lob` to an
   `oid` and reads it with `getLong()`, but Liquibase created the column as `text` — so _every_ read
   of a service blurb, plan description, tier blurb or milestone body failed with
@@ -132,11 +156,21 @@ Putting it under `global` compiles, builds and passes every test, then renders
   names: `CaptureEventRecorder`, `WaitlistCaptureService`, `MetricRollupEngine`, `MetricQueryService`.
 - Public payload DTOs are hand-written records, not the generated entity DTOs — so adding an internal
   field to an entity cannot silently publish it.
-- The public API is `/api/public/**` and anonymous; everything else is authenticated, and
-  `/api/admin/**` requires `ROLE_ADMIN`. **`/api/register`, `/api/activate` and the password-reset
-  endpoints are deliberately not permitted** — there is one privileged account, seeded by Liquibase
-  and given its password from `ABOFONSA_ADMIN_PASSWORD`. The tests for them are `@Disabled`, not
-  deleted, and the login page's links to them are removed.
+- The public API is `/api/public/**` and anonymous. **Everything else under `/api` requires
+  `ROLE_ADMIN`** — not `authenticated()`, which is what it used to say and which made "holds a
+  session" and "may read every captured email address" the same permission. Each generated resource
+  repeats the rule as a class-level `@Secured`, because regeneration rewrites those files and not
+  `SecurityConfiguration`. `/api/account` and `/api/account/change-password` are the exceptions, at
+  `authenticated()`, since changing your own password is not an administrative act.
+- **Registration, activation and password reset are deleted, not disabled.** There is one account,
+  seeded by Liquibase and given its password from `ABOFONSA_ADMIN_PASSWORD`, so nothing should be
+  able to create a second. The handlers are gone from `AccountResource`, the Angular pages and routes
+  are gone, and `SecurityConfiguration` answers `denyAll` on those paths so that regenerating the
+  code does not restore the exposure.
+- Opt-in and unsubscribe are **`POST`, from a button on `/confirm` and `/unsubscribe`**. They were
+  side-effecting `GET`s answered from the emailed URL, and mail clients prefetch links — a scanner
+  could confirm a subscription no human agreed to. The two also have separate tokens now: the
+  confirmation one is single-use and expires in 72 hours, the unsubscribe one is permanent.
 - Rollups are a cache, never a source of truth. Everything is recomputable from `capture_event` and
   `waitlist_signup`; if a rollup disagrees with the raw log, the log wins.
 
@@ -147,4 +181,9 @@ Putting it under `global` compiles, builds and passes every test, then renders
 | `ABOFONSA_ADMIN_PASSWORD`        | Applied to the seeded `admin` account at every boot. Unset leaves the development credential and logs a warning.                                      |
 | `ABOFONSA_HASH_SALT`             | Salts the visitor and IP hashes. **Set it per environment** — unsalted, the whole IPv4 space can be hashed in minutes and the protection is illusory. |
 | `ABOFONSA_PUBLIC_BASE_URL`       | Where opt-in and unsubscribe links point. Must be the address the public reaches.                                                                     |
-| `ABOFONSA_WAITLIST_MAX_PER_HOUR` | Submissions per client per hour before 429. Default 5.                                                                                                |
+| `ABOFONSA_WAITLIST_MAX_PER_HOUR` | Submissions per client per hour before 429. Default 5. Counted in the database.                                                                       |
+| `ABOFONSA_EVENTS_MAX_PER_HOUR`   | Analytics beacons per client per hour before 429. Default 600 — two orders of magnitude above a real visit. Counted in memory, per instance.          |
+
+Failed logins are throttled too, at ten per client per fifteen minutes; that one is not configurable.
+Both in-memory limits live in `RequestThrottleService` and are keyed on the salted client hash, so
+they follow whatever `VisitorContextService` decides the client's address is.

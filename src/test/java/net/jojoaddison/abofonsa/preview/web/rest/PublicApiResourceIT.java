@@ -275,7 +275,7 @@ class PublicApiResourceIT {
 
     @Test
     @Transactional
-    void confirmingTheTokenMovesTheSignupToConfirmedAndIsIdempotent() throws Exception {
+    void confirmingTheTokenMovesTheSignupToConfirmed() throws Exception {
         restMockMvc
             .perform(
                 post(WAITLIST_URL)
@@ -286,15 +286,79 @@ class PublicApiResourceIT {
 
         String token = waitlistSignupRepository.findByEmailNormalized("opt@clinic.org").orElseThrow().getConfirmationToken();
 
-        for (int attempt = 0; attempt < 2; attempt++) {
-            restMockMvc
-                .perform(get(WAITLIST_URL + "/confirm").param("token", token))
-                .andExpect(status().isSeeOther())
-                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("status=ok")));
-        }
+        restMockMvc
+            .perform(postToken(WAITLIST_URL + "/confirm", token))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("ok"));
 
-        assertThat(waitlistSignupRepository.findByEmailNormalized("opt@clinic.org").orElseThrow().getStatus()).isEqualTo(
-            SignupStatus.CONFIRMED
+        WaitlistSignup confirmed = waitlistSignupRepository.findByEmailNormalized("opt@clinic.org").orElseThrow();
+        assertThat(confirmed.getStatus()).isEqualTo(SignupStatus.CONFIRMED);
+        // Consumed. Replaying a link out of an old mailbox must not do anything a second time.
+        assertThat(confirmed.getConfirmationToken()).isNull();
+    }
+
+    /**
+     * A confirmation token stops working once it has been used, and once it is past its expiry.
+     * Neither was true when the token was permanent and doubled as the unsubscribe credential.
+     */
+    @Test
+    @Transactional
+    void aUsedOrExpiredConfirmationTokenIsRefused() throws Exception {
+        restMockMvc
+            .perform(
+                post(WAITLIST_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(submission("expiry@clinic.org")))
+            )
+            .andExpect(status().isAccepted());
+
+        WaitlistSignup signup = waitlistSignupRepository.findByEmailNormalized("expiry@clinic.org").orElseThrow();
+        String token = signup.getConfirmationToken();
+
+        signup.setConfirmationExpiresAt(Instant.now().minus(1, java.time.temporal.ChronoUnit.HOURS));
+        waitlistSignupRepository.saveAndFlush(signup);
+
+        restMockMvc
+            .perform(postToken(WAITLIST_URL + "/confirm", token))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("invalid"));
+        assertThat(waitlistSignupRepository.findByEmailNormalized("expiry@clinic.org").orElseThrow().getStatus()).isEqualTo(
+            SignupStatus.PENDING
+        );
+    }
+
+    /**
+     * Unsubscribing has its own credential. Presenting the confirmation token here must do nothing —
+     * one leaked link used to grant both, in perpetuity.
+     */
+    @Test
+    @Transactional
+    void unsubscribingRequiresItsOwnTokenAndNotTheConfirmationOne() throws Exception {
+        restMockMvc
+            .perform(
+                post(WAITLIST_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(submission("out@clinic.org")))
+            )
+            .andExpect(status().isAccepted());
+
+        WaitlistSignup signup = waitlistSignupRepository.findByEmailNormalized("out@clinic.org").orElseThrow();
+        assertThat(signup.getUnsubscribeToken()).isNotBlank().isNotEqualTo(signup.getConfirmationToken());
+
+        restMockMvc
+            .perform(postToken(WAITLIST_URL + "/unsubscribe", signup.getConfirmationToken()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("invalid"));
+        assertThat(waitlistSignupRepository.findByEmailNormalized("out@clinic.org").orElseThrow().getStatus()).isEqualTo(
+            SignupStatus.PENDING
+        );
+
+        restMockMvc
+            .perform(postToken(WAITLIST_URL + "/unsubscribe", signup.getUnsubscribeToken()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("ok"));
+        assertThat(waitlistSignupRepository.findByEmailNormalized("out@clinic.org").orElseThrow().getStatus()).isEqualTo(
+            SignupStatus.UNSUBSCRIBED
         );
     }
 
@@ -302,9 +366,28 @@ class PublicApiResourceIT {
     @Transactional
     void anUnknownTokenIsRejectedRatherThanConfirmingSomethingElse() throws Exception {
         restMockMvc
-            .perform(get(WAITLIST_URL + "/confirm").param("token", "not-a-real-token"))
-            .andExpect(status().isSeeOther())
-            .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("status=invalid")));
+            .perform(postToken(WAITLIST_URL + "/confirm", "not-a-real-token"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("invalid"));
+    }
+
+    /**
+     * These are POST, not GET. They were side-effecting GETs answered straight from the URL in the
+     * email, and mail clients and security gateways prefetch links — so a scanner could confirm a
+     * subscription the recipient never agreed to, and the consent record would record its click.
+     */
+    @Test
+    @Transactional
+    void theOptInEndpointsRefuseGet() throws Exception {
+        restMockMvc.perform(get(WAITLIST_URL + "/confirm").param("token", "anything")).andExpect(status().isMethodNotAllowed());
+        restMockMvc.perform(get(WAITLIST_URL + "/unsubscribe").param("token", "anything")).andExpect(status().isMethodNotAllowed());
+    }
+
+    private org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder postToken(String url, String token)
+        throws Exception {
+        return post(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(om.writeValueAsBytes(Map.of("token", token)));
     }
 
     @Test

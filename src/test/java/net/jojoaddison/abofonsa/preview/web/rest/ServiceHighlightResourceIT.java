@@ -17,6 +17,7 @@ import net.jojoaddison.abofonsa.preview.IntegrationTest;
 import net.jojoaddison.abofonsa.preview.domain.CareServiceTeaser;
 import net.jojoaddison.abofonsa.preview.domain.ServiceHighlight;
 import net.jojoaddison.abofonsa.preview.repository.ServiceHighlightRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.ServiceHighlightService;
 import net.jojoaddison.abofonsa.preview.service.dto.ServiceHighlightDTO;
 import net.jojoaddison.abofonsa.preview.service.mapper.ServiceHighlightMapper;
@@ -41,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class ServiceHighlightResourceIT {
 
     private static final String DEFAULT_LABEL = "AAAAAAAAAA";

@@ -125,7 +125,11 @@ entity WaitlistSignup {
   referrer String maxlength(512)
   deviceType DeviceType
   consentGiven Boolean required
+  /** One-time double opt-in secret. Consumed on use and refused past confirmationExpiresAt. */
   confirmationToken String maxlength(64)
+  confirmationExpiresAt Instant
+  /** Separate, long-lived opt-out credential. Sharing one token gave a leaked link both powers. */
+  unsubscribeToken String maxlength(64) unique
   confirmedAt Instant
   unsubscribedAt Instant
   capturedAt Instant required

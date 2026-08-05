@@ -84,6 +84,22 @@
         "pill": "Enlace no reconocido",
         "heading": "Ese enlace no funcionó.",
         "body": "Puede que ya se haya usado o que se haya alterado. Al unirse de nuevo a la lista recibirá un enlace nuevo."
+      },
+      "confirm": {
+        "pill": "Un paso más",
+        "prompt": {
+          "heading": "Confirma tu lugar.",
+          "body": "Pulsa el botón para confirmar esta dirección de correo y unirte a la lista de espera de Health Connect.",
+          "action": "Confirmar mi lugar"
+        }
+      },
+      "unsubscribe": {
+        "pill": "Salir de la lista",
+        "prompt": {
+          "heading": "¿Eliminar tu dirección?",
+          "body": "Pulsa el botón y no volveremos a escribirte sobre el lanzamiento.",
+          "action": "Darme de baja"
+        }
       }
     },
     "owner": {

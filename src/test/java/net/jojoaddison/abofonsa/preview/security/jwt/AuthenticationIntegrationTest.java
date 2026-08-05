@@ -8,6 +8,8 @@ import net.jojoaddison.abofonsa.preview.config.SecurityConfiguration;
 import net.jojoaddison.abofonsa.preview.config.SecurityJwtConfiguration;
 import net.jojoaddison.abofonsa.preview.config.WebConfigurer;
 import net.jojoaddison.abofonsa.preview.management.SecurityMetersService;
+import net.jojoaddison.abofonsa.preview.service.RequestThrottleService;
+import net.jojoaddison.abofonsa.preview.service.VisitorContextService;
 import net.jojoaddison.abofonsa.preview.web.rest.AuthenticateController;
 import org.springframework.boot.test.context.SpringBootTest;
 import tech.jhipster.config.JHipsterProperties;
@@ -26,6 +28,12 @@ import tech.jhipster.config.JHipsterProperties;
         SecurityJwtConfiguration.class,
         SecurityMetersService.class,
         AuthenticateController.class,
+        // AuthenticateController throttles and logs failed password attempts, so this slice has to
+        // carry the two collaborators that make that possible. A slice listing its beans by hand
+        // fails to start the moment a controller gains a dependency, and the resulting error names
+        // the context rather than the missing bean.
+        RequestThrottleService.class,
+        VisitorContextService.class,
         JwtAuthenticationTestUtils.class,
     }
 )

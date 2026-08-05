@@ -6,6 +6,8 @@ import java.util.EnumSet;
 import java.util.Set;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.CaptureEventType;
 import net.jojoaddison.abofonsa.preview.service.CaptureEventRecorder;
+import net.jojoaddison.abofonsa.preview.service.RequestThrottleService;
+import net.jojoaddison.abofonsa.preview.service.VisitorContextService;
 import net.jojoaddison.abofonsa.preview.service.dto.CaptureEventRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +44,17 @@ public class PublicEventResource {
     );
 
     private final CaptureEventRecorder captureEventRecorder;
+    private final RequestThrottleService requestThrottleService;
+    private final VisitorContextService visitorContextService;
 
-    public PublicEventResource(CaptureEventRecorder captureEventRecorder) {
+    public PublicEventResource(
+        CaptureEventRecorder captureEventRecorder,
+        RequestThrottleService requestThrottleService,
+        VisitorContextService visitorContextService
+    ) {
         this.captureEventRecorder = captureEventRecorder;
+        this.requestThrottleService = requestThrottleService;
+        this.visitorContextService = visitorContextService;
     }
 
     /**
@@ -58,6 +68,15 @@ public class PublicEventResource {
         if (!BROWSER_REPORTABLE.contains(request.eventType())) {
             LOG.debug("Refused a browser-reported {} event", request.eventType());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "eventType is not reportable from the browser");
+        }
+        // Anonymous, and one row written per call. The event-type allow-list above stops the counts
+        // that matter being forged, but nothing stopped the volume: an unauthenticated client could
+        // grow capture_event without bound on a single small Postgres, and drown the campaign-source
+        // split in invented traffic. The cap is generous — a real visit fires a handful of these —
+        // so a browser will never see it and a script will.
+        if (!requestThrottleService.beaconAllowed(visitorContextService.ipHash(httpRequest))) {
+            LOG.debug("Throttled a browser-reported {} event", request.eventType());
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many events from this device.");
         }
         captureEventRecorder.record(request, httpRequest);
         return ResponseEntity.noContent().build();

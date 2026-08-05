@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 
-import { CaptureEventRequest, CaptureEventType, LaunchContent, WaitlistReceipt, WaitlistSubmission } from './launch.model';
+import { CaptureEventRequest, CaptureEventType, LaunchContent, OptInResult, WaitlistReceipt, WaitlistSubmission } from './launch.model';
 
 @Injectable({ providedIn: 'root' })
 export class LaunchService {
@@ -24,6 +24,22 @@ export class LaunchService {
 
   submitWaitlist(submission: WaitlistSubmission): Observable<WaitlistReceipt> {
     return this.http.post<WaitlistReceipt>(this.waitlistUrl, submission);
+  }
+
+  /**
+   * Complete double opt-in.
+   *
+   * POST, from a button on the landing page, rather than the emailed link doing the work itself.
+   * Both of these were GETs answered straight from the URL in the message, and mail clients and
+   * security gateways prefetch links — so a scanner could confirm a subscription the recipient
+   * never agreed to, which turns the consent record into a record of what a robot did.
+   */
+  confirmWaitlist(token: string): Observable<OptInResult> {
+    return this.http.post<OptInResult>(`${this.waitlistUrl}/confirm`, { token });
+  }
+
+  unsubscribeWaitlist(token: string): Observable<OptInResult> {
+    return this.http.post<OptInResult>(`${this.waitlistUrl}/unsubscribe`, { token });
   }
 
   /**

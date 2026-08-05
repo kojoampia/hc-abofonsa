@@ -43,6 +43,16 @@ public class SecurityConfiguration {
             .headers(headers ->
                 headers
                     .contentSecurityPolicy(csp -> csp.policyDirectives(jHipsterProperties.getSecurity().getContentSecurityPolicy()))
+                    // A year, and deliberately *without* includeSubDomains. The apex is shared:
+                    // web.abofonsa.com and fund.abofonsa.com are separate applications on the same
+                    // host, and asserting a policy on somebody else's subdomain from here would take
+                    // one of them offline for a year if it ever answered on plain HTTP — with no way
+                    // to retract it from a browser that had already seen the header. Add it, and
+                    // preload, once every subdomain is known to be HTTPS-only.
+                    //
+                    // Only emitted for a request Spring believes is secure, which in production
+                    // depends on server.forward-headers-strategy being set. See application-prod.yml.
+                    .httpStrictTransportSecurity(hsts -> hsts.maxAgeInSeconds(31_536_000).includeSubDomains(false).preload(false))
                     .frameOptions(FrameOptionsConfig::sameOrigin)
                     .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
                     .permissionsPolicyHeader(permissions ->
@@ -65,12 +75,25 @@ public class SecurityConfiguration {
                     // analytics beacon. Anonymous by definition — see PublicContentResource and
                     // PublicWaitlistResource for the rate limiting and bot checks that replace auth here.
                     .requestMatchers("/api/public/**").permitAll()
-                    // JHipster's self-service account endpoints are deliberately NOT permitted. This
-                    // application has exactly one privileged account, seeded by Liquibase and given its
-                    // password by AdminAccountInitializer; there is no public sign-up to open, so leaving
-                    // /api/register reachable would only offer an attacker a way to create one.
+                    // JHipster's self-service account endpoints are gone from AccountResource, not merely
+                    // unpermitted. This is the belt to that pair of braces: if a future regeneration puts
+                    // them back, they answer 403 rather than quietly becoming reachable to anyone holding
+                    // a session. There is one account here, seeded by Liquibase and given its password by
+                    // AdminAccountInitializer; nothing should be able to create a second.
+                    .requestMatchers("/api/register", "/api/activate", "/api/account/reset-password/**").denyAll()
+                    // The signed-in operator's own account. Not ROLE_ADMIN only because "change my own
+                    // password" is not an administrative act — it is the one thing any principal must be
+                    // able to do for itself.
+                    .requestMatchers("/api/account", "/api/account/**").authenticated()
+                    // Everything else behind /api is administrative. `authenticated()` used to be enough
+                    // here, which meant "holds any session" and "may read every captured email address"
+                    // were the same permission — so generator-jhipster's seeded `user`/`user` account was
+                    // a straight route to the waitlist table and to the content the public page renders.
+                    // That account is deleted (see 20260805110000_removed_seeded_user_account.xml); this
+                    // is what stops the next one mattering. Each generated resource repeats the rule as a
+                    // class-level @Secured, so re-running the entity generator cannot widen it either.
                     .requestMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
-                    .requestMatchers("/api/**").authenticated()
+                    .requestMatchers("/api/**").hasAuthority(AuthoritiesConstants.ADMIN)
                     .requestMatchers("/v3/api-docs/**").hasAuthority(AuthoritiesConstants.ADMIN)
                     .requestMatchers("/management/health").permitAll()
                     .requestMatchers("/management/health/**").permitAll()

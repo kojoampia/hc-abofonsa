@@ -94,14 +94,38 @@ public class VisitorContextService {
     }
 
     /**
-     * Honours {@code X-Forwarded-For}'s first entry, because in every deployment of this app the
-     * only thing the socket address identifies is the reverse proxy.
+     * The client's address as asserted by our own proxy — never as asserted by the client.
+     *
+     * <p>This used to read the <em>first</em> entry of {@code X-Forwarded-For}, which is the
+     * conventional reading of that header and wrong here. nginx builds it with
+     * {@code $proxy_add_x_forwarded_for}, which <em>appends</em> the peer to whatever arrived, so a
+     * request carrying {@code X-Forwarded-For: 203.0.113.9} reaches this method as
+     * {@code "203.0.113.9, <real ip>"} and the first entry is the caller's invention. A new value
+     * per request meant {@link WaitlistCaptureService}'s hourly cap counted zero prior signups every
+     * time and never fired, {@code UNIQUE_VISITORS} could be inflated at will, and abusive signups
+     * could be made to hash into a chosen third party's bucket.
+     *
+     * <p>{@code X-Real-IP} is used instead: nginx sets it unconditionally from {@code $remote_addr},
+     * overwriting anything the client sent, so it is the one value here the client cannot influence.
+     * If it is absent the last {@code X-Forwarded-For} entry is used, which is the one our proxy
+     * appended, and failing that the socket address — correct for a direct connection in
+     * development, where there is no proxy to lie to.
+     *
+     * <p>Salting makes this worth getting right rather than shrugging at: the hashes are otherwise
+     * trustworthy, so they read as evidence.
      */
     private String clientIp(HttpServletRequest request) {
+        String real = header(request, "X-Real-IP");
+        if (real != null && !real.isBlank()) {
+            return real.trim();
+        }
         String forwarded = header(request, "X-Forwarded-For");
         if (forwarded != null && !forwarded.isBlank()) {
-            int comma = forwarded.indexOf(',');
-            return (comma > 0 ? forwarded.substring(0, comma) : forwarded).trim();
+            int lastComma = forwarded.lastIndexOf(',');
+            String last = lastComma >= 0 ? forwarded.substring(lastComma + 1) : forwarded;
+            if (!last.isBlank()) {
+                return last.trim();
+            }
         }
         String remote = request.getRemoteAddr();
         return remote == null ? "unknown" : remote;

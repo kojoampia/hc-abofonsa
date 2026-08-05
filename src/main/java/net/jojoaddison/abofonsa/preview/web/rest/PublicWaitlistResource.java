@@ -2,14 +2,13 @@ package net.jojoaddison.abofonsa.preview.web.rest;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.net.URI;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import net.jojoaddison.abofonsa.preview.service.WaitlistCaptureService;
 import net.jojoaddison.abofonsa.preview.service.dto.WaitlistReceiptDTO;
 import net.jojoaddison.abofonsa.preview.service.dto.WaitlistSubmissionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,14 +22,9 @@ public class PublicWaitlistResource {
     private static final Logger LOG = LoggerFactory.getLogger(PublicWaitlistResource.class);
 
     private final WaitlistCaptureService waitlistCaptureService;
-    private final String publicBaseUrl;
 
-    public PublicWaitlistResource(
-        WaitlistCaptureService waitlistCaptureService,
-        @Value("${abofonsa.public-base-url:http://localhost:8083}") String publicBaseUrl
-    ) {
+    public PublicWaitlistResource(WaitlistCaptureService waitlistCaptureService) {
         this.waitlistCaptureService = waitlistCaptureService;
-        this.publicBaseUrl = publicBaseUrl;
     }
 
     /**
@@ -51,27 +45,42 @@ public class PublicWaitlistResource {
     }
 
     /**
-     * {@code GET /api/public/waitlist/confirm} : complete double opt-in.
+     * {@code POST /api/public/waitlist/confirm} : complete double opt-in.
      *
-     * <p>Redirects rather than returning JSON, because this URL is opened by a human clicking a
-     * link in an email client, and what should happen next is that they land on the page.
+     * <p>POST, and reached from a button on {@code /confirm} rather than directly from the emailed
+     * link. Both of these were side-effecting {@code GET}s answered straight from the URL in the
+     * message, and mail clients and security gateways routinely prefetch links — so a scanner could
+     * confirm a signup the recipient never clicked, which quietly turns the consent record into a
+     * record of what a robot did. The emailed link now lands on a page that asks.
+     *
+     * <p>That page is also the fix for a plain bug: the link has always pointed at {@code /confirm},
+     * and the Angular router had routes for {@code /confirmed} and {@code /unsubscribed} but none
+     * for {@code /confirm}, so every confirmation link led to the 404 page.
      */
-    @GetMapping("/confirm")
-    public ResponseEntity<Void> confirm(@RequestParam("token") String token, HttpServletRequest request) {
+    @PostMapping("/confirm")
+    public ResponseEntity<OptInResultDTO> confirm(@Valid @RequestBody TokenDTO body, HttpServletRequest request) {
         LOG.debug("REST request to confirm a waitlist signup");
-        boolean confirmed = waitlistCaptureService.confirm(token, request).isPresent();
-        return ResponseEntity.status(HttpStatus.SEE_OTHER)
-            .location(URI.create(publicBaseUrl + "/confirmed?status=" + (confirmed ? "ok" : "invalid")))
-            .build();
+        boolean confirmed = waitlistCaptureService.confirm(body.token(), request).isPresent();
+        return ResponseEntity.ok(new OptInResultDTO(confirmed ? "ok" : "invalid"));
     }
 
-    /** {@code GET /api/public/waitlist/unsubscribe} : opt out, from a link in an email. */
-    @GetMapping("/unsubscribe")
-    public ResponseEntity<Void> unsubscribe(@RequestParam("token") String token) {
+    /** {@code POST /api/public/waitlist/unsubscribe} : opt out, from a link in an email. */
+    @PostMapping("/unsubscribe")
+    public ResponseEntity<OptInResultDTO> unsubscribe(@Valid @RequestBody TokenDTO body) {
         LOG.debug("REST request to unsubscribe from the waitlist");
-        boolean removed = waitlistCaptureService.unsubscribe(token).isPresent();
-        return ResponseEntity.status(HttpStatus.SEE_OTHER)
-            .location(URI.create(publicBaseUrl + "/unsubscribed?status=" + (removed ? "ok" : "invalid")))
-            .build();
+        boolean removed = waitlistCaptureService.unsubscribe(body.token()).isPresent();
+        return ResponseEntity.ok(new OptInResultDTO(removed ? "ok" : "invalid"));
     }
+
+    /** The opt-in or opt-out secret, posted as a body rather than carried in a URL. */
+    public record TokenDTO(@NotBlank @Size(max = 64) String token) {}
+
+    /**
+     * {@code ok} or {@code invalid}, and nothing else.
+     *
+     * <p>No distinction between "no such token", "already used" and "expired": each of those is a
+     * fact about somebody else's subscription, and answering them turns this endpoint into a way to
+     * test whether a given token — or, by extension, a given address — is on the list.
+     */
+    public record OptInResultDTO(String status) {}
 }

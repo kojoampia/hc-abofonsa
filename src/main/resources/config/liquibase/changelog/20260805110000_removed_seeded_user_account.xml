@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        Removes generator-jhipster's second seeded account.
+
+        `config/liquibase/data/user.csv` seeds two rows, not one: `admin` and `user`, both activated,
+        both carrying a bcrypt hash of their own login as the password. Those hashes are in the
+        generator, in this repository and in every clone of it.
+
+        AdminAccountInitializer resets only `admin` from ABOFONSA_ADMIN_PASSWORD, so `user`/`user`
+        stayed live wherever this was deployed. It holds ROLE_USER, and the security rules granted
+        every authenticated principal the whole entity API — which made it a route to the waitlist
+        table, its confirmation tokens, and write access to the content the public page renders.
+        SecurityConfiguration now requires ROLE_ADMIN there, but that is the second lock; this is
+        the first, and neither should be the only one.
+
+        Why a new changeset rather than an edit to user.csv: the initial changeset is already
+        applied everywhere, and Liquibase checksums `loadData` over the *contents* of the file it
+        loaded. Editing the CSV changes that checksum and makes every existing database fail
+        validation on next boot. The CSV is therefore left exactly as it is and the row is deleted
+        after the fact — on a fresh database this inserts and then deletes, which is wasteful and
+        correct.
+
+        Deliberately not `context`-filtered. This must run under every profile, including test:
+        the account is no more acceptable in CI than in production.
+    -->
+    <changeSet id="20260805110000-1" author="security-audit">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from jhi_user where login = 'user'</sqlCheck>
+        </preConditions>
+
+        <comment>Delete the seeded 'user' account and its authority rows</comment>
+
+        <delete tableName="jhi_user_authority">
+            <where>user_id = (select id from jhi_user where login = 'user')</where>
+        </delete>
+        <delete tableName="jhi_user">
+            <where>login = 'user'</where>
+        </delete>
+    </changeSet>
+
+</databaseChangeLog>

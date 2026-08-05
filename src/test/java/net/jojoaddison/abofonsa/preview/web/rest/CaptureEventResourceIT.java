@@ -17,6 +17,7 @@ import net.jojoaddison.abofonsa.preview.domain.CaptureEvent;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.CaptureEventType;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.DeviceType;
 import net.jojoaddison.abofonsa.preview.repository.CaptureEventRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.mapper.CaptureEventMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class CaptureEventResourceIT {
 
     private static final CaptureEventType DEFAULT_EVENT_TYPE = CaptureEventType.PAGE_VIEW;

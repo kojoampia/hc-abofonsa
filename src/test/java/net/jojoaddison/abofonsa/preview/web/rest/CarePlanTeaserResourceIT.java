@@ -17,6 +17,7 @@ import net.jojoaddison.abofonsa.preview.IntegrationTest;
 import net.jojoaddison.abofonsa.preview.domain.CarePlanTeaser;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.PlanCode;
 import net.jojoaddison.abofonsa.preview.repository.CarePlanTeaserRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.dto.CarePlanTeaserDTO;
 import net.jojoaddison.abofonsa.preview.service.mapper.CarePlanTeaserMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -34,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class CarePlanTeaserResourceIT {
 
     private static final PlanCode DEFAULT_CODE = PlanCode.PEAR;

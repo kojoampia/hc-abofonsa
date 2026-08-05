@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import net.jojoaddison.abofonsa.preview.repository.WaitlistSignupRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.WaitlistSignupQueryService;
 import net.jojoaddison.abofonsa.preview.service.WaitlistSignupService;
 import net.jojoaddison.abofonsa.preview.service.criteria.WaitlistSignupCriteria;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -28,9 +30,15 @@ import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link net.jojoaddison.abofonsa.preview.domain.WaitlistSignup}.
+ *
+ * <p>Administrative CRUD. The class-level {@code @Secured} repeats the URL rule in
+ * {@code SecurityConfiguration} on purpose: re-running the entity generator rewrites this file but
+ * not that one, and a resource that quietly falls back to "any authenticated principal" is how the
+ * whole waitlist table became readable to a seeded demo account.
  */
 @RestController
 @RequestMapping("/api/waitlist-signups")
+@Secured(AuthoritiesConstants.ADMIN)
 public class WaitlistSignupResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(WaitlistSignupResource.class);

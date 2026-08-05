@@ -84,6 +84,22 @@
         "pill": "Link not recognised",
         "heading": "That link didn't work.",
         "body": "It may have already been used, or been altered in transit. Joining the waitlist again will send you a fresh link."
+      },
+      "confirm": {
+        "pill": "One more step",
+        "prompt": {
+          "heading": "Confirm your place.",
+          "body": "Press the button to confirm this email address and join the Health Connect waitlist.",
+          "action": "Confirm my place"
+        }
+      },
+      "unsubscribe": {
+        "pill": "Leaving the list",
+        "prompt": {
+          "heading": "Remove your address?",
+          "body": "Press the button and we won't email you about the launch again.",
+          "action": "Unsubscribe me"
+        }
       }
     },
     "owner": {

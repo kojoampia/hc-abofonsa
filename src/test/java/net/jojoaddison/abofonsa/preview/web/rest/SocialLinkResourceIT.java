@@ -15,6 +15,7 @@ import net.jojoaddison.abofonsa.preview.IntegrationTest;
 import net.jojoaddison.abofonsa.preview.domain.SocialLink;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.SocialPlatform;
 import net.jojoaddison.abofonsa.preview.repository.SocialLinkRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.dto.SocialLinkDTO;
 import net.jojoaddison.abofonsa.preview.service.mapper.SocialLinkMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class SocialLinkResourceIT {
 
     private static final SocialPlatform DEFAULT_PLATFORM = SocialPlatform.X;

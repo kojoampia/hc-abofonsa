@@ -20,6 +20,7 @@ import net.jojoaddison.abofonsa.preview.domain.enumeration.DeviceType;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.PlanCode;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.SignupStatus;
 import net.jojoaddison.abofonsa.preview.repository.WaitlistSignupRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.dto.WaitlistSignupDTO;
 import net.jojoaddison.abofonsa.preview.service.mapper.WaitlistSignupMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -37,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @IntegrationTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class WaitlistSignupResourceIT {
 
     private static final String DEFAULT_EMAIL = "o=>CP@w.mS";
@@ -85,9 +86,6 @@ class WaitlistSignupResourceIT {
     private static final Boolean DEFAULT_CONSENT_GIVEN = false;
     private static final Boolean UPDATED_CONSENT_GIVEN = true;
 
-    private static final String DEFAULT_CONFIRMATION_TOKEN = "AAAAAAAAAA";
-    private static final String UPDATED_CONFIRMATION_TOKEN = "BBBBBBBBBB";
-
     private static final Instant DEFAULT_CONFIRMED_AT = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_CONFIRMED_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
@@ -96,12 +94,6 @@ class WaitlistSignupResourceIT {
 
     private static final Instant DEFAULT_CAPTURED_AT = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_CAPTURED_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-
-    private static final String DEFAULT_IP_HASH = "AAAAAAAAAA";
-    private static final String UPDATED_IP_HASH = "BBBBBBBBBB";
-
-    private static final String DEFAULT_USER_AGENT = "AAAAAAAAAA";
-    private static final String UPDATED_USER_AGENT = "BBBBBBBBBB";
 
     private static final String ENTITY_API_URL = "/api/waitlist-signups";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -151,12 +143,9 @@ class WaitlistSignupResourceIT {
             .referrer(DEFAULT_REFERRER)
             .deviceType(DEFAULT_DEVICE_TYPE)
             .consentGiven(DEFAULT_CONSENT_GIVEN)
-            .confirmationToken(DEFAULT_CONFIRMATION_TOKEN)
             .confirmedAt(DEFAULT_CONFIRMED_AT)
             .unsubscribedAt(DEFAULT_UNSUBSCRIBED_AT)
-            .capturedAt(DEFAULT_CAPTURED_AT)
-            .ipHash(DEFAULT_IP_HASH)
-            .userAgent(DEFAULT_USER_AGENT);
+            .capturedAt(DEFAULT_CAPTURED_AT);
     }
 
     /**
@@ -182,12 +171,9 @@ class WaitlistSignupResourceIT {
             .referrer(UPDATED_REFERRER)
             .deviceType(UPDATED_DEVICE_TYPE)
             .consentGiven(UPDATED_CONSENT_GIVEN)
-            .confirmationToken(UPDATED_CONFIRMATION_TOKEN)
             .confirmedAt(UPDATED_CONFIRMED_AT)
             .unsubscribedAt(UPDATED_UNSUBSCRIBED_AT)
-            .capturedAt(UPDATED_CAPTURED_AT)
-            .ipHash(UPDATED_IP_HASH)
-            .userAgent(UPDATED_USER_AGENT);
+            .capturedAt(UPDATED_CAPTURED_AT);
     }
 
     @BeforeEach
@@ -357,12 +343,9 @@ class WaitlistSignupResourceIT {
             .andExpect(jsonPath("$.[*].referrer").value(hasItem(DEFAULT_REFERRER)))
             .andExpect(jsonPath("$.[*].deviceType").value(hasItem(DEFAULT_DEVICE_TYPE.toString())))
             .andExpect(jsonPath("$.[*].consentGiven").value(hasItem(DEFAULT_CONSENT_GIVEN)))
-            .andExpect(jsonPath("$.[*].confirmationToken").value(hasItem(DEFAULT_CONFIRMATION_TOKEN)))
             .andExpect(jsonPath("$.[*].confirmedAt").value(hasItem(DEFAULT_CONFIRMED_AT.toString())))
             .andExpect(jsonPath("$.[*].unsubscribedAt").value(hasItem(DEFAULT_UNSUBSCRIBED_AT.toString())))
-            .andExpect(jsonPath("$.[*].capturedAt").value(hasItem(DEFAULT_CAPTURED_AT.toString())))
-            .andExpect(jsonPath("$.[*].ipHash").value(hasItem(DEFAULT_IP_HASH)))
-            .andExpect(jsonPath("$.[*].userAgent").value(hasItem(DEFAULT_USER_AGENT)));
+            .andExpect(jsonPath("$.[*].capturedAt").value(hasItem(DEFAULT_CAPTURED_AT.toString())));
     }
 
     @Test
@@ -392,12 +375,9 @@ class WaitlistSignupResourceIT {
             .andExpect(jsonPath("$.referrer").value(DEFAULT_REFERRER))
             .andExpect(jsonPath("$.deviceType").value(DEFAULT_DEVICE_TYPE.toString()))
             .andExpect(jsonPath("$.consentGiven").value(DEFAULT_CONSENT_GIVEN))
-            .andExpect(jsonPath("$.confirmationToken").value(DEFAULT_CONFIRMATION_TOKEN))
             .andExpect(jsonPath("$.confirmedAt").value(DEFAULT_CONFIRMED_AT.toString()))
             .andExpect(jsonPath("$.unsubscribedAt").value(DEFAULT_UNSUBSCRIBED_AT.toString()))
-            .andExpect(jsonPath("$.capturedAt").value(DEFAULT_CAPTURED_AT.toString()))
-            .andExpect(jsonPath("$.ipHash").value(DEFAULT_IP_HASH))
-            .andExpect(jsonPath("$.userAgent").value(DEFAULT_USER_AGENT));
+            .andExpect(jsonPath("$.capturedAt").value(DEFAULT_CAPTURED_AT.toString()));
     }
 
     @Test
@@ -1115,68 +1095,6 @@ class WaitlistSignupResourceIT {
 
     @Test
     @Transactional
-    void getAllWaitlistSignupsByConfirmationTokenIsEqualToSomething() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where confirmationToken equals to
-        defaultWaitlistSignupFiltering(
-            "confirmationToken.equals=" + DEFAULT_CONFIRMATION_TOKEN,
-            "confirmationToken.equals=" + UPDATED_CONFIRMATION_TOKEN
-        );
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByConfirmationTokenIsInShouldWork() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where confirmationToken in
-        defaultWaitlistSignupFiltering(
-            "confirmationToken.in=" + DEFAULT_CONFIRMATION_TOKEN + "," + UPDATED_CONFIRMATION_TOKEN,
-            "confirmationToken.in=" + UPDATED_CONFIRMATION_TOKEN
-        );
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByConfirmationTokenIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where confirmationToken is not null
-        defaultWaitlistSignupFiltering("confirmationToken.specified=true", "confirmationToken.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByConfirmationTokenContainsSomething() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where confirmationToken contains
-        defaultWaitlistSignupFiltering(
-            "confirmationToken.contains=" + DEFAULT_CONFIRMATION_TOKEN,
-            "confirmationToken.contains=" + UPDATED_CONFIRMATION_TOKEN
-        );
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByConfirmationTokenNotContainsSomething() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where confirmationToken does not contain
-        defaultWaitlistSignupFiltering(
-            "confirmationToken.doesNotContain=" + UPDATED_CONFIRMATION_TOKEN,
-            "confirmationToken.doesNotContain=" + DEFAULT_CONFIRMATION_TOKEN
-        );
-    }
-
-    @Test
-    @Transactional
     void getAllWaitlistSignupsByConfirmedAtIsEqualToSomething() throws Exception {
         // Initialize the database
         insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
@@ -1277,109 +1195,6 @@ class WaitlistSignupResourceIT {
         defaultWaitlistSignupFiltering("capturedAt.specified=true", "capturedAt.specified=false");
     }
 
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByIpHashIsEqualToSomething() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where ipHash equals to
-        defaultWaitlistSignupFiltering("ipHash.equals=" + DEFAULT_IP_HASH, "ipHash.equals=" + UPDATED_IP_HASH);
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByIpHashIsInShouldWork() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where ipHash in
-        defaultWaitlistSignupFiltering("ipHash.in=" + DEFAULT_IP_HASH + "," + UPDATED_IP_HASH, "ipHash.in=" + UPDATED_IP_HASH);
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByIpHashIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where ipHash is not null
-        defaultWaitlistSignupFiltering("ipHash.specified=true", "ipHash.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByIpHashContainsSomething() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where ipHash contains
-        defaultWaitlistSignupFiltering("ipHash.contains=" + DEFAULT_IP_HASH, "ipHash.contains=" + UPDATED_IP_HASH);
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByIpHashNotContainsSomething() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where ipHash does not contain
-        defaultWaitlistSignupFiltering("ipHash.doesNotContain=" + UPDATED_IP_HASH, "ipHash.doesNotContain=" + DEFAULT_IP_HASH);
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByUserAgentIsEqualToSomething() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where userAgent equals to
-        defaultWaitlistSignupFiltering("userAgent.equals=" + DEFAULT_USER_AGENT, "userAgent.equals=" + UPDATED_USER_AGENT);
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByUserAgentIsInShouldWork() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where userAgent in
-        defaultWaitlistSignupFiltering(
-            "userAgent.in=" + DEFAULT_USER_AGENT + "," + UPDATED_USER_AGENT,
-            "userAgent.in=" + UPDATED_USER_AGENT
-        );
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByUserAgentIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where userAgent is not null
-        defaultWaitlistSignupFiltering("userAgent.specified=true", "userAgent.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByUserAgentContainsSomething() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where userAgent contains
-        defaultWaitlistSignupFiltering("userAgent.contains=" + DEFAULT_USER_AGENT, "userAgent.contains=" + UPDATED_USER_AGENT);
-    }
-
-    @Test
-    @Transactional
-    void getAllWaitlistSignupsByUserAgentNotContainsSomething() throws Exception {
-        // Initialize the database
-        insertedWaitlistSignup = waitlistSignupRepository.saveAndFlush(waitlistSignup);
-
-        // Get all the waitlistSignupList where userAgent does not contain
-        defaultWaitlistSignupFiltering("userAgent.doesNotContain=" + UPDATED_USER_AGENT, "userAgent.doesNotContain=" + DEFAULT_USER_AGENT);
-    }
-
     private void defaultWaitlistSignupFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultWaitlistSignupShouldBeFound(shouldBeFound);
         defaultWaitlistSignupShouldNotBeFound(shouldNotBeFound);
@@ -1409,12 +1224,9 @@ class WaitlistSignupResourceIT {
             .andExpect(jsonPath("$.[*].referrer").value(hasItem(DEFAULT_REFERRER)))
             .andExpect(jsonPath("$.[*].deviceType").value(hasItem(DEFAULT_DEVICE_TYPE.toString())))
             .andExpect(jsonPath("$.[*].consentGiven").value(hasItem(DEFAULT_CONSENT_GIVEN)))
-            .andExpect(jsonPath("$.[*].confirmationToken").value(hasItem(DEFAULT_CONFIRMATION_TOKEN)))
             .andExpect(jsonPath("$.[*].confirmedAt").value(hasItem(DEFAULT_CONFIRMED_AT.toString())))
             .andExpect(jsonPath("$.[*].unsubscribedAt").value(hasItem(DEFAULT_UNSUBSCRIBED_AT.toString())))
-            .andExpect(jsonPath("$.[*].capturedAt").value(hasItem(DEFAULT_CAPTURED_AT.toString())))
-            .andExpect(jsonPath("$.[*].ipHash").value(hasItem(DEFAULT_IP_HASH)))
-            .andExpect(jsonPath("$.[*].userAgent").value(hasItem(DEFAULT_USER_AGENT)));
+            .andExpect(jsonPath("$.[*].capturedAt").value(hasItem(DEFAULT_CAPTURED_AT.toString())));
 
         // Check, that the count call also returns 1
         restWaitlistSignupMockMvc
@@ -1478,12 +1290,9 @@ class WaitlistSignupResourceIT {
             .referrer(UPDATED_REFERRER)
             .deviceType(UPDATED_DEVICE_TYPE)
             .consentGiven(UPDATED_CONSENT_GIVEN)
-            .confirmationToken(UPDATED_CONFIRMATION_TOKEN)
             .confirmedAt(UPDATED_CONFIRMED_AT)
             .unsubscribedAt(UPDATED_UNSUBSCRIBED_AT)
-            .capturedAt(UPDATED_CAPTURED_AT)
-            .ipHash(UPDATED_IP_HASH)
-            .userAgent(UPDATED_USER_AGENT);
+            .capturedAt(UPDATED_CAPTURED_AT);
         WaitlistSignupDTO waitlistSignupDTO = waitlistSignupMapper.toDto(updatedWaitlistSignup);
 
         restWaitlistSignupMockMvc
@@ -1583,9 +1392,7 @@ class WaitlistSignupResourceIT {
             .referrer(UPDATED_REFERRER)
             .consentGiven(UPDATED_CONSENT_GIVEN)
             .confirmedAt(UPDATED_CONFIRMED_AT)
-            .unsubscribedAt(UPDATED_UNSUBSCRIBED_AT)
-            .ipHash(UPDATED_IP_HASH)
-            .userAgent(UPDATED_USER_AGENT);
+            .unsubscribedAt(UPDATED_UNSUBSCRIBED_AT);
 
         restWaitlistSignupMockMvc
             .perform(
@@ -1632,12 +1439,9 @@ class WaitlistSignupResourceIT {
             .referrer(UPDATED_REFERRER)
             .deviceType(UPDATED_DEVICE_TYPE)
             .consentGiven(UPDATED_CONSENT_GIVEN)
-            .confirmationToken(UPDATED_CONFIRMATION_TOKEN)
             .confirmedAt(UPDATED_CONFIRMED_AT)
             .unsubscribedAt(UPDATED_UNSUBSCRIBED_AT)
-            .capturedAt(UPDATED_CAPTURED_AT)
-            .ipHash(UPDATED_IP_HASH)
-            .userAgent(UPDATED_USER_AGENT);
+            .capturedAt(UPDATED_CAPTURED_AT);
 
         restWaitlistSignupMockMvc
             .perform(

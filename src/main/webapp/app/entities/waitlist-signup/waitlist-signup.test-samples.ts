@@ -45,12 +45,9 @@ export const sampleWithFullData: IWaitlistSignup = {
   referrer: 'resolve',
   deviceType: 'BOT',
   consentGiven: false,
-  confirmationToken: 'whereas punctuation',
   confirmedAt: dayjs('2026-07-29T19:00'),
   unsubscribedAt: dayjs('2026-07-30T10:08'),
   capturedAt: dayjs('2026-07-30T15:08'),
-  ipHash: 'blaspheme impact',
-  userAgent: 'quaintly',
 };
 
 export const sampleWithNewData: NewWaitlistSignup = {

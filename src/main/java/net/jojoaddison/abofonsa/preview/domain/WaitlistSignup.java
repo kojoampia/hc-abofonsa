@@ -96,9 +96,29 @@ public class WaitlistSignup implements Serializable {
     @Column(name = "consent_given", nullable = false)
     private Boolean consentGiven;
 
+    /**
+     * The double opt-in secret, good for one confirmation and then only until it expires.
+     *
+     * <p>It used to serve as the unsubscribe credential too, which meant a link forwarded to a
+     * colleague or left in an old mailbox could still both confirm and remove a subscription years
+     * later. Unsubscribing now has {@link #unsubscribeToken} of its own, so the two capabilities can
+     * have the lifetimes they each deserve: this one short, that one permanent.
+     */
     @Size(max = 64)
     @Column(name = "confirmation_token", length = 64)
     private String confirmationToken;
+
+    /** When {@link #confirmationToken} stops being accepted. */
+    @Column(name = "confirmation_expires_at")
+    private Instant confirmationExpiresAt;
+
+    /**
+     * The unsubscribe credential. Long-lived on purpose — every message we send carries the link,
+     * and an opt-out that has quietly expired is worse than no link at all.
+     */
+    @Size(max = 64)
+    @Column(name = "unsubscribe_token", length = 64, unique = true)
+    private String unsubscribeToken;
 
     @Column(name = "confirmed_at")
     private Instant confirmedAt;
@@ -342,6 +362,32 @@ public class WaitlistSignup implements Serializable {
 
     public void setConfirmationToken(String confirmationToken) {
         this.confirmationToken = confirmationToken;
+    }
+
+    public Instant getConfirmationExpiresAt() {
+        return this.confirmationExpiresAt;
+    }
+
+    public WaitlistSignup confirmationExpiresAt(Instant confirmationExpiresAt) {
+        this.setConfirmationExpiresAt(confirmationExpiresAt);
+        return this;
+    }
+
+    public void setConfirmationExpiresAt(Instant confirmationExpiresAt) {
+        this.confirmationExpiresAt = confirmationExpiresAt;
+    }
+
+    public String getUnsubscribeToken() {
+        return this.unsubscribeToken;
+    }
+
+    public WaitlistSignup unsubscribeToken(String unsubscribeToken) {
+        this.setUnsubscribeToken(unsubscribeToken);
+        return this;
+    }
+
+    public void setUnsubscribeToken(String unsubscribeToken) {
+        this.unsubscribeToken = unsubscribeToken;
     }
 
     public Instant getConfirmedAt() {

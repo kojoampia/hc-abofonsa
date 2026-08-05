@@ -292,30 +292,6 @@
           }
         </div>
 
-        @let confirmationTokenRef = editForm.get('confirmationToken')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_confirmationToken" jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmationToken"
-            >Confirmation Token</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            name="confirmationToken"
-            id="field_confirmationToken"
-            data-cy="confirmationToken"
-            formControlName="confirmationToken"
-          />
-          @if (confirmationTokenRef.invalid && (confirmationTokenRef.dirty || confirmationTokenRef.touched)) {
-            <div>
-              @if (editForm.get('confirmationToken')?.errors?.maxlength) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '64' }"
-                  >This field cannot be longer than 64 characters.</small
-                >
-              }
-            </div>
-          }
-        </div>
-
         <div class="mb-3">
           <label class="form-label" for="field_confirmedAt" jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmedAt"
             >Confirmed At</label
@@ -375,42 +351,6 @@
                 jhiTranslate="entity.validation.datetimelocal"
                 >This field should be a date and time.</small
               >
-            </div>
-          }
-        </div>
-
-        @let ipHashRef = editForm.get('ipHash')!;
-        <div class="mb-3">
-          <label
-            class="form-label"
-            for="field_ipHash"
-            [ngbTooltip]="'abofonsaPreviewApp.waitlistSignup.help.ipHash' | translate"
-            jhiTranslate="abofonsaPreviewApp.waitlistSignup.ipHash"
-            >Ip Hash</label
-          >
-          <input type="text" class="form-control" name="ipHash" id="field_ipHash" data-cy="ipHash" formControlName="ipHash" />
-          @if (ipHashRef.invalid && (ipHashRef.dirty || ipHashRef.touched)) {
-            <div>
-              @if (editForm.get('ipHash')?.errors?.maxlength) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '64' }"
-                  >This field cannot be longer than 64 characters.</small
-                >
-              }
-            </div>
-          }
-        </div>
-
-        @let userAgentRef = editForm.get('userAgent')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_userAgent" jhiTranslate="abofonsaPreviewApp.waitlistSignup.userAgent">User Agent</label>
-          <input type="text" class="form-control" name="userAgent" id="field_userAgent" data-cy="userAgent" formControlName="userAgent" />
-          @if (userAgentRef.invalid && (userAgentRef.dirty || userAgentRef.touched)) {
-            <div>
-              @if (editForm.get('userAgent')?.errors?.maxlength) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '512' }"
-                  >This field cannot be longer than 512 characters.</small
-                >
-              }
             </div>
           }
         </div>

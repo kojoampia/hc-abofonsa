@@ -17,6 +17,7 @@ import net.jojoaddison.abofonsa.preview.IntegrationTest;
 import net.jojoaddison.abofonsa.preview.domain.PledgeTierPerk;
 import net.jojoaddison.abofonsa.preview.domain.PledgeTierTeaser;
 import net.jojoaddison.abofonsa.preview.repository.PledgeTierPerkRepository;
+import net.jojoaddison.abofonsa.preview.security.AuthoritiesConstants;
 import net.jojoaddison.abofonsa.preview.service.PledgeTierPerkService;
 import net.jojoaddison.abofonsa.preview.service.dto.PledgeTierPerkDTO;
 import net.jojoaddison.abofonsa.preview.service.mapper.PledgeTierPerkMapper;
@@ -41,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 class PledgeTierPerkResourceIT {
 
     private static final String DEFAULT_LABEL = "AAAAAAAAAA";

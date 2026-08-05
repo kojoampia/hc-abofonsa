@@ -1,0 +1,39 @@
+# Keeps the pins in publish.yml and package.json from going stale.
+#
+# The workflow pins every action to a commit SHA rather than a moving tag, which is the right trade
+# — a retagged action cannot silently run in a job holding `packages: write` — but it does mean
+# nothing updates them by itself. Dependabot rewrites the SHA and the trailing version comment
+# together, which is the whole reason the comment is there.
+#
+# npm is listed because this repository shipped eight high-severity Angular advisories in its
+# production bundle for as long as nobody ran `npm audit`. CI now fails on those (see publish.yml);
+# this is what stops them accumulating in the first place.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: deps
+    groups:
+      # Angular releases in lockstep and its packages peer-depend on each other by exact version, so
+      # a partial bump does not resolve. Updating them as one group is the only thing that installs.
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-builders/*'
+
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: deps

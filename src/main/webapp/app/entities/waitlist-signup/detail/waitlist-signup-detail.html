@@ -100,10 +100,6 @@
           <dd>
             <span>{{ waitlistSignupRef.consentGiven }}</span>
           </dd>
-          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmationToken">Confirmation Token</span></dt>
-          <dd>
-            <span>{{ waitlistSignupRef.confirmationToken }}</span>
-          </dd>
           <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.confirmedAt">Confirmed At</span></dt>
           <dd>
             <span>{{ waitlistSignupRef.confirmedAt | formatMediumDatetime }}</span>
@@ -115,20 +111,6 @@
           <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.capturedAt">Captured At</span></dt>
           <dd>
             <span>{{ waitlistSignupRef.capturedAt | formatMediumDatetime }}</span>
-          </dd>
-          <dt>
-            <span
-              [ngbTooltip]="'abofonsaPreviewApp.waitlistSignup.help.ipHash' | translate"
-              jhiTranslate="abofonsaPreviewApp.waitlistSignup.ipHash"
-              >Ip Hash</span
-            >
-          </dt>
-          <dd>
-            <span>{{ waitlistSignupRef.ipHash }}</span>
-          </dd>
-          <dt><span jhiTranslate="abofonsaPreviewApp.waitlistSignup.userAgent">User Agent</span></dt>
-          <dd>
-            <span>{{ waitlistSignupRef.userAgent }}</span>
           </dd>
         </dl>
 
