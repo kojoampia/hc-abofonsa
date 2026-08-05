@@ -67,7 +67,12 @@ of writing — exercising it means sending a real confirmation email and having 
 
 **A meter appears in Mimir only after it is first incremented.** A counter registered at zero is not
 exported, so a panel for something that has never happened shows "No data" rather than a flat zero.
-That is worth knowing before concluding a metric is broken.
+
+There is a corollary that will waste your time otherwise: because the series does not exist until the
+first increment, its **first stored sample is already 1**, and `increase()` therefore reports nothing
+for it. A panel stays empty until the *second* occurrence. Confirmed while verifying this dashboard —
+one honeypot submission produced `increase(...[10m]) = 0`, a second produced `1.23` (extrapolated, as
+`increase()` does). Nothing was wrong with the query either time.
 
 ## Two things that will silently produce nothing
 
