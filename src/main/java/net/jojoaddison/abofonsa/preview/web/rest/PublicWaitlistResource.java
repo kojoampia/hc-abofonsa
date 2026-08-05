@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import net.jojoaddison.abofonsa.preview.management.WaitlistMetrics;
 import net.jojoaddison.abofonsa.preview.service.WaitlistCaptureService;
 import net.jojoaddison.abofonsa.preview.service.dto.WaitlistReceiptDTO;
 import net.jojoaddison.abofonsa.preview.service.dto.WaitlistSubmissionDTO;
@@ -22,9 +23,11 @@ public class PublicWaitlistResource {
     private static final Logger LOG = LoggerFactory.getLogger(PublicWaitlistResource.class);
 
     private final WaitlistCaptureService waitlistCaptureService;
+    private final WaitlistMetrics metrics;
 
-    public PublicWaitlistResource(WaitlistCaptureService waitlistCaptureService) {
+    public PublicWaitlistResource(WaitlistCaptureService waitlistCaptureService, WaitlistMetrics metrics) {
         this.waitlistCaptureService = waitlistCaptureService;
+        this.metrics = metrics;
     }
 
     /**
@@ -61,6 +64,11 @@ public class PublicWaitlistResource {
     public ResponseEntity<OptInResultDTO> confirm(@Valid @RequestBody TokenDTO body, HttpServletRequest request) {
         LOG.debug("REST request to confirm a waitlist signup");
         boolean confirmed = waitlistCaptureService.confirm(body.token(), request).isPresent();
+        // The success side is counted in the service, where an already-confirmed row is
+        // distinguishable from a fresh one. Only the refusal is counted here.
+        if (!confirmed) {
+            metrics.optInInvalid();
+        }
         return ResponseEntity.ok(new OptInResultDTO(confirmed ? "ok" : "invalid"));
     }
 
@@ -69,6 +77,9 @@ public class PublicWaitlistResource {
     public ResponseEntity<OptInResultDTO> unsubscribe(@Valid @RequestBody TokenDTO body) {
         LOG.debug("REST request to unsubscribe from the waitlist");
         boolean removed = waitlistCaptureService.unsubscribe(body.token()).isPresent();
+        if (!removed) {
+            metrics.optInInvalid();
+        }
         return ResponseEntity.ok(new OptInResultDTO(removed ? "ok" : "invalid"));
     }
 

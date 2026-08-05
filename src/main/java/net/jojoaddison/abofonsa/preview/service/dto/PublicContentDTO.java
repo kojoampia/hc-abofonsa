@@ -24,8 +24,23 @@ public record PublicContentDTO(
     List<CareService> services,
     List<Plan> plans,
     List<PledgeTier> pledgeTiers,
-    List<Social> socialLinks
+    List<Social> socialLinks,
+    Telemetry telemetry
 ) implements Serializable {
+    /**
+     * What the browser should report, and how much of it.
+     *
+     * <p>Delivered with the content rather than compiled into the bundle so that the sampling rate
+     * can be changed by editing {@code .env} and restarting, without a rebuild and a redeploy. It
+     * rides on this response because the page already makes it — a dedicated config endpoint would
+     * be a second request on every page load to answer a question worth two numbers.
+     *
+     * <p>{@code endpoint} is same-origin on purpose. It keeps the Content-Security-Policy's
+     * {@code default-src 'self'} sufficient, so enabling telemetry does not mean widening
+     * {@code connect-src} to a third-party host.
+     */
+    public record Telemetry(boolean enabled, double sampleRatio, String endpoint) implements Serializable {}
+
     /** Site identity and the countdown target. */
     public record Launch(
         String organisationName,

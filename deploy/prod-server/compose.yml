@@ -101,8 +101,54 @@ services:
       # the monolith serves its own frontend.
       JHIPSTER_CORS_ALLOWED_ORIGINS: ${PUBLIC_URL}
 
+      # --- Observability ---------------------------------------------------------------------------
+      #
+      # This app reports through the same OpenTelemetry pipeline as hc-professional, hc-patient and
+      # hc-admin: the agent pushes OTLP to otel-collector, which fans out to Tempo (traces), Mimir
+      # (metrics) and Loki (logs). Nothing scrapes this container — Alloy's config on this host says
+      # so explicitly ("NO APPLICATION SCRAPE TARGETS, and that is correct for this host") — so
+      # pushing is the only route by which anything here reaches a dashboard.
+      #
+      # /management/prometheus stays enabled below regardless. It costs nothing, it is what the
+      # container healthcheck's neighbours use, and it is the fallback if the collector is down.
+      JAVA_OPTS: '-XX:MaxRAMPercentage=75 -XX:+UseZGC -javaagent:/app/otel-javaagent.jar'
+
+      # The identity every dashboard, trace and log line groups by. Must match the name used in the
+      # Grafana dashboard shipped with this repo.
+      OTEL_SERVICE_NAME: abofonsa-preview
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+
+      # All three signals. Named explicitly rather than left to the agent's defaults, because those
+      # defaults have changed across agent releases and a silently disabled logs exporter looks
+      # exactly like an application that is not logging.
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_METRICS_EXPORTER: otlp
+      OTEL_LOGS_EXPORTER: otlp
+
+      # service.version makes a deploy visible as a change in the series rather than an unexplained
+      # step in the numbers; the collector keeps this attribute deliberately (see its comments on
+      # cardinality). TAG is the deployed commit, set by deploy.sh.
+      OTEL_RESOURCE_ATTRIBUTES: deployment.environment=production,service.version=${TAG:-latest}
+
+      # parentbased: a request that arrives carrying a traceparent from the browser is recorded if
+      # the browser decided to record it, so a page load and the API calls it makes stay one trace
+      # rather than half of one. Requests with no parent fall back to the ratio below.
+      #
+      # 1.0 is right for a preview site with a countdown on it. If announcement day makes that
+      # expensive, lower OTEL_TRACE_SAMPLE_RATIO in .env — no rebuild needed.
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: ${OTEL_TRACE_SAMPLE_RATIO:-1.0}
+
+      # Puts trace_id and span_id into the MDC, so a log line in Loki can be pivoted to its trace in
+      # Tempo. This is the whole point of shipping logs and traces to the same place.
+      OTEL_INSTRUMENTATION_LOGBACK_MDC_ENABLED: 'true'
+
+      # Browser-side sampling, served to the page inside /api/public/content. See .env.example for
+      # why this is a different number from the backend ratio above.
+      RUM_SAMPLE_RATIO: ${RUM_SAMPLE_RATIO:-0.25}
+
       MANAGEMENT_PROMETHEUS_METRICS_EXPORT_ENABLED: 'true'
-      JAVA_OPTS: '-XX:MaxRAMPercentage=75 -XX:+UseZGC'
       # The generated entrypoint sleeps this many seconds before starting, a hook for waiting on
       # dependencies. depends_on/condition already does that properly, so no sleep.
       JHIPSTER_SLEEP: '0'

@@ -72,6 +72,19 @@ export interface SocialLink {
   iconKey: string | null;
 }
 
+/**
+ * What the browser should report, and for what fraction of visits.
+ *
+ * Served with the content rather than compiled in, so the sampling rate is an environment variable
+ * and a restart rather than a rebuild. `endpoint` is same-origin, which is what keeps the strict
+ * Content-Security-Policy sufficient — see TelemetryService.
+ */
+export interface TelemetryConfig {
+  enabled: boolean;
+  sampleRatio: number;
+  endpoint: string;
+}
+
 export interface LaunchContent {
   generatedAt: string;
   launch: LaunchSettings;
@@ -80,6 +93,7 @@ export interface LaunchContent {
   plans: Plan[];
   pledgeTiers: PledgeTier[];
   socialLinks: SocialLink[];
+  telemetry: TelemetryConfig;
 }
 
 export type CaptureEventType = 'PAGE_VIEW' | 'PLEDGE_CTA_CLICK' | 'SERVICE_VIEW' | 'PLAN_VIEW' | 'CONTACT_CLICK' | 'SOCIAL_CLICK';

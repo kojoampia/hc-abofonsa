@@ -137,6 +137,52 @@ Two traps if you touch `content/scss/launch.scss`:
 - `.brand-mark` is the logo; `.mark` is the ✓/— glyph in the plan feature list. They were the same
   class once and only rendered correctly by specificity accident.
 
+## Observability
+
+OpenTelemetry, pushed — never scraped. Alloy's config on the host says so in as many words: _"NO
+APPLICATION SCRAPE TARGETS, and that is correct for this host."_ Applications send OTLP to
+`otel-collector`, which fans out to **Tempo** (traces), **Mimir** (metrics) and **Loki** (logs).
+`hc-professional`, `hc-patient` and `hc-admin` are wired the same way; this app is the fourth.
+
+**Backend.** The OpenTelemetry Java agent, baked into the image at `/app/otel-javaagent.jar` by
+`maven-dependency-plugin` + jib's `extraDirectories`, attached via `JAVA_OPTS`. Never add it as a
+project dependency as well — on the classpath _and_ the agent path, you get two of everything.
+
+**Frontend.** The OTel Web SDK posts spans to **same-origin `/v1/traces`**, which nginx proxies to
+the collector's separate browser receiver. Three things depend on that being same-origin:
+
+- the CSP's `default-src 'self'` already permits it, so telemetry did not cost a `connect-src`
+  exception;
+- the browser sends no CORS preflight, so the collector needs no `cors:` block;
+- browser spans go to a pipeline that exports to **Tempo only**, so a flood of forged spans costs
+  trace storage and can never touch Mimir's series count, Loki's volume or the alerting path.
+
+Traps, all of them load-bearing:
+
+- **The SDK is loaded only if the visit is sampled.** `TelemetryService` rolls the dice _before_ the
+  dynamic `import()`, so an unsampled visitor downloads none of the ~90 kB. Verify after any build
+  change that no `@opentelemetry/*` code reaches an initial chunk.
+- **No `ZoneContextManager`.** This app is zoneless — there is no `zone.js` dependency — and
+  registering the Zone context manager without it throws during startup.
+- **`ignoreUrls` must exclude `/v1/traces`.** Without it the exporter's own POST is instrumented,
+  which makes a span, which is exported, which makes a span.
+- **`limit_req_zone` lives in `conf.d/`, not the vhost.** It is only valid in nginx's `http`
+  context. In the vhost, `nginx -t` fails with "directive is not allowed here"; missing entirely, it
+  fails with "unknown limit_req zone", which reads like a typo rather than a missing file. Our zone
+  is `abofonsa_rum`, deliberately **not** hc-professional's `rum_ingest` — sharing it would couple
+  this site's config reload to another app's file continuing to exist.
+- **Sampling is configuration, not code.** `OTEL_TRACE_SAMPLE_RATIO` (backend) and
+  `RUM_SAMPLE_RATIO` (browser, delivered inside `/api/public/content`) are both `.env` and a
+  restart. The browser one rides on the content response on purpose: a dedicated config endpoint
+  would be a second request on every page load to answer a question worth two numbers.
+- **`/management/prometheus` is a fallback, not the path.** Nothing scrapes it. It stays enabled
+  because it costs nothing and is what you have if the collector is down.
+
+`WaitlistMetrics` counts the funnel — accepted, duplicate, rejected, throttled, mail failures, opt-in
+outcomes. The rollup tables remain the source of truth for _how many_; these answer _is it working
+right now_, which request-rate and error-rate cannot, because a launch page whose signups drop to
+zero still returns 200 to everything.
+
 ## Ownership
 
 Health Connect · Abofonsa BridgeCare is a product of **Jojo Addison Consultancy**

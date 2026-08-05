@@ -62,6 +62,7 @@ DB_CONTAINER="abofonsa-preview-postgres"
 APP_NETWORK="abofonsapreviewnet"
 NGINX_CONF="abofonsa-preview.conf"
 NGINX_HEADERS="abofonsa-security-headers.conf"   # included by the site file; must be installed with it
+NGINX_RUM_ZONE="abofonsa-preview-rum.conf"       # limit_req_zone for /v1/traces; http-context, so conf.d
 
 # Liquibase runs 19 changelogs and the metrics rollup backfills on startup, on a single-core host.
 # This is expected, not a hang — see prod-server/compose.yml's healthcheck comment.
@@ -381,11 +382,18 @@ if $WITH_NGINX; then
   step "Install the nginx site"
   confirm "install /etc/nginx/sites-available/${NGINX_CONF} on ${SSH_HOST} (needs sudo)?" || fail "aborted"
 
-  # The site file `include`s the headers snippet, so that has to land first or `nginx -t` fails.
+  # The site file `include`s the headers snippet and references the RUM rate-limit zone, so both
+  # have to land before it or `nginx -t` fails — on the zone with "unknown limit_req zone", which
+  # reads like a typo rather than a missing file.
   scp -q "prod-server/${NGINX_HEADERS}" "${SSH_HOST}:/tmp/${NGINX_HEADERS}"
   remote "sudo install -D -m 0644 -o root -g root /tmp/${NGINX_HEADERS} /etc/nginx/snippets/${NGINX_HEADERS} \
        && rm -f /tmp/${NGINX_HEADERS}"
   ok "security headers snippet installed"
+
+  scp -q "prod-server/${NGINX_RUM_ZONE}" "${SSH_HOST}:/tmp/${NGINX_RUM_ZONE}"
+  remote "sudo install -D -m 0644 -o root -g root /tmp/${NGINX_RUM_ZONE} /etc/nginx/conf.d/${NGINX_RUM_ZONE} \
+       && rm -f /tmp/${NGINX_RUM_ZONE}"
+  ok "RUM rate-limit zone installed"
 
   scp -q "prod-server/${NGINX_CONF}" "${SSH_HOST}:/tmp/${NGINX_CONF}"
   remote "sudo mv /tmp/${NGINX_CONF} /etc/nginx/sites-available/${NGINX_CONF} \
