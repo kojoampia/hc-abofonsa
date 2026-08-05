@@ -10,6 +10,7 @@ import java.util.Optional;
 import net.jojoaddison.abofonsa.preview.domain.WaitlistSignup;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.CaptureEventType;
 import net.jojoaddison.abofonsa.preview.domain.enumeration.SignupStatus;
+import net.jojoaddison.abofonsa.preview.management.WaitlistMetrics;
 import net.jojoaddison.abofonsa.preview.repository.WaitlistSignupRepository;
 import net.jojoaddison.abofonsa.preview.service.dto.WaitlistReceiptDTO;
 import net.jojoaddison.abofonsa.preview.service.dto.WaitlistSubmissionDTO;
@@ -52,6 +53,7 @@ public class WaitlistCaptureService {
     private final VisitorContextService visitorContext;
     private final CaptureEventRecorder eventRecorder;
     private final MailService mailService;
+    private final WaitlistMetrics metrics;
     private final String publicBaseUrl;
     private final int maxPerHourPerClient;
 
@@ -60,6 +62,7 @@ public class WaitlistCaptureService {
         VisitorContextService visitorContext,
         CaptureEventRecorder eventRecorder,
         MailService mailService,
+        WaitlistMetrics metrics,
         @Value("${abofonsa.public-base-url:http://localhost:8083}") String publicBaseUrl,
         @Value("${abofonsa.waitlist.max-per-hour-per-client:5}") int maxPerHourPerClient
     ) {
@@ -67,6 +70,7 @@ public class WaitlistCaptureService {
         this.visitorContext = visitorContext;
         this.eventRecorder = eventRecorder;
         this.mailService = mailService;
+        this.metrics = metrics;
         this.publicBaseUrl = publicBaseUrl;
         this.maxPerHourPerClient = maxPerHourPerClient;
     }
@@ -78,6 +82,7 @@ public class WaitlistCaptureService {
         String ipHash = visitorContext.ipHash(request);
 
         if (repository.countByIpHashAndCapturedAtAfter(ipHash, Instant.now().minus(Duration.ofHours(1))) >= maxPerHourPerClient) {
+            metrics.signupThrottled();
             throw new WaitlistThrottledException();
         }
 
@@ -114,6 +119,7 @@ public class WaitlistCaptureService {
         signup.setUserAgent(visitorContext.userAgent(request));
 
         WaitlistSignup saved = repository.save(signup);
+        metrics.signupAccepted();
         eventRecorder.recordServerSide(CaptureEventType.WAITLIST_SUBMIT, request, saved.getLocale(), saved.getSourcePage(), null);
         sendConfirmation(saved);
 
@@ -148,6 +154,7 @@ public class WaitlistCaptureService {
                 if (signup.getStatus() != SignupStatus.CONFIRMED) {
                     signup.setStatus(SignupStatus.CONFIRMED);
                     signup.setConfirmedAt(Instant.now());
+                    metrics.optInConfirmed();
                     eventRecorder.recordServerSide(CaptureEventType.WAITLIST_CONFIRM, request, signup.getLocale(), null, null);
                 }
                 // One use. Everything after this point identifies the row by status, and the
@@ -180,6 +187,7 @@ public class WaitlistCaptureService {
     }
 
     private WaitlistReceiptDTO handleExisting(WaitlistSignup existing, HttpServletRequest request) {
+        metrics.signupDuplicate();
         eventRecorder.recordServerSide(CaptureEventType.WAITLIST_DUPLICATE, request, existing.getLocale(), null, null);
 
         if (existing.getStatus() == SignupStatus.CONFIRMED) {
@@ -213,10 +221,12 @@ public class WaitlistCaptureService {
     private void rejectBots(WaitlistSubmissionDTO submission) {
         if (submission.company() != null && !submission.company().isBlank()) {
             LOG.debug("Rejected a waitlist submission that filled the honeypot field");
+            metrics.signupRejected();
             throw new WaitlistRejectedException("honeypot");
         }
         if (submission.dwellMs() > 0 && submission.dwellMs() < MIN_DWELL.toMillis()) {
             LOG.debug("Rejected a waitlist submission after {}ms on the page", submission.dwellMs());
+            metrics.signupRejected();
             throw new WaitlistRejectedException("dwell");
         }
     }
@@ -244,6 +254,7 @@ public class WaitlistCaptureService {
             // Message at WARN, stack trace at DEBUG: with no SMTP server configured this fires on
             // every signup, and a full trace each time buries the line that actually matters —
             // the opt-in link, which is the only way to complete the flow in that situation.
+            metrics.confirmationMailFailed();
             LOG.warn("Could not send the confirmation email ({}); the opt-in link is {}", e.getMessage(), link);
             LOG.debug("Confirmation email failure detail", e);
         }

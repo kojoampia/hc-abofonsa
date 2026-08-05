@@ -284,6 +284,16 @@ abofonsa:
     # Submissions per client per hour before the endpoint answers 429.
     max-per-hour-per-client: ${ABOFONSA_WAITLIST_MAX_PER_HOUR:5}
 
+  rum:
+    # Real User Monitoring: whether the launch page reports browser spans, and for what fraction of
+    # visits. Served to the browser inside /api/public/content, so changing the ratio is a restart
+    # rather than a rebuild.
+    #
+    # Sampled per page load, not per request — a visit is either traced end to end or not traced at
+    # all, because half a trace is worse than none when you are trying to see where a signup stalled.
+    enabled: ${ABOFONSA_RUM_ENABLED:true}
+    sample-ratio: ${RUM_SAMPLE_RATIO:0.25}
+
   events:
     # Analytics beacons per client per hour before /api/public/events answers 429. Counted in memory
     # per instance, unlike the waitlist cap which is counted in the database.

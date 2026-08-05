@@ -8,6 +8,7 @@ import net.jojoaddison.abofonsa.preview.repository.*;
 import net.jojoaddison.abofonsa.preview.service.dto.PublicContentDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -36,13 +37,25 @@ public class PublicContentService {
     private final PledgeTierTeaserRepository pledgeTierTeaserRepository;
     private final SocialLinkRepository socialLinkRepository;
 
+    /**
+     * Where the browser posts its spans. Same-origin, proxied by nginx to the collector's browser
+     * receiver — never the collector's own address, which is loopback-only and would not resolve
+     * from a browser anyway.
+     */
+    private static final String RUM_ENDPOINT = "/v1/traces";
+
+    private final boolean rumEnabled;
+    private final double rumSampleRatio;
+
     public PublicContentService(
         LaunchSettingRepository launchSettingRepository,
         LaunchMilestoneRepository launchMilestoneRepository,
         CareServiceTeaserRepository careServiceTeaserRepository,
         CarePlanTeaserRepository carePlanTeaserRepository,
         PledgeTierTeaserRepository pledgeTierTeaserRepository,
-        SocialLinkRepository socialLinkRepository
+        SocialLinkRepository socialLinkRepository,
+        @Value("${abofonsa.rum.enabled:true}") boolean rumEnabled,
+        @Value("${abofonsa.rum.sample-ratio:0.25}") double rumSampleRatio
     ) {
         this.launchSettingRepository = launchSettingRepository;
         this.launchMilestoneRepository = launchMilestoneRepository;
@@ -50,6 +63,8 @@ public class PublicContentService {
         this.carePlanTeaserRepository = carePlanTeaserRepository;
         this.pledgeTierTeaserRepository = pledgeTierTeaserRepository;
         this.socialLinkRepository = socialLinkRepository;
+        this.rumEnabled = rumEnabled;
+        this.rumSampleRatio = rumSampleRatio;
     }
 
     @Cacheable(CONTENT_CACHE)
@@ -80,7 +95,8 @@ public class PublicContentService {
             services(),
             plans(),
             pledgeTiers(),
-            socialLinks()
+            socialLinks(),
+            new PublicContentDTO.Telemetry(rumEnabled, rumSampleRatio, RUM_ENDPOINT)
         );
     }
 

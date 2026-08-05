@@ -198,6 +198,25 @@ class PublicApiResourceIT {
             .andExpect(jsonPath("$.milestones[0].title").value("Closed pilot"));
     }
 
+    /**
+     * The browser's RUM configuration rides on the content response.
+     *
+     * <p>Asserted because the alternative failure is silent: if this block stops being serialised,
+     * the page simply never starts telemetry and nothing anywhere reports an error. The endpoint
+     * must stay same-origin — a third-party host here would need `connect-src` widened in the CSP,
+     * which is the opposite of the direction that policy was taken in.
+     */
+    @Test
+    @Transactional
+    void theContentPayloadCarriesTheBrowserTelemetryConfig() throws Exception {
+        restMockMvc
+            .perform(get(CONTENT_URL))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.telemetry.enabled").exists())
+            .andExpect(jsonPath("$.telemetry.sampleRatio").isNumber())
+            .andExpect(jsonPath("$.telemetry.endpoint").value("/v1/traces"));
+    }
+
     /** Highlights are a Set on the entity, so Hibernate returns them unordered; the service sorts. */
     @Test
     @Transactional
